@@ -1,0 +1,13 @@
+# Django
+*.pyc
+__pycache__/
+db.sqlite3
+/server/venv/
+.env
+/server/media/
+
+# Angular
+/client/node_modules/
+/client/dist/
+/client/.angular/
+.DS_Store
