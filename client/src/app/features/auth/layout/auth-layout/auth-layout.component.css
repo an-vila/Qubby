@@ -1,0 +1,34 @@
+.auth-layout {
+  background:url('/images/imagenfondologin.png') no-repeat center center;
+  background-size: cover;
+}
+
+@media (max-width: 767.98px) {
+  .brand .logo {
+    width: 200px; /* tamaño móvil */
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+}
+  .brand-wrapper {
+    margin-right: 10.5rem !important; /* desktop */
+  }
+.brand-wrapper {
+  margin-right: 0; /* móvil */
+}
+
+/* Desktop: margen a la derecha */
+@media (min-width: 768px) {
+  .logo {
+    margin-right: 10.5rem; /* el margen que quieras */
+  }
+}
+@media (min-width: 992px) {
+  .auth-right {
+    width: 100%;
+    max-width: 420px;
+  }
+}

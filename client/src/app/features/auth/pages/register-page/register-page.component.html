@@ -1,0 +1,71 @@
+<div class="card p-4 shadow rounded-4 w-100 login-card">
+  <h2 class="text-center mb-1">Crear cuenta</h2>
+  <p class="text-center text-muted mb-4">Regístrate para comenzar</p>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <!-- Nombre completo -->
+    <ui-input
+      type="text"
+      placeholder="Tu nombre completo"
+      formControlName="name"
+      label="Nombre completo"
+      class="mb-3"
+    ></ui-input>
+
+    <!-- Email -->
+    <ui-input
+      type="email"
+      placeholder="tu@email.com"
+      formControlName="email"
+      label="Correo electrónico"
+      class="mb-3"
+    ></ui-input>
+
+    <!-- Contraseña -->
+    <ui-input
+      [type]="showPassword ? 'text' : 'password'"
+      placeholder="********"
+      formControlName="password"
+      label="Contraseña"
+      class="mb-3"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
+        (click)="togglePassword()"
+      >
+        <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </button>
+    </ui-input>
+
+    <!-- Confirmar contraseña -->
+    <ui-input
+      [type]="showConfirmPassword ? 'text' : 'password'"
+      placeholder="********"
+      formControlName="confirmPassword"
+      label="Confirmar contraseña"
+      class="mb-3"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
+        (click)="toggleConfirmPassword()"
+      >
+        <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </button>
+    </ui-input>
+
+    <!-- Botón Crear cuenta -->
+    <ui-button type="submit" class="w-100 btn-qubby fw-bold py-2 shadow-sm rounded-3">
+      Crear cuenta
+    </ui-button>
+
+    <!-- Link a login -->
+    <p class="text-center mt-4 small">
+      ¿Ya tienes cuenta?
+      <a routerLink="/auth/login" class="text-qubby">Inicia sesión aquí</a>
+    </p>
+
+  </form>
+</div>
