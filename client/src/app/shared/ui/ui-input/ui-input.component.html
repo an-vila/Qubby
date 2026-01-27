@@ -1,7 +1,10 @@
-<div class="mb-3 position-relative">
-  <label *ngIf="label" class="form-label fw-semibold small px-1">
+@if (label) {
+  <label class="form-label fw-semibold small px-1">
     {{ label }}
   </label>
+}
+
+<div class="position-relative">
 
   <input
     [type]="type"
