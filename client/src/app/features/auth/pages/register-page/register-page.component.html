@@ -1,76 +1,89 @@
 <div class="card p-4 shadow rounded-4 w-100 login-card">
-  <h2 class="text-center mb-1">Crear cuenta</h2>
-  <p class="text-center text-muted mb-4">Regístrate para comenzar</p>
+  
+  @if (isSuccess) {
+    <div class="text-center py-4">
+      <i class="bi bi-envelope-check-fill text-qubby" style="font-size: 3rem;"></i>
+      <h2 class="text-center mb-1 mt-3">¡Casi listo!</h2>
+      
+      <p class="text-center text-muted mt-3 px-3">
+        📧 Te hemos enviado un correo para activar tu cuenta. <br>
+        Por favor, revisa tu bandeja de entrada.
+      </p>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <!-- Nombre completo -->
-    <ui-input
-      type="text"
-      placeholder="Tu nombre completo"
-      formControlName="name"
-      label="Nombre completo"
-      class="d-block mb-3"
-    ></ui-input>
+      <a routerLink="/auth/login" class="btn btn-qubby fw-bold w-100 mt-3 rounded-3">
+        Ir a Iniciar sesión
+      </a>
+    </div>
+  } 
+  
+  @else {
+    <h2 class="text-center mb-1">Crear cuenta</h2>
+    <p class="text-center text-muted mb-4">Regístrate para comenzar</p>
 
-    <!-- Email -->
-    <ui-input
-      type="email"
-      placeholder="tu@email.com"
-      formControlName="email"
-      label="Correo electrónico"
-      class="d-block mb-3"
-    ></ui-input>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <ui-input
+        type="text"
+        placeholder="Tu nombre completo"
+        formControlName="name"
+        label="Nombre completo"
+        class="d-block mb-3"
+      ></ui-input>
 
-    <!-- Contraseña -->
-    <ui-input
-      [type]="showPassword ? 'text' : 'password'"
-      placeholder="********"
-      formControlName="password"
-      label="Contraseña"
-      class="d-block mb-0"
-    >
-      <button
-        type="button"
-        class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
-        (click)="togglePassword()"
+      <ui-input
+        type="email"
+        placeholder="tu@email.com"
+        formControlName="email"
+        label="Correo electrónico"
+        class="d-block mb-3"
+      ></ui-input>
+
+      <ui-input
+        [type]="showPassword ? 'text' : 'password'"
+        placeholder="********"
+        formControlName="password"
+        label="Contraseña"
+        class="d-block mb-0"
       >
-        <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-      </button>
-    </ui-input>
-    <p class="form-text text-muted small ps-3 mb-3 mt-n2">Debe tener al menos 6 caracteres.</p>
+        <button
+          type="button"
+          class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
+          (click)="togglePassword()"
+        >
+          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button>
+      </ui-input>
+      <p class="form-text text-muted small ps-3 mb-3 mt-n2">Debe tener al menos 6 caracteres.</p>
 
-    <!-- Confirmar contraseña -->
-    <ui-input
-      [type]="showConfirmPassword ? 'text' : 'password'"
-      placeholder="********"
-      formControlName="confirmPassword"
-      label="Confirmar contraseña"
-      class="d-block mb-3"
-    >
-      <button
-        type="button"
-        class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
-        (click)="toggleConfirmPassword()"
+      <ui-input
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        placeholder="********"
+        formControlName="confirmPassword"
+        label="Confirmar contraseña"
+        class="d-block mb-3"
       >
-        <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-      </button>
-    </ui-input>
+        <button
+          type="button"
+          class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
+          (click)="toggleConfirmPassword()"
+        >
+          <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button>
+      </ui-input>
 
-    @if (errorMessage) {
-      <div class="text-danger small mt-n2 mb-3 ps-3">
-        <i class="bi bi-exclamation-circle me-1"></i> {{ errorMessage }}
-      </div>
-    }
+      @if (errorMessage) {
+        <div class="text-danger small mt-n2 mb-3 ps-3">
+          <i class="bi bi-exclamation-circle me-1"></i> {{ errorMessage }}
+        </div>
+      }
 
-    <!-- Botón Crear cuenta -->
-    <ui-button type="submit" class="w-100 btn-qubby fw-bold py-2 shadow-sm rounded-3">
-      Crear cuenta
-    </ui-button>
+      <ui-button type="submit" class="w-100 btn-qubby fw-bold py-2 shadow-sm rounded-3">
+        Crear cuenta
+      </ui-button>
 
-    <!-- Link a login -->
-    <p class="text-center mt-4 small">
-      ¿Ya tienes cuenta?
-      <a routerLink="/auth/login" class="text-qubby">Inicia sesión aquí</a>
-    </p>
-  </form>
+      <p class="text-center mt-4 small">
+        ¿Ya tienes cuenta?
+        <a routerLink="/auth/login" class="text-qubby">Inicia sesión aquí</a>
+      </p>
+    </form>
+  }
 </div>
