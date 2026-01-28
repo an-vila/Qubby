@@ -16,7 +16,7 @@
     </div>
   } 
   
-  @else {
+@else {
     <h2 class="text-center mb-1">Crear cuenta</h2>
     <p class="text-center text-muted mb-4">Regístrate para comenzar</p>
 
@@ -46,13 +46,15 @@
       >
         <button
           type="button"
-          class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
           (click)="togglePassword()"
+          class="btn border-0 bg-transparent p-0 position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
+          style="z-index: 5; line-height: 1;"
         >
-          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          <i class="bi fs-5" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
         </button>
       </ui-input>
-      <p class="form-text text-muted small ps-3 mb-3 mt-n2">Debe tener al menos 6 caracteres.</p>
+      
+      <p class="form-text text-muted small ps-3 mb-3 mt-1">Debe tener al menos 6 caracteres.</p>
 
       <ui-input
         [type]="showConfirmPassword ? 'text' : 'password'"
@@ -63,10 +65,11 @@
       >
         <button
           type="button"
-          class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
           (click)="toggleConfirmPassword()"
+          class="btn border-0 bg-transparent p-0 position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
+          style="z-index: 5; line-height: 1;"
         >
-          <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          <i class="bi fs-5" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
         </button>
       </ui-input>
 

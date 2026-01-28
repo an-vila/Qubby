@@ -1,21 +1,26 @@
-@if (label) {
-  <label class="form-label fw-semibold small px-1">
-    {{ label }}
-  </label>
-}
+<div class="mb-3">
+  @if (label) {
+    <label class="form-label fw-semibold text-dark small mb-1">{{ label }}</label>
+  }
 
-<div class="position-relative">
+  <div class="position-relative">
+    
+    <input
+      [type]="type"
+      class="form-control form-control-lg rounded-3 ps-3 pe-5 shadow-none"
+      [placeholder]="placeholder"
+      [formControl]="control"
+      style="font-size: 0.95rem; border-color: #dee2e6;"
+      [ngClass]="{'is-invalid': control.invalid && control.touched}"
+    >
 
-  <input
-    [type]="type"
-    class="form-control form-control-lg rounded-pill ps-4 shadow-none"
-    [placeholder]="placeholder"
-    [value]="value"
-    [disabled]="disabled"
-    (input)="handleInput($event)"
-    (blur)="onTouched()"
-  />
+    <ng-content></ng-content>
 
-  <!-- Slot para iconos (ojo, etc.) -->
-  <ng-content></ng-content>
+  </div>
+
+  @if (control.invalid && control.touched) {
+    <div class="text-danger small mt-1">
+      <i class="bi bi-exclamation-circle"></i> Campo requerido
+    </div>
+  }
 </div>

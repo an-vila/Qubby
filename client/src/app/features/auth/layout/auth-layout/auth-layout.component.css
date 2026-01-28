@@ -1,7 +1,35 @@
 .auth-layout {
-  background:url('/images/imagenfondologin.png') no-repeat center center;
+  background: url('/images/imagenfondologin.png') no-repeat center center;
   background-size: cover;
 }
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Regla para el Wrapper de la marca en Móvil */
+.brand-wrapper {
+  margin-right: 0; /* móvil */
+}
+
+/* Estilos base del Slogan (centrado en móvil) */
+.slogan {
+  font-size: 2rem;
+  color: #ffffff; 
+  line-height: 1.4;
+  text-align: center;
+  margin-right: 0;
+}
+
+/* Sobrescritura de utilidad (según tu código original) */
+.text-md-start {
+  text-align: center !important;
+}
+
+/* =========================================
+   2. REGLAS ESPECÍFICAS PARA MÓVIL (max-width)
+   ========================================= */
 
 @media (max-width: 767.98px) {
   .brand .logo {
@@ -9,23 +37,33 @@
   }
 }
 
-.login-card {
-  width: 100%;
-  max-width: 360px;
-}
+/* =========================================
+   3. REGLAS PARA TABLET Y DESKTOP (min-width: 768px)
+   ========================================= */
+
+@media (min-width: 768px) {
+  
+  /* Aquí aplicamos el margen "desktop" que tenías suelto */
   .brand-wrapper {
     margin-right: 10.5rem !important; /* desktop */
   }
-.brand-wrapper {
-  margin-right: 0; /* móvil */
-}
 
-/* Desktop: margen a la derecha */
-@media (min-width: 768px) {
+  /* Margen específico para el logo */
   .logo {
     margin-right: 10.5rem; /* el margen que quieras */
   }
+
+  /* Alineación y margen del slogan en escritorio */
+  .slogan {
+    margin-right: 10.5rem;
+    text-align: left;
+  }
 }
+
+/* =========================================
+   4. REGLAS PARA PANTALLAS GRANDES (min-width: 992px)
+   ========================================= */
+
 @media (min-width: 992px) {
   .auth-right {
     width: 100%;
