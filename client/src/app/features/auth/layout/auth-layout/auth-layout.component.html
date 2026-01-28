@@ -1,23 +1,20 @@
-<div class="auth-layout d-flex flex-column flex-md-row vh-100 align-items-center justify-content-center">
+<div
+  class="auth-layout d-flex flex-column flex-md-row vh-100 align-items-center justify-content-center"
+>
   <!-- IZQUIERDA: Logo -->
   <div class="d-flex justify-content-center justify-content-md-start mb-4 mb-md-0 me-md-5">
     <div class="brand text-center text-md-start">
-      <img src="/images/logoQubby.png" alt="Qubby logo" class="mb-3 logo">
+      <img src="/images/logoQubby.png" alt="Qubby logo" class="mb-3 logo" />
 
       <!-- Slogan -->
-      <p class="slogan mt-2">
-        Organiza, guarda y encuentra sin esfuerzo.
-      </p>
+      <p class="slogan mt-2">Organiza, guarda y encuentra sin esfuerzo.</p>
     </div>
   </div>
 
   <!-- DERECHA: Formulario -->
   <div class="auth-right">
-    <router-outlet></router-outlet>
+    <div class="card p-5 shadow rounded-4 w-100 text-center mx-auto">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>
-
-
-
-
-

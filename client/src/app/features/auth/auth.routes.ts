@@ -34,6 +34,14 @@ export const authRoutes: Routes = [
             .then(m => m.ActivatePageComponent)
       },
       {
+        // RUTA para activar la cuenta mediante el token del correo: /auth/activate
+        path: 'recovery',
+        // Carga de forma diferida el componente de activación que acabamos de limpiar
+        loadComponent: () =>
+          import('./pages/recovery-page/recovery-page.component')
+            .then(m => m.RecoveryPageComponent)
+      },
+      {
         // Si el usuario entra a /auth sin nada más, lo mandamos al login por defecto
         path: '',
         redirectTo: 'login',

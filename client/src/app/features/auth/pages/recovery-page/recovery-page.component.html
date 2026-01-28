@@ -1,0 +1,36 @@
+<div class="py-2">
+  <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem"></i>
+
+  <h2 class="mt-3 mb-2 fw-bold">Recuperar contraseña</h2>
+  <p>
+    Por favor, introduce la dirección de correo con la que te has registrado. Si el correo existe,
+    mandaremos un mail con las instrucciones para establecer una nueva contraseña.
+  </p>
+
+  @if (successMessage) {
+    <div class="alert alert-success d-flex align-items-center small mt-3" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <div>{{ successMessage }}</div>
+    </div>
+  } @else {
+    <form [formGroup]="recoveryForm" (ngSubmit)="onSubmit()">
+      <ui-input
+        type="email"
+        placeholder="tu@email.com"
+        formControlName="email"
+        class="mb-3"
+      ></ui-input>
+
+      @if (errorMessage) {
+        <div class="text-danger small mt-n2 mb-3 ps-3">
+          <i class="bi bi-exclamation-circle me-1"></i> {{ errorMessage }}
+        </div>
+      }
+
+      <ui-button type="submit" customClass="btn-qubby" class="my-3"
+        >Restablecer contraseña</ui-button
+      >
+    </form>
+  }
+  <a href="/auth/login" class="text-qubby small">Volver a Iniciar sesión</a>
+</div>
