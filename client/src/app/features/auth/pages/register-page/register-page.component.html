@@ -23,9 +23,9 @@
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <ui-input
         type="text"
-        placeholder="Tu nombre completo"
+        placeholder="Nombre de usuario"
         formControlName="name"
-        label="Nombre completo"
+        label="Usuario"
         class="d-block mb-3"
       ></ui-input>
 
@@ -76,7 +76,7 @@
         </div>
       }
 
-      <ui-button type="submit" class="w-100 btn-qubby fw-bold py-2 shadow-sm rounded-3">
+      <ui-button type="submit" class="btn-qubby">
         Crear cuenta
       </ui-button>
 

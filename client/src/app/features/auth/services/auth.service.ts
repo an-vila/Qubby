@@ -12,20 +12,23 @@ export class AuthService {
 
   // --- 1. REGISTRO ---
   // Recibe los datos del formulario de registro
-  // Devuelve un Observable<void> porque no esperamos datos de vuelta, solo saber si funcionó o falló
   register(data: RegisterRequest): Observable<void> {
-    console.log('REGISTER → backend', data); 
-    // 'of()' crea una respuesta inmediata y exitosa. 
-    // Finge que el backend respondió "OK" al instante.
-    return of(); 
+    console.log('REGISTER → backend', data);
+    
+    // CORRECCIÓN IMPORTANTE:
+    // Ponemos 'undefined' para que emita un valor y el componente sepa que ha terminado.
+    // Si pones 'of()' vacío, el .subscribe() nunca recibe el aviso y el botón se queda cargando.
+    return of(undefined);
   }
 
   // --- 2. ACTIVACIÓN DE CUENTA ---
   // Este método lo usa tu ActivatePageComponent
   activateAccount(token: string): Observable<void> {
     console.log('ACTIVATE → backend token:', token);
-    // Simula que el token se envió y se validó correctamente.
-    return of();
+    
+    // CORRECCIÓN IMPORTANTE:
+    // Igual aquí. Devolvemos 'undefined' para simular un éxito inmediato (HTTP 200 OK).
+    return of(undefined);
   }
 
   // --- 3. INICIO DE SESIÓN (LOGIN) ---
@@ -33,28 +36,37 @@ export class AuthService {
   login(data: LoginRequest): Observable<AuthResponse> {
     console.log('LOGIN → backend', data);
 
-    // --- MOCK (SIMULACIÓN) ---
-    // En lugar de llamar a http.post(...), devolvemos datos falsos fijos.
-    // Esto es muy útil para probar que tu diseño de Login funciona
-    // sin necesitar que Spring Boot esté encendido.
-    return of({
-      token: 'fake-jwt-token', // Un token inventado
+    // Creamos la respuesta simulada (Mock)
+    const mockResponse: AuthResponse = {
+      token: 'fake-jwt-token-secret-123', // Un token inventado
       user: {
         id: '1',
         email: data.email, // Devolvemos el mismo email que escribió el usuario
         activated: true    // Simulamos que el usuario ya activó su cuenta
       }
-    });
+    };
+
+    // --- NUEVO: GUARDAR SESIÓN (PERSISTENCIA) ---
+    // Guardamos el token en el navegador para que no se pierda al recargar la página (F5).
+    localStorage.setItem('token', mockResponse.token);
+    // Opcional: guardamos también los datos del usuario por si queremos mostrar su nombre luego
+    localStorage.setItem('user', JSON.stringify(mockResponse.user));
+
+    return of(mockResponse);
   }
 
-  // --- 4. VERIFICACIÓN DE SEGURIDAD ---
-  // Comprueba si hay un token guardado en el navegador.
-  // Devuelve true si estás logueado, false si no.
-  isAuthenticated(): boolean {
-    // convierte el resultado en booleano (true/false)
-    return !!localStorage.getItem('token');
+  // --- 4. CERRAR SESIÓN (LOGOUT) ---
+  // Este método borra los datos del navegador para "salir" de la cuenta.
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    console.log('Sesión cerrada: Token eliminado del LocalStorage');
+  }
 
-    //cuando este el backend
-    // return this.http.post('/auth/login', data);
+  // --- 5. VERIFICACIÓN DE SEGURIDAD ---
+  // Comprueba si hay un token guardado en el navegador.
+  // Devuelve TRUE si existe (estás logueado) o FALSE si no.
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('token');
   }
 }

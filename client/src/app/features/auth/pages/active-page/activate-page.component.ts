@@ -1,38 +1,61 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common'; // Necesario para directivas básicas
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service'; // <--- Importamos tu servicio
+import { UiButtonComponent } from '../../../../shared/ui/ui-button/ui-button.component'; // <--- Tu botón naranja
 
 @Component({
   selector: 'app-activate-page',
-  standalone: true,   // El componente es independiente, no depende de un AppModule
-  imports: [],    
+  standalone: true,
+  // Importamos los módulos necesarios para el HTML
+  imports: [CommonModule, RouterModule, UiButtonComponent], 
   templateUrl: './activate-page.component.html',
   styleUrls: ['./activate-page.component.css']
 })
 export class ActivatePageComponent implements OnInit {
 
-  // Propiedades para gestionar el estado de la vista
-  token: string | null = null; // Guardará el código de activación que viene en la URL
-  activated = false;           // Cambia a true si el proceso de activación es correcto
+  // En lugar de true/false, usamos 3 estados para controlar qué mostramos
+  status: 'loading' | 'success' | 'error' = 'loading';
+  message: string = 'Verificando tu cuenta...';
 
   constructor(
-    private route: ActivatedRoute, // Inyectamos el servicio para leer datos de la URL actual
-    private router: Router          // Inyectamos el servicio para navegar a otras páginas
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService // <--- Inyectamos el cerebro
   ) {}
 
-  // Este método se ejecuta justo después de que el componente se carga
   ngOnInit(): void {
-    // Extraemos el parámetro 'token' de la URL (ejemplo: ?token=abc123)
-    this.token = this.route.snapshot.queryParamMap.get('token');
+    // 1. Leemos el token de la URL
+    // Usamos 'subscribe' por si la URL cambia dinámicamente, es más seguro que 'snapshot'
+    this.route.queryParams.subscribe(params => {
+      const token = params['token'];
 
-    if (this.token) {
-      // Simulación de éxito: Aquí conectarás con tu API 
-      console.log('Token recibido:', this.token);
-      this.activated = true; // Al ser true, el HTML mostrará el mensaje de éxito
-    }
+      if (!token) {
+        this.status = 'error';
+        this.message = 'No se ha encontrado el código de activación.';
+        return;
+      }
+
+      // 2. Llamamos al servicio para confirmar
+      this.confirmActivation(token);
+    });
   }
 
-  // Método para redirigir al usuario al Login de Qubby
+  confirmActivation(token: string) {
+    // Aquí el servicio (aunque sea Mock) nos dirá si todo está bien
+    this.authService.activateAccount(token).subscribe({
+      next: () => {
+        this.status = 'success';
+        this.message = '¡Tu cuenta ha sido activada correctamente!';
+      },
+      error: () => {
+        this.status = 'error';
+        this.message = 'El enlace ha caducado o no es válido.';
+      }
+    });
+  }
+
   goToLogin() {
-    this.router.navigate(['/auth/login']); // Redirige a la ruta definida en auth.routes.ts
+    this.router.navigate(['/auth/login']);
   }
 }

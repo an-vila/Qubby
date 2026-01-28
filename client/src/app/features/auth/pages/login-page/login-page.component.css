@@ -6,5 +6,15 @@
 
 .text-qubby {
   color: #F39200 !important;
+  text-decoration: none;
 }
 
+.form-check-input:checked {
+  background-color: #F39200; /* Puedes cambiar este código por tu color naranja exacto */
+  border-color: #F39200;
+}
+
+.form-check-input:focus {
+  border-color: #F39200;
+  box-shadow: none; /* Mantiene tu estilo shadow-none */
+}

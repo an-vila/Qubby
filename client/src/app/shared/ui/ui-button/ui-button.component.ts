@@ -10,4 +10,7 @@ import { CommonModule } from '@angular/common';
 })
 export class UiButtonComponent {
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
+  
+  // AÑADE ESTA LÍNEA:
+  @Input() customClass: string = ''; 
 }

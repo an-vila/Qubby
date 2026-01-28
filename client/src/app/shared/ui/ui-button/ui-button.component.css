@@ -2,17 +2,16 @@
   background-color: #F39200;
   color: white;
   border: none;
-  padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 0.2s ease-in-out;
 }
 
-.btn-qubby {
-  background-color: #F39200;
-  color: white;
-}
-
 .text-qubby {
   color: #F39200 !important;
+}
+
+:host {
+  display: block;
+  width: 100%;
 }
