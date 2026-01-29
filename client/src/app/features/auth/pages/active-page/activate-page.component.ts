@@ -36,22 +36,7 @@ export class ActivatePageComponent implements OnInit {
         return;
       }
 
-      // 2. Llamamos al servicio para confirmar
-      this.confirmActivation(token);
-    });
-  }
 
-  confirmActivation(token: string) {
-    // Aquí el servicio (aunque sea Mock) nos dirá si todo está bien
-    this.authService.activateAccount(token).subscribe({
-      next: () => {
-        this.status = 'success';
-        this.message = '¡Tu cuenta ha sido activada correctamente!';
-      },
-      error: () => {
-        this.status = 'error';
-        this.message = 'El enlace ha caducado o no es válido.';
-      }
     });
   }
 

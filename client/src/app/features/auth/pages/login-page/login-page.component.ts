@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core'; // Añadimos OnInit
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-// Añadimos ActivatedRoute para leer la URL
 import { Router, RouterModule, ActivatedRoute } from '@angular/router'; 
 import { UiInputComponent } from '../../../../shared/ui/ui-input/ui-input.component';
 import { UiButtonComponent } from '../../../../shared/ui/ui-button/ui-button.component';
@@ -20,35 +19,23 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css']
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent {
+
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private authService = inject(AuthService);
   
   loginForm: FormGroup;
   showPassword = false;
+  isLoading = false;
   errorMessage: string = '';
-  infoMessage: string = ''; // <--- NUEVA variable para mensajes verdes (éxito)
+  infoMessage: string = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute // <--- Inyectamos esto para leer la URL
-  ) {
+  constructor() {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       rememberMe: [false]
-    });
-  }
-
-  // Usamos ngOnInit para revisar la URL nada más cargar la página
-  ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      if (params['registered'] === 'true') {
-        this.infoMessage = '✅ Registro exitoso. Por favor, revisa tu correo para activar la cuenta.';
-        
-        // Opcional: Limpiar la URL para que si recarga no salga el mensaje otra vez
-        // this.router.navigate([], { replaceUrl: true });
-      }
     });
   }
 
@@ -63,9 +50,12 @@ export class LoginPageComponent implements OnInit {
     }
 
     this.errorMessage = '';
-    this.infoMessage = ''; // Limpiamos el mensaje de éxito si intenta loguearse
+    this.infoMessage = '';
+    this.isLoading = true;
 
-    this.authService.login(this.loginForm.value).subscribe({
+    const data = this.loginForm.value
+
+    this.authService.login(data).subscribe({
       next: (response) => {
         if (response.user.activated) {
           this.router.navigate(['/home']); 
@@ -73,6 +63,7 @@ export class LoginPageComponent implements OnInit {
           this.errorMessage = 'Debes activar tu cuenta desde el correo antes de entrar.';
         }
       },
+      // TODO: Ajustar los errores cuando el backend este acabado
       error: (err) => {
         this.errorMessage = 'Correo o contraseña incorrectos.';
       }
