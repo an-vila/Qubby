@@ -2,18 +2,6 @@
   <h2 class="text-center mb-1">Bienvenido</h2>
   <p class="text-center text-muted mb-4">Inicia sesión en tu cuenta</p>
 
-  @if (infoMessage) {
-    <div class="alert alert-success py-2 mb-3 small rounded-3 border-0 bg-success-subtle text-success fade show">
-      <i class="bi bi-check-circle-fill me-2"></i> {{ infoMessage }}
-    </div>
-  }
-
-  @if (errorMessage) {
-    <div class="alert alert-danger py-2 mb-3 small rounded-3 border-0 bg-danger-subtle text-danger fade show">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
-    </div>
-  }
-
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <ui-input
       type="email"
@@ -54,7 +42,8 @@
 
  <ui-button 
   type="submit" 
-  customClass="btn-qubby">
+  customClass="btn-qubby"
+  [disabled]="isLoading">
   Iniciar sesión
 </ui-button>
 
