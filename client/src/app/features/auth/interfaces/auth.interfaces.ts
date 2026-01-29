@@ -1,3 +1,12 @@
+export interface AuthResponse {
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    activated: boolean;
+  };
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -18,5 +27,6 @@ export interface PasswordResetConfirm {
 }
 
 export interface ActivateAccountRequest {
+  uid: string;
   token: string;
 }
