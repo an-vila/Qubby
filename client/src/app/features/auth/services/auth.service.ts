@@ -1,17 +1,21 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-// Importamos los "contratos" (interfaces) que definimos antes
 import { RegisterRequest } from '../models/register-request.model';
 import { LoginRequest } from '../models/login-request.model';
 import { AuthResponse } from '../models/auth-response.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root' // Esto hace que el servicio esté disponible en TODA la app (Singleton)
+  providedIn: 'root'
 })
 export class AuthService {
 
-  // --- 1. REGISTRO ---
-  // Recibe los datos del formulario de registro
+  private http = inject(HttpClient);
+
+  private apiUrl = 'http://localhost:8000/api/auth'
+
+  constructor() {}
+
   register(data: RegisterRequest): Observable<void> {
     console.log('REGISTER → backend', data);
     
@@ -21,8 +25,6 @@ export class AuthService {
     return of(undefined);
   }
 
-  // --- 2. ACTIVACIÓN DE CUENTA ---
-  // Este método lo usa tu ActivatePageComponent
   activateAccount(token: string): Observable<void> {
     console.log('ACTIVATE → backend token:', token);
     
@@ -55,13 +57,21 @@ export class AuthService {
     return of(mockResponse);
   }
 
-  // --- 4. CERRAR SESIÓN (LOGOUT) ---
-  // Este método borra los datos del navegador para "salir" de la cuenta.
-  logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    console.log('Sesión cerrada: Token eliminado del LocalStorage');
+  requestPassword(email: string): Observable<any> {
+    const url = `${this.apiUrl}/reset_password`;
+
+    return this.http.post(url, { email });
   }
+
+  newPassword(data: PasswordResetConfirm) : Observable<any> {
+    const url = `${this.apiUrl}/reset_password_confirm`;
+    return this.http.post(url, data);
+  }
+
+  // logout(): void {
+  //   localStorage.removeItem('token');
+  //   localStorage.removeItem('user');
+  // }
 
   // --- 5. VERIFICACIÓN DE SEGURIDAD ---
   // Comprueba si hay un token guardado en el navegador.
