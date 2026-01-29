@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: rgb(227, 227, 227);
+}
+
+@media (min-width: 576px) {
+  .main-content-desktop {
+    margin-left: 250px; 
+    padding-top: 2rem;
+  }
+}
+
+input:focus {
+  box-shadow: none;
+  border: 2px solid #fdb926; 
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 576px) {
+  .mobile-container {
+    padding-top: 1rem;
+    min-height: 80vh; 
+  }
+}

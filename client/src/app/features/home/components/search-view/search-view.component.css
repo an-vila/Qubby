@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  padding: 1rem; 
+}
+
+.qr-btn {
+  background-color: #FFA400 !important; 
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.qr-btn:active {
+  transform: scale(0.98); 
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

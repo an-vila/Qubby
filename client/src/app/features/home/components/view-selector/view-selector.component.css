@@ -1,0 +1,12 @@
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.bg-warning {
+  background-color: #FFA400 !important;
+}
+
+.text-muted:hover {
+  background-color: #f3f4f6;
+  color: #FFA400 !important;
+}

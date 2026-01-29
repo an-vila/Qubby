@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.card {
+  background-color: white;
+  border: none; 
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+  z-index: 10; 
+}
+
+.action-buttons {
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .action-buttons {
+  opacity: 1;
+}

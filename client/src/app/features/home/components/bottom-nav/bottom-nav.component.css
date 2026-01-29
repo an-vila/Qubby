@@ -1,0 +1,13 @@
+.bottom-nav-custom {
+  background-color: #535252 !important; 
+}
+
+.nav-btn {
+  color: #b0b0b0 !important; 
+  transition: all 0.2s ease;
+}
+
+.nav-btn.active {
+  color: #FFA400 !important;
+  transform: translateY(-2px); 
+}

@@ -1,0 +1,68 @@
+<aside class="position-fixed top-0 start-0 h-100 border-end d-none d-sm-flex flex-column p-4">
+  
+  <div class="d-flex align-items-center gap-2 mb-5 px-2">
+    <img src="/images/logoQubby.png" alt="Logo Qubby" class="logo-img">
+  </div>
+
+  <nav class="nav flex-column gap-2 flex-grow-1">
+    
+<a href="javascript:void(0)" 
+   (click)="sectionChange.emit('inicio')"
+   class="nav-link rounded-3 px-3 py-3 d-flex align-items-center gap-3 fw-medium transition-all">
+   <i class="bi bi-house-door fs-5"></i> Inicio
+</a>
+
+    <button 
+       (click)="toggleSettings()"
+       class="nav-link w-100 text-start rounded-3 px-3 py-3 d-flex align-items-center justify-content-between fw-medium transition-all border-0 bg-transparent"
+       [class.text-white]="!isSettingsOpen"
+       [class.active-nav]="isSettingsOpen"> 
+       
+       <div class="d-flex align-items-center gap-3">
+         <i class="bi bi-gear fs-5"></i> 
+         <span>Ajustes</span>
+       </div>
+       
+       <i class="bi bi-chevron-down transition-icon" [class.rotate-180]="isSettingsOpen"></i>
+    </button>
+
+    @if (isSettingsOpen) {
+      <div class="d-flex flex-column gap-1 ps-4 mt-1 animate-fade-in">
+        
+        <button class="dropdown-item">
+          <i class="bi bi-person me-2"></i> Cuenta
+        </button>
+
+        <button class="dropdown-item">
+          <i class="bi bi-geo-alt me-2"></i> Ubicaciones
+        </button>
+
+        <button class="dropdown-item">
+          <i class="bi bi-briefcase me-2"></i> Espacios
+        </button>
+
+        <button class="dropdown-item">
+          <i class="bi bi-tags me-2"></i> Palabras clave
+        </button>
+
+        <button class="dropdown-item text-danger">
+          <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+        </button>
+
+      </div>
+    }
+
+  </nav>
+
+  <div class="mt-auto pt-4 border-top">
+    <div class="d-flex align-items-center gap-3">
+      <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-muted" style="width: 40px; height: 40px;">
+        <i class="bi bi-person-fill fs-5"></i>
+      </div>
+      <div class="d-flex flex-column">
+        <span class="small fw-bold text-white">Usuario</span>
+        <span class="small text-white-50" style="font-size: 0.75rem;">Ver perfil</span>
+      </div>
+    </div>
+  </div>
+</aside>
