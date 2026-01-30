@@ -12,20 +12,20 @@
     ></ui-input>
 
     <ui-input
-      [type]="showPassword ? 'text' : 'password'"
-      placeholder="********"
-      formControlName="password"
-      label="Contraseña"
-      class="mb-3"
-    >
-      <button
-        type="button"
-        class="btn btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2"
-        (click)="togglePassword()"
-      >
-        <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-      </button>
-    </ui-input>
+  [type]="showPassword ? 'text' : 'password'"
+  placeholder="********"
+  formControlName="password"
+  label="Contraseña"
+  class="mb-3"
+>
+  <button
+    type="button"
+    class="btn border-0 position-absolute end-0 top-50 translate-middle-y me-2"
+    (click)="togglePassword()"
+  >
+    <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+  </button>
+</ui-input>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <div class="form-check">
