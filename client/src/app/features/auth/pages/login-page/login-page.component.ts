@@ -53,19 +53,28 @@ export class LoginPageComponent {
     this.infoMessage = '';
     this.isLoading = true;
 
-    const data = this.loginForm.value
+    const data = this.loginForm.value;
 
     this.authService.login(data).subscribe({
-      next: (response) => {
-        if (response.user.activated) {
-          this.router.navigate(['/home']); 
-        } else {
-          this.errorMessage = 'Debes activar tu cuenta desde el correo antes de entrar.';
-        }
+      next: (response: any) => {
+        // El usuario fue autenticado exitosamente
+        // response tiene: {message, user, tokens}
+        this.isLoading = false;
+        
+        // Redirigir a /home
+        this.router.navigate(['/home']);
       },
-      // TODO: Ajustar los errores cuando el backend este acabado
       error: (err) => {
-        this.errorMessage = 'Correo o contraseña incorrectos.';
+        this.isLoading = false;
+        
+        // Manejar diferentes tipos de errores
+        if (err.status === 401) {
+          this.errorMessage = 'Email o contraseña incorrectos.';
+        } else if (err.status === 403) {
+          this.errorMessage = 'Usuario inactivo. Por favor, verifica tu email.';
+        } else {
+          this.errorMessage = 'Error al iniciar sesión. Intenta de nuevo.';
+        }
       }
     });
   }
