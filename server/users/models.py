@@ -29,9 +29,8 @@ class User(models.Model):
         help_text="Contraseña hasheada (encriptada)"
     )
     
-    # CAMPOS OPCIONALES (NO vienen del formulario, los agrega Django automáticamente)
     is_active = models.BooleanField(
-        default=True,  # TEMPORAL: True mientras no tengamos email verification
+        default=False,
         help_text="""
         ¿PARA QUÉ SIRVE?
         - Cuando el usuario se registra, is_active = False

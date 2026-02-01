@@ -160,21 +160,14 @@ SIMPLE_JWT = {
 }
 
 # Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Consola para desarrollo
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # SMTP en producción
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Consola para desarrollo
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # SMTP en producción
 
-# Para Gmail (si quieres usar Gmail):
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
-
-# Para Brevo/SendinBlue:
-# EMAIL_HOST = 'smtp-relay.brevo.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+# Para Gmail
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 DEFAULT_FROM_EMAIL = 'noreply@qubby.com'

@@ -19,20 +19,16 @@ def send_verification_email(user_email: str, verification_token: str, user_name:
         True si se envió correctamente, False en caso contrario
     """
     
-    # URL del link de verificación (ajusta según tu frontend)
-    verification_url = f"http://localhost:4200/auth/verify?token={verification_token}"
+    verification_url = f"http://localhost:4200/auth/activate?token={verification_token}"
     
-    # Contexto para el email HTML
     context = {
         'user_name': user_name,
         'verification_url': verification_url,
         'token': verification_token,
     }
     
-    # Asunto del email
     subject = '¡Verifica tu email en Qubby!'
     
-    # Cuerpo del email en texto plano (fallback)
     message = f"""
 Hola {user_name},
 
@@ -47,7 +43,6 @@ Saludos,
 El equipo de Qubby
     """
     
-    # Cuerpo del email en HTML (si quieres personalización)
     html_message = f"""
     <html>
         <body style="font-family: Arial, sans-serif;">
