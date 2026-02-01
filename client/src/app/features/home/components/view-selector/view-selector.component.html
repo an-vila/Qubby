@@ -1,0 +1,27 @@
+<div class="bg-white p-1 rounded-4 shadow-sm d-flex align-items-center gap-1" style="height: 50px;">
+  
+  <button 
+    class="btn border-0 rounded-3 d-flex align-items-center justify-content-center transition-all"
+    [class.bg-warning]="currentView === 'list'"
+    [class.text-white]="currentView === 'list'"
+    [class.text-muted]="currentView !== 'list'"
+    (click)="setView('list')"
+    style="width: 42px; height: 42px;"
+    title="Vista de lista"
+  >
+    <i class="bi bi-list-ul fs-4"></i>
+  </button>
+
+  <button 
+    class="btn border-0 rounded-3 d-flex align-items-center justify-content-center transition-all"
+    [class.bg-warning]="currentView === 'grid'"
+    [class.text-white]="currentView === 'grid'"
+    [class.text-muted]="currentView !== 'grid'"
+    (click)="setView('grid')"
+    style="width: 42px; height: 42px;"
+    title="Vista de cuadrícula"
+  >
+    <i class="bi bi-grid-fill fs-5"></i>
+  </button>
+
+</div>

@@ -1,0 +1,37 @@
+<nav class="fixed-bottom bottom-nav-custom pb-safe px-4 py-3 shadow-lg d-flex justify-content-around align-items-center d-sm-none">
+  
+  <button class="btn border-0 p-2 d-flex flex-column align-items-center gap-1 nav-btn"
+      (click)="sectionChange.emit('inicio')"
+      [class.active]="activeSection === 'inicio'">
+    
+    @if (activeSection === 'inicio') {
+      <i class="bi bi-house-door-fill fs-4"></i>
+    } @else {
+      <i class="bi bi-house-door fs-4"></i>
+    }
+    
+    <span style="font-size: 0.7rem;" class="fw-medium">Inicio</span>
+  </button>
+
+  <button class="btn border-0 p-2 d-flex flex-column align-items-center gap-1 nav-btn"
+      (click)="sectionChange.emit('buscar')"
+      [class.active]="activeSection === 'buscar'">
+      
+      <i class="bi bi-search fs-4"></i>
+      <span style="font-size: 0.7rem;" class="fw-medium">Buscar</span>
+  </button>
+
+  <button class="btn border-0 p-2 d-flex flex-column align-items-center gap-1 nav-btn"
+      (click)="sectionChange.emit('ajustes')"
+      [class.active]="activeSection === 'ajustes'">
+    
+    @if (activeSection === 'ajustes') {
+      <i class="bi bi-gear-fill fs-4"></i>
+    } @else {
+      <i class="bi bi-gear fs-4"></i>
+    }
+    
+    <span style="font-size: 0.7rem;" class="fw-medium">Ajustes</span>
+  </button>
+  
+</nav>

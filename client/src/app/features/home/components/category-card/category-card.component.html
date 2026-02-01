@@ -1,0 +1,34 @@
+<div
+  class="card border-0 shadow-sm h-100 transition-all cursor-pointer position-relative group"
+  [ngClass]="viewMode === 'grid' ? 'rounded-4 p-4 d-flex flex-column justify-content-between align-items-center' : 'rounded-4 p-3 d-flex flex-row align-items-center gap-3'"
+
+  [style.aspect-ratio]="viewMode === 'grid' ? '1 / 1' : 'auto'"
+
+  style="transition: all 0.2s ease;"
+>
+  <div
+    class="rounded-3 d-flex align-items-center justify-content-center bg-light"
+    [style.width]="viewMode === 'grid' ? '64px' : '40px'"
+    [style.height]="viewMode === 'grid' ? '64px' : '40px'"
+  >
+    <img
+      src="/images/iconoCaja.png"
+      alt="Icono caja"
+      style="width: 60%; height: 60%; object-fit: contain; opacity: 0.7;"
+    >
+  </div>
+
+  <div class="flex-grow-1 d-flex flex-column justify-content-center" [class.text-center]="viewMode === 'grid'">
+    <h3 class="fw-bold text-dark mb-1" [class.fs-5]="viewMode === 'grid'" [class.fs-6]="viewMode === 'list'">{{ name }}</h3>
+    <p class="text-muted small mb-0">{{ itemCount }} artículos</p>
+  </div>
+
+  <div class="d-flex gap-2 opacity-50 action-buttons">
+    <button (click)="$event.stopPropagation(); edit.emit()" class="btn btn-sm btn-light text-primary rounded-circle p-2" title="Editar">
+      <i class="bi bi-pencil-fill"></i>
+    </button>
+    <button (click)="$event.stopPropagation(); delete.emit()" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Eliminar">
+      <i class="bi bi-trash-fill"></i>
+    </button>
+  </div>
+</div>

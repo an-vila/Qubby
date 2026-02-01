@@ -95,16 +95,34 @@ export class RegisterPageComponent {
 
     // Llamamos al servicio
     this.authService.register(this.registerForm.value).subscribe({
-      next: () => {
-        // CAMBIO PRINCIPAL:
-        // En lugar de this.router.navigate(...), activamos la bandera de éxito
+      next: (response) => {
+        // Registro exitoso
         this.isSuccess = true; 
-        this.errorMessage = ''; // Aseguramos que no haya errores visibles
+        this.errorMessage = '';
       },
       error: (err) => {
         console.error('Error en registro:', err);
-        // Aquí podrías personalizar el mensaje según el error del backend (ej: "Email ya existe")
-        this.errorMessage = 'Ha ocurrido un error al registrarse. Inténtalo de nuevo.';
+        
+        // Manejar errores específicos del backend
+        if (err.status === 400 && err.error) {
+          // El backend devuelve validaciones específicas
+          const errors = err.error;
+          
+          // Buscar errores de email duplicado
+          if (errors.email) {
+            this.errorMessage = errors.email[0] || 'Este email ya está registrado.';
+          }
+          // Buscar errores de nombre duplicado
+          else if (errors.name) {
+            this.errorMessage = errors.name[0] || 'Este nombre de usuario ya existe.';
+          }
+          // Otros errores
+          else {
+            this.errorMessage = 'Error al registrarse. Por favor, revisa los datos.';
+          }
+        } else {
+          this.errorMessage = 'Ha ocurrido un error al registrarse. Inténtalo de nuevo.';
+        }
       }
     });
   }
