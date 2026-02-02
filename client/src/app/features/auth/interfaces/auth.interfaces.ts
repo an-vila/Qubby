@@ -20,13 +20,10 @@ export interface RegisterRequest {
 }
 
 export interface PasswordResetConfirm {
-  uid: string;
   token: string;
   new_password: string;
-  new_password_again: string;
 }
 
 export interface ActivateAccountRequest {
-  uid: string;
   token: string;
 }

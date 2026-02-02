@@ -1,46 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Necesario para directivas básicas
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service'; // <--- Importamos tu servicio
-import { UiButtonComponent } from '../../../../shared/ui/ui-button/ui-button.component'; // <--- Tu botón naranja
 
 @Component({
   selector: 'app-activate-page',
   standalone: true,
   // Importamos los módulos necesarios para el HTML
-  imports: [CommonModule, RouterModule, UiButtonComponent], 
+  imports: [CommonModule, RouterModule],
   templateUrl: './activate-page.component.html',
-  styleUrls: ['./activate-page.component.css']
+  styleUrls: ['./activate-page.component.css'],
 })
 export class ActivatePageComponent implements OnInit {
-
-  // En lugar de true/false, usamos 3 estados para controlar qué mostramos
   status: 'loading' | 'success' | 'error' = 'loading';
   message: string = 'Verificando tu cuenta...';
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService // <--- Inyectamos el cerebro
-  ) {}
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
-    // 1. Leemos el token de la URL
-    // Usamos 'subscribe' por si la URL cambia dinámicamente, es más seguro que 'snapshot'
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const token = params['token'];
 
-      if (!token) {
+      if (token) {
+        this.verifyToken(token);
+      } else {
         this.status = 'error';
-        this.message = 'No se ha encontrado el código de activación.';
+        this.message = 'No se ha podido activar tu cuenta. Sentimos las moelestias.';
         return;
       }
-
-
     });
   }
 
-  goToLogin() {
-    this.router.navigate(['/auth/login']);
+  verifyToken(token: string) {
+    const data = { token };
+
+    this.authService.activateAccount(data).subscribe({
+      next: (response) => {
+        this.status = 'success';
+        this.message = '´¡Cuenta activada! Puedes iniciar sesión para empezar a usar Qubby.';
+      },
+      error: (error) => {
+        this.status = 'error';
+        this.message = 'El enlace no es válido o ha caducado';
+      },
+    });
   }
 }

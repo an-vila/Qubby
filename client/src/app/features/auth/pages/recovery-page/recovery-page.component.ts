@@ -10,6 +10,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-recovery-page',
@@ -26,6 +27,7 @@ import {
   styleUrls: ['./recovery-page.component.css'],
 })
 export class RecoveryPageComponent {
+  authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
   recoveryForm: FormGroup;
@@ -47,13 +49,23 @@ export class RecoveryPageComponent {
       } else if (this.recoveryForm.get('email')?.hasError('required')) {
         this.errorMessage = 'Debes introducir un correo electrónico.';
       }
+
       return;
     }
 
     const email = this.recoveryForm.get('email')?.value;
 
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.authService.requestPassword(email).subscribe({
+      next: (response) => {
+        this.successMessage = response.message;
+
+        this.recoveryForm.reset();
+      },
+
+      // Error que solo salta si por lo que sea no funciona el backend
+      error: (error) => {
+        this.errorMessage = 'Ha habido un error de conexion. Intentalo más tarde';
+      },
+    });
   }
 }

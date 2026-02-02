@@ -28,7 +28,6 @@ export class RegisterPageComponent {
   showConfirmPassword = false;
   errorMessage: string = '';
   
-  // NUEVO: Variable para controlar si mostramos el formulario o el mensaje de éxito
   isSuccess = false; 
 
   constructor(
@@ -65,7 +64,6 @@ export class RegisterPageComponent {
   }
 
   onSubmit() {
-    // --- VALIDACIONES VISUALES ---
     const { password, confirmPassword } = this.registerForm.value;
     
     if (password !== confirmPassword) {
@@ -90,33 +88,26 @@ export class RegisterPageComponent {
       return;
     }
 
-    // --- LÓGICA DE REGISTRO REAL ---
     this.errorMessage = ''; 
 
-    // Llamamos al servicio
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
-        // Registro exitoso
+
         this.isSuccess = true; 
         this.errorMessage = '';
       },
       error: (err) => {
         console.error('Error en registro:', err);
         
-        // Manejar errores específicos del backend
         if (err.status === 400 && err.error) {
-          // El backend devuelve validaciones específicas
           const errors = err.error;
           
-          // Buscar errores de email duplicado
           if (errors.email) {
             this.errorMessage = errors.email[0] || 'Este email ya está registrado.';
           }
-          // Buscar errores de nombre duplicado
           else if (errors.name) {
             this.errorMessage = errors.name[0] || 'Este nombre de usuario ya existe.';
           }
-          // Otros errores
           else {
             this.errorMessage = 'Error al registrarse. Por favor, revisa los datos.';
           }
