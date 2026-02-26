@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     # Apps
     'users',
     'boxes',
+    'items',
 ]
 
 MIDDLEWARE = [
