@@ -1,0 +1,48 @@
+.custom-input:focus {
+    border-color: #F39200 !important;
+}
+
+.btn-orange {
+    background-color: #F39200;
+    color: white;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-orange:hover:not(:disabled) {
+    background-color: #d67f00;
+    color: white;
+}
+
+.btn-orange:disabled {
+    background-color: #cccccc;
+    color: #666666;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+
+.image-upload-box {
+    background-color: #f8f9fa;
+    transition: all 0.2s ease-in-out;
+}
+
+.image-upload-box:hover {
+    background-color: #e9ecef;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+    border-color: #ced4da !important;
+}
+
+.form-select option {
+    color: #495057;
+    padding: 10px;
+}

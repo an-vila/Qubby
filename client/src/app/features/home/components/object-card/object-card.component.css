@@ -1,0 +1,63 @@
+
+.btn-orange { 
+    background-color: #F39200; 
+    color: white; 
+    border: none; 
+    transition: 0.2s; 
+}
+.btn-orange:hover { 
+    background-color: #d67f00;
+    color: white; 
+}
+.text-orange { 
+    color: #F39200; 
+    transition: 0.2s; 
+}
+.text-orange:hover { 
+    color: #d67f00; 
+}
+.object-card { 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+ }
+.object-card:hover { transform: translateY(-3px); 
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important; 
+}
+.img-container { 
+    width: 90px; 
+    height: 90px; 
+}
+.tags-container { 
+    display: none !important; 
+} 
+.content-container { 
+    text-align: left; 
+    justify-content: center; 
+}
+@media (min-width: 992px) {
+    .is-grid { 
+        aspect-ratio: 1 / 1;
+     }
+    .is-grid .img-container { 
+        width: 100%; 
+        height: 130px; 
+        flex-grow: 1; 
+    }
+    .is-grid .content-container { 
+        text-align: center; 
+        align-items: center;
+     }
+    .is-grid .tags-container { 
+        display: flex !important; 
+        justify-content: center; 
+    }
+    .is-list .img-container { 
+        width: 120px; 
+        height: 120px; 
+    }
+    .is-list .tags-container { 
+        display: flex !important; 
+    }
+    .is-list .card-body-custom { 
+        align-items: center; 
+    }
+}

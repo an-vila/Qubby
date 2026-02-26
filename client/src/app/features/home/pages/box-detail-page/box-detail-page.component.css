@@ -1,0 +1,122 @@
+.btn-sidebar {
+    color: #F39200;
+    font-weight: 500;
+    padding: 12px 15px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    border: none;
+}
+.btn-sidebar:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-view {
+    padding: 8px 15px;
+    color: #535252;
+    border: none;
+}
+.btn-view.active {
+    background-color: #F39200;
+    color: white;
+    border-radius: 8px;
+}
+
+.btn-add-object {
+    background-color: #F39200;
+    color: white;
+    aspect-ratio: 1;
+    border: none;
+    transition: transform 0.2s;
+}
+.btn-add-object:hover {
+    transform: scale(1.02);
+    background-color: #d67f00;
+}
+
+.btn-fab {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #F39200;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.card {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-dark-soft {
+    background-color: rgba(255,255,255,0.05);
+    border: none;
+}
+.modal-backdrop-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1050; 
+}
+
+.custom-modal {
+    width: 90%;
+    max-width: 450px;
+    max-height: 90vh; 
+}
+
+.bg-success-subtle { background-color: #d1e7dd !important; }
+.text-success { color: #0f5132 !important; }
+
+
+.bg-gray-main {
+    background-color: rgb(227, 227, 227);
+}
+
+.text-orange-qubby {
+    color: #F39200 !important;
+}
+
+.sidebar-custom, 
+.header-mobile-custom {
+    background-color: #535252;
+}
+
+.sidebar-custom {
+    width: 280px;
+}
+
+.icon-box {
+    width: 64px;
+    height: 64px;
+}
+
+.search-input-mobile {
+    background-color: #f1f1f1;
+}
+
+.search-container-desktop {
+    width: 400px;
+}
+
+.icon-hamburger {
+    line-height: 1;
+}
+
+.modal-image-custom {
+    height: 180px;
+}

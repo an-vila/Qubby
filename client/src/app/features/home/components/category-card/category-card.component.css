@@ -22,3 +22,51 @@
 .card:hover .action-buttons {
   opacity: 1;
 }
+
+.imagen-caja {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.icono-contenedor.es-list {
+    width: 40px;
+    height: 40px;
+    min-width: 40px; 
+}
+
+.icono-contenedor.es-grid {
+    width: 64px;
+    height: 64px;
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 992px) {
+    .icono-contenedor.es-grid {
+        width: 140px;
+        height: 140px;
+    }
+    .icono-contenedor.es-grid .imagen-caja {
+        width: 65%;
+        height: 65%;
+    }
+}
+
+.boton-editar, 
+.boton-eliminar {
+    color: #535252;
+    transition: color 0.2s ease, transform 0.2s ease; 
+}
+
+.boton-editar:hover {
+    color: #0d6efd;
+    transform: scale(1.1); 
+    opacity: 1; 
+}
+.boton-eliminar:hover {
+    color: #dc3545; 
+    transform: scale(1.1);
+    opacity: 1;
+}

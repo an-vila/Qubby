@@ -1,0 +1,165 @@
+<div class="min-vh-100 d-flex flex-column flex-lg-row bg-gray-main">
+  
+  <aside class="hidden-mobile d-none d-lg-flex flex-column p-4 text-white sidebar-custom">
+    <button class="btn p-0 mb-4 align-self-start text-orange-qubby" routerLink="/home">
+      <i class="bi bi-chevron-left fs-4"></i>
+    </button>
+    <div class="text-center mb-5">
+      <div class="bg-light rounded-4 d-inline-flex p-3 mb-3 icon-box">
+        <img src="/images/iconoCaja.png" alt="Icono caja" class="w-100 h-100">
+      </div>
+      <h1 class="fs-5 fw-bold mb-1 text-orange-qubby">Caja {{ boxId }}</h1>
+      <p class="small opacity-75">{{ objetos.length }} objetos</p>
+    </div>
+    <nav class="d-flex flex-column gap-2">
+      <button (click)="generarQR()" class="btn btn-sidebar d-flex align-items-center gap-2">
+        <i class="bi bi-qr-code"></i> Generar QR
+      </button>
+      <button (click)="eliminarCaja()" class="btn btn-sidebar d-flex align-items-center gap-2 text-orange-qubby">
+        <i class="bi bi-trash"></i> Eliminar Caja
+      </button>
+    </nav>
+  </aside>
+
+  <header class="d-lg-none p-3 text-white sticky-top header-mobile-custom">
+    <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+      <button class="btn btn-dark-soft p-2 text-orange-qubby" routerLink="/home">
+        <i class="bi bi-chevron-left fs-5"></i>
+      </button>
+      <div class="flex-grow-1 text-center">
+        <h1 class="fs-5 fw-bold mb-0 text-orange-qubby">Caja {{ boxId }}</h1>
+        <span class="small opacity-75">{{ objetos.length }} objetos</span>
+      </div>
+      
+      <div class="dropdown">
+        <button class="btn p-1 d-flex align-items-center justify-content-center btn-hamburger-custom" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-list fs-3 text-orange-qubby icon-hamburger"></i>
+        </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2 rounded-4 mt-2">
+          <li>
+            <button class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 fw-medium" (click)="generarQR()">
+              <i class="bi bi-qr-code fs-5 text-orange-qubby"></i>
+              <span class="text-secondary">Generar QR</span>
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 fw-medium text-danger mt-1" (click)="eliminarCaja()">
+              <i class="bi bi-trash fs-5"></i>
+              <span>Eliminar caja</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="position-relative">
+      <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar objeto..." 
+             class="form-control border-0 rounded-3 ps-5 py-2 search-input-mobile">
+    </div>
+  </header>
+
+  <main class="flex-grow-1 p-4 overflow-auto position-relative">
+    <div class="container-fluid max-w-7xl">
+      <div class="d-none d-lg-flex align-items-center justify-content-between mb-4">
+        <div class="position-relative search-container-desktop">
+          <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+          <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar objeto..." 
+                 class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white">
+        </div>
+        <div class="bg-white p-1 rounded-3 shadow-sm d-flex">
+          <button (click)="viewMode = 'list'" [class.active]="viewMode === 'list'" class="btn btn-view">
+            <i class="bi bi-list-ul"></i>
+          </button>
+          <button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'" class="btn btn-view">
+            <i class="bi bi-grid-fill"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-none d-lg-block">
+          <button [routerLink]="['/box', boxId, 'add']" class="btn-add-object w-100 rounded-4 d-flex flex-column align-items-center justify-content-center gap-3">
+            <i class="bi bi-plus-lg fs-1"></i>
+            <span class="fw-bold">Añadir Objeto</span>
+          </button>
+        </div>
+
+        @for (obj of objetos; track obj.id) {
+          <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-3' : 'col-12'">
+            <app-object-card
+              [image]="obj.image"
+              [name]="obj.name"
+              [code]="obj.code"
+              [tags]="obj.tags"
+              [viewMode]="viewMode" 
+              (viewDetails)="abrirDetalles(obj)"
+              (edit)="editarObjeto(obj)"
+              (delete)="eliminarObjeto(obj)">
+            </app-object-card>
+          </div>
+        }
+      </div>
+    </div>
+    <button [routerLink]="['/box', boxId, 'add']" class="btn-fab d-lg-none">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+  </main>
+
+  @if (selectedObject) {
+    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center" (click)="cerrarDetalles()">
+      <div class="custom-modal bg-white rounded-4 d-flex flex-column shadow-lg" (click)="$event.stopPropagation()">
+        
+        <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+          <h5 class="fw-bold mb-0 text-dark">Detalles del objeto</h5>
+          <button class="btn-close" (click)="cerrarDetalles()"></button>
+        </div>
+
+        <div class="p-4 overflow-auto">
+          <img [src]="selectedObject.image" class="w-100 rounded-4 mb-4 object-fit-cover shadow-sm modal-image-custom">
+          <h3 class="fw-bold text-dark mb-0">{{ selectedObject.name }}</h3>
+          <p class="text-secondary small mb-4">Código: <span class="text-muted">{{ selectedObject.code }}</span></p>
+          <h6 class="fw-bold text-dark small mb-2">Descripción</h6>
+          <p class="text-muted mb-4 small">{{ selectedObject.description }}</p>
+          <h6 class="fw-bold text-dark small mb-2">Etiquetas</h6>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            @for (tag of selectedObject.tags; track tag) {
+              <span class="badge rounded-pill bg-light text-secondary px-3 py-1 fw-normal border">{{ tag }}</span>
+            }
+          </div>
+          <div class="row mb-4">
+            <div class="col-6">
+              <h6 class="fw-bold text-dark small mb-1">Fecha de registro</h6>
+              <p class="text-muted small mb-0">{{ selectedObject.registrationDate }}</p>
+            </div>
+            <div class="col-6">
+              <h6 class="fw-bold text-dark small mb-1">Cantidad</h6>
+              <p class="text-muted small mb-0">{{ selectedObject.quantity }}</p>
+            </div>
+          </div>
+          <h6 class="fw-bold text-dark small mb-2">Estado</h6>
+          <div class="mb-2">
+            <span class="badge rounded-pill px-3 py-2 fw-medium small" 
+                  [ngClass]="{
+                    'bg-success-subtle text-success border border-success-subtle': selectedObject.status === 'Guardado',
+                    'bg-warning-subtle text-warning border border-warning-subtle': selectedObject.status === 'Prestado',
+                    'bg-danger-subtle text-danger border border-danger-subtle': selectedObject.status === 'Dañado'
+                  }">
+              {{ selectedObject.status }}
+            </span>
+          </div>
+        </div>
+
+        <div class="p-3 border-top d-flex gap-2 bg-white rounded-bottom-4">
+          <button class="btn btn-orange flex-grow-1 py-2 fw-bold rounded-3 shadow-sm" (click)="editarObjeto(selectedObject)">
+            Editar objeto
+          </button>
+          <button class="btn btn-outline-secondary py-2 fw-bold rounded-3 px-3" (click)="cerrarDetalles()">
+            Cerrar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

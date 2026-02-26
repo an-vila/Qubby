@@ -51,7 +51,7 @@
           @if (viewMode === 'grid') {
             <div class="row g-3">
               
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                 <button
                   (click)="handleNewCategory()"
                   class="btn w-100 h-100 rounded-4 text-white d-flex flex-column align-items-center justify-content-center gap-2 p-4 shadow-sm border-0 new-category-btn"
@@ -63,8 +63,9 @@
               </div>
 
               @for (cat of filteredCategories; track cat.id) {
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                   <app-category-card
+                    [id]="cat.id" 
                     [name]="cat.name"
                     [itemCount]="cat.itemCount"
                     [viewMode]="'grid'"
@@ -100,6 +101,7 @@
 
                   @for (cat of filteredCategories; track cat.id) {
                     <app-category-card
+                      [id]="cat.id" 
                       [name]="cat.name"
                       [itemCount]="cat.itemCount"
                       [viewMode]="'list'"
@@ -112,7 +114,8 @@
             </div> 
           }
 
-        </div> </div>
+        </div> 
+      </div>
     }
   </main>
 

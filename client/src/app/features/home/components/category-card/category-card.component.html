@@ -1,20 +1,21 @@
 <div
   class="card border-0 shadow-sm h-100 transition-all cursor-pointer position-relative group"
+  
+  [routerLink]="['/box', id]"
+  
   [ngClass]="viewMode === 'grid' ? 'rounded-4 p-4 d-flex flex-column justify-content-between align-items-center' : 'rounded-4 p-3 d-flex flex-row align-items-center gap-3'"
-
   [style.aspect-ratio]="viewMode === 'grid' ? '1 / 1' : 'auto'"
-
   style="transition: all 0.2s ease;"
 >
   <div
-    class="rounded-3 d-flex align-items-center justify-content-center bg-light"
-    [style.width]="viewMode === 'grid' ? '64px' : '40px'"
-    [style.height]="viewMode === 'grid' ? '64px' : '40px'"
+    class="rounded-3 d-flex align-items-center justify-content-center bg-light icono-contenedor"
+    [class.es-grid]="viewMode === 'grid'"
+    [class.es-list]="viewMode === 'list'"
   >
     <img
       src="/images/iconoCaja.png"
       alt="Icono caja"
-      style="width: 60%; height: 60%; object-fit: contain; opacity: 0.7;"
+      class="imagen-caja"
     >
   </div>
 
@@ -24,11 +25,20 @@
   </div>
 
   <div class="d-flex gap-2 opacity-50 action-buttons">
-    <button (click)="$event.stopPropagation(); edit.emit()" class="btn btn-sm btn-light text-primary rounded-circle p-2" title="Editar">
+    
+    <button 
+      (click)="$event.stopPropagation(); edit.emit()" 
+      class="btn btn-sm p-2 boton-editar" 
+      title="Editar">
       <i class="bi bi-pencil-fill"></i>
     </button>
-    <button (click)="$event.stopPropagation(); delete.emit()" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Eliminar">
+
+    <button 
+      (click)="$event.stopPropagation(); delete.emit()" 
+      class="btn btn-sm p-2 boton-eliminar" 
+      title="Eliminar">
       <i class="bi bi-trash-fill"></i>
     </button>
+
   </div>
 </div>
