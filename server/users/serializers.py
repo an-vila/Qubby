@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'email', 'password', 'is_active', 'created_at']
         extra_kwargs = {
             'password': {
-                'write_only': True,  # La contraseña NO se devuelve en GET
+                'write_only': True,
                 'min_length': 6,
                 'required': True
             },
@@ -44,5 +44,5 @@ class UserSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         """Crea un nuevo usuario (la contraseña se hash en models.py)"""
-        user = User.objects.create(**validated_data)
+        user = User.objects.create_user(**validated_data)
         return user

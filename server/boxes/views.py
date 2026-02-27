@@ -6,7 +6,7 @@ from .serializers import BoxSerializer
 
 class BoxViewSet(viewsets.ModelViewSet):
     serializer_class = BoxSerializer
-    permission_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     # Proteccion para que cada usuario vea solo sus cajas
     def get_queryset(self):
