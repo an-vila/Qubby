@@ -25,5 +25,6 @@ router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),  # Todos los endpoints de /api/users/ aquí
+    path('api/', include(router.urls)),  # Todos los endpoints de /api/users/ aqui
+    path('api/', include('boxes.urls')), # Todos los endpoints de /api/boxes/ aqui
 ]

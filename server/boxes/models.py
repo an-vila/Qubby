@@ -8,7 +8,7 @@ class Box(models.Model):
         related_name='box'
     )
     name = models.CharField(max_length=100)
-    creation_date = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} (Usuario: {self.user})"

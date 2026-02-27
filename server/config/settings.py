@@ -88,13 +88,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.getenv('DB_NAME'),
+    #     'USER': os.getenv('DB_USER'),
+    #     'PASSWORD': os.getenv('DB_PASSWORD'),
+    #     'HOST': os.getenv('DB_HOST'),
+    #     'PORT': os.getenv('DB_PORT'),
+    # }
+
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': 'qubby_db',
+        'USER': 'inventario_user',
+        'PASSWORD': 'user1234',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -149,6 +158,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+AUTH_USER_MODEL = 'users.user'
 
 # JWT Configuration
 from datetime import timedelta
