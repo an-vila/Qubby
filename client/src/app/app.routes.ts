@@ -18,7 +18,7 @@ export const routes: Routes = [
     path: 'box/:id', 
     loadComponent: () => 
       import('./features/home/pages/box-detail-page/box-detail-page.component').then(m => m.BoxDetailPageComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard] 
   },
   {
     path: 'box/:id/add', 
@@ -32,15 +32,24 @@ export const routes: Routes = [
       import('./features/home/pages/qr-page/qr-page.component').then(m => m.QrPageComponent),
     canActivate: [authGuard] 
   },
+  
+ 
+  {
+    path: 'box/:id/scan', 
+    loadComponent: () => 
+      import('./features/home/pages/qr-scan-page/qr-scan-page.component').then(m => m.QrScanPageComponent),
+    canActivate: [authGuard] 
+  },
+
 
   {
     path: '',
-    redirectTo: 'auth/login',
+    redirectTo: 'home', 
     pathMatch: 'full'
   },
   
   {
     path: '**',
-    redirectTo: 'auth/login'
+    redirectTo: 'home' 
   }
 ];

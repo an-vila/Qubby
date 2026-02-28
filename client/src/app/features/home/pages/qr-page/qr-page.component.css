@@ -1,9 +1,9 @@
 .text-orange {
-    color: #F39200 !important;
+    color: #ffa400 !important;
 }
 
 .btn-orange {
-    background-color: #F39200;
+    background-color: #ffa400;
     color: white;
     border: none;
     transition: background-color 0.2s ease;

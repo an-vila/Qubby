@@ -1,42 +1,53 @@
-
 .btn-orange { 
-    background-color: #F39200; 
+    background-color: #ffa400; 
     color: white; 
     border: none; 
-    transition: 0.2s; 
+    transition: 0.2s;
+    white-space: nowrap; 
 }
+
 .btn-orange:hover { 
-    background-color: #d67f00;
+    background-color: #ffa400;
     color: white; 
 }
+
 .text-orange { 
-    color: #F39200; 
+    color: #ffa400; 
     transition: 0.2s; 
 }
-.text-orange:hover { 
-    color: #d67f00; 
-}
+
+.text-orange:hover { color: #d67f00; }
+
 .object-card { 
     transition: transform 0.2s ease, box-shadow 0.2s ease;
- }
-.object-card:hover { transform: translateY(-3px); 
+}
+
+.object-card:hover { 
+    transform: translateY(-3px); 
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important; 
 }
-.img-container { 
-    width: 90px; 
-    height: 90px; 
-}
-.tags-container { 
-    display: none !important; 
-} 
+
+.img-container { width: 90px; height: 90px; }
+
+.tags-container { display: none !important; } 
+
 .content-container { 
     text-align: left; 
     justify-content: center; 
 }
+
+@media (max-width: 576px) {
+    .btn-orange {
+        font-size: 0.75rem !important;
+        padding-left: 0.6rem !important;
+        padding-right: 0.6rem !important;
+    }
+    .bi-pencil, .bi-trash {
+        font-size: 1.1rem !important;
+    }
+}
+
 @media (min-width: 992px) {
-    .is-grid { 
-        aspect-ratio: 1 / 1;
-     }
     .is-grid .img-container { 
         width: 100%; 
         height: 130px; 
@@ -45,7 +56,7 @@
     .is-grid .content-container { 
         text-align: center; 
         align-items: center;
-     }
+    }
     .is-grid .tags-container { 
         display: flex !important; 
         justify-content: center; 

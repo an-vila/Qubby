@@ -1,4 +1,4 @@
-<div class="min-vh-100 bg-light-qubby pb-5" style="background-color: rgb(227,227,227);">
+<div class="min-vh-100 bg-gray-custom pb-5">
 
   <div class="d-sm-none">
     <app-header 
@@ -33,13 +33,12 @@
           
           <div class="d-flex align-items-center gap-3">
             <div class="position-relative flex-grow-1">
-              <i class="bi bi-search position-absolute text-muted fs-5" style="left: 1.5rem; top: 50%; transform: translateY(-50%);"></i>
+              <i class="bi bi-search position-absolute text-muted fs-5 search-icon-position"></i>
               <input
                 type="text"
                 placeholder="Buscar"
                 [(ngModel)]="searchQuery"
-                class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white search-input"
-                style="padding-left: 3.5rem !important;"
+                class="form-control border-0 shadow-sm rounded-4 py-3 fs-5 bg-white search-input-custom"
               />
             </div>
             
@@ -54,8 +53,7 @@
               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                 <button
                   (click)="handleNewCategory()"
-                  class="btn w-100 h-100 rounded-4 text-white d-flex flex-column align-items-center justify-content-center gap-2 p-4 shadow-sm border-0 new-category-btn"
-                  style="background-color: rgb(255,164,0); aspect-ratio: 1;"
+                  class="btn w-100 rounded-4 text-white d-flex flex-column align-items-center justify-content-center gap-2 p-4 shadow-sm border-0 btn-orange-qubby aspect-square"
                 >
                   <i class="bi bi-plus-lg fs-1"></i>
                   <span class="fw-bold fs-4">Nueva Caja</span>
@@ -74,26 +72,16 @@
                   </app-category-card>
                 </div>
               }
-
-              @if (filteredCategories.length === 0) {
-                <div class="col-12 text-center py-5 text-muted">
-                  <i class="bi bi-box-seam fs-1 d-block mb-3"></i>
-                  <p class="fs-5">No se encontraron categorías</p>
-                </div>
-              }
             </div> 
           }
 
           @if (viewMode === 'list') {
             <div class="row justify-content-center">
-              
               <div class="col-12 col-md-10 col-lg-8">
-
                 <div class="d-flex flex-column gap-3">
                   <button
                     (click)="handleNewCategory()"
-                    class="btn w-100 rounded-4 text-white d-flex align-items-center justify-content-center gap-3 py-3 shadow-sm border-0"
-                    style="background-color: rgb(255,164,0);"
+                    class="btn w-100 rounded-4 text-white d-flex align-items-center justify-content-center gap-3 py-3 shadow-sm border-0 btn-orange-qubby"
                   >
                     <i class="bi bi-plus-lg fs-4"></i>
                     <span class="fw-bold fs-5">Nueva caja</span>

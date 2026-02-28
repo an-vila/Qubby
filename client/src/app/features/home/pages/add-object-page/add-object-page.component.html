@@ -1,16 +1,16 @@
 <div class="min-vh-100 bg-white pb-5">
   
-  <header class="p-3 d-flex align-items-center shadow-sm sticky-top" style="background-color: #535252;">
-    <button (click)="volver()" class="btn p-1 border-0 d-flex align-items-center gap-2" style="color: #F39200;">
+  <header class="p-3 d-flex align-items-center shadow-sm sticky-top header-custom">
+    <button (click)="volver()" class="btn p-1 border-0 d-flex align-items-center gap-2 btn-back">
       <i class="bi bi-chevron-left fs-4"></i>
     </button>
     <div class="ms-2">
-      <h1 class="fs-5 fw-bold mb-0" style="color: #F39200;">Nuevo Objeto</h1>
+      <h1 class="fs-5 fw-bold mb-0 title-orange">Nuevo Objeto</h1>
       <p class="small mb-0 text-white opacity-75">Añade un objeto a tu inventario</p>
     </div>
   </header>
 
-  <form (ngSubmit)="handleSubmit()" #objectForm="ngForm" class="container py-4" style="max-width: 700px;">
+  <form (ngSubmit)="handleSubmit()" #objectForm="ngForm" class="container py-4 form-container">
     
     <div class="mb-4">
       <label class="form-label fw-bold text-secondary">Nombre del objeto *</label>
@@ -52,7 +52,7 @@
         } 
         
         @if (imagePreview) {
-          <img [src]="imagePreview" class="img-fluid rounded-3 object-fit-cover" style="max-height: 250px; width: 100%;">
+          <img [src]="imagePreview" class="img-fluid rounded-3 object-fit-cover preview-image">
           <div class="position-absolute top-0 end-0 m-3">
             <span class="badge bg-dark rounded-circle p-2 shadow"><i class="bi bi-pencil"></i></span>
           </div>

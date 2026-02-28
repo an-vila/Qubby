@@ -61,46 +61,61 @@
 
   <main class="flex-grow-1 p-4 overflow-auto position-relative">
     <div class="container-fluid max-w-7xl">
-      <div class="d-none d-lg-flex align-items-center justify-content-between mb-4">
-        <div class="position-relative search-container-desktop">
+      
+      <div class="d-none d-lg-flex align-items-center gap-3 mb-4">
+        <div class="position-relative flex-grow-1">
           <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
           <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar objeto..." 
-                 class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white">
+                 class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white w-100">
         </div>
-        <div class="bg-white p-1 rounded-3 shadow-sm d-flex">
-          <button (click)="viewMode = 'list'" [class.active]="viewMode === 'list'" class="btn btn-view">
-            <i class="bi bi-list-ul"></i>
+
+        <div class="bg-white p-1 rounded-4 shadow-sm d-flex align-items-center gap-1 view-selector-wrapper">
+          <button (click)="viewMode = 'list'" 
+                  title="Vista de lista"
+                  class="btn border-0 rounded-3 d-flex align-items-center justify-content-center transition-all btn-view-custom"
+                  [class.active-qubby]="viewMode === 'list'"
+                  [class.text-muted]="viewMode !== 'list'">
+            <i class="bi bi-list-ul fs-4"></i>
           </button>
-          <button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'" class="btn btn-view">
-            <i class="bi bi-grid-fill"></i>
+          <button (click)="viewMode = 'grid'" 
+                  title="Vista de cuadrícula"
+                  class="btn border-0 rounded-3 d-flex align-items-center justify-content-center transition-all btn-view-custom"
+                  [class.active-qubby]="viewMode === 'grid'"
+                  [class.text-muted]="viewMode !== 'grid'">
+            <i class="bi bi-grid-fill fs-5"></i>
           </button>
         </div>
       </div>
 
-      <div class="row g-4">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-none d-lg-block">
-          <button [routerLink]="['/box', boxId, 'add']" class="btn-add-object w-100 rounded-4 d-flex flex-column align-items-center justify-content-center gap-3">
-            <i class="bi bi-plus-lg fs-1"></i>
-            <span class="fw-bold">Añadir Objeto</span>
-          </button>
-        </div>
-
-        @for (obj of objetos; track obj.id) {
-          <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-3' : 'col-12'">
-            <app-object-card
-              [image]="obj.image"
-              [name]="obj.name"
-              [code]="obj.code"
-              [tags]="obj.tags"
-              [viewMode]="viewMode" 
-              (viewDetails)="abrirDetalles(obj)"
-              (edit)="editarObjeto(obj)"
-              (delete)="eliminarObjeto(obj)">
-            </app-object-card>
+      <div [class.mx-auto]="viewMode === 'list'" [style.max-width]="viewMode === 'list' ? '800px' : 'none'">
+        <div class="row g-4">
+          <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3 d-none d-lg-block' : 'col-12 d-none d-lg-block'">
+            <button [routerLink]="['/box', boxId, 'add']" 
+                    class="btn-add-object w-100 rounded-4 d-flex align-items-center justify-content-center shadow-sm"
+                    [ngClass]="viewMode === 'grid' ? 'h-100 p-4 flex-column gap-3' : 'py-3 flex-row gap-3 btn-list-mode'">
+              <i class="bi bi-plus-lg" [class.fs-1]="viewMode === 'grid'" [class.fs-4]="viewMode === 'list'"></i>
+              <span class="fw-bold" [class.fs-5]="viewMode === 'list'">Añadir Objeto</span>
+            </button>
           </div>
-        }
+          
+          @for (obj of objetos; track obj.id) {
+            <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3' : 'col-12'">
+              <app-object-card
+                [image]="obj.image"
+                [name]="obj.name"
+                [code]="obj.code"
+                [tags]="obj.tags"
+                [viewMode]="viewMode" 
+                (viewDetails)="abrirDetalles(obj)"
+                (edit)="editarObjeto(obj)"
+                (delete)="eliminarObjeto(obj)">
+              </app-object-card>
+            </div>
+          }
+        </div>
       </div>
-    </div>
+      </div>
+
     <button [routerLink]="['/box', boxId, 'add']" class="btn-fab d-lg-none">
       <i class="bi bi-plus-lg"></i>
     </button>

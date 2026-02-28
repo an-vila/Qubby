@@ -1,0 +1,55 @@
+.bg-scan-main {
+  background-color: #e9ecef;
+}
+
+.header-scan {
+  background-color: #4b4b4b;
+}
+
+.scan-container {
+  max-width: 800px;
+}
+
+.text-scan-accent {
+  color: #ffa400;
+}
+
+.bg-scan-accent {
+  background-color: #ffa400;
+}
+
+.btn-back-scan {
+  background-color: #5c5c5c;
+  width: 40px;
+  height: 40px;
+}
+
+.btn-scan-sm {
+  font-size: 0.85rem;
+}
+
+.spacer-40 {
+  width: 40px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.img-scan-thumbnail {
+  width: 80px;
+  height: 80px;
+}
+
+.modal-backdrop-dark {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-scan-content {
+  max-width: 500px;
+  max-height: 90vh;
+}
+
+.modal-scan-img {
+  height: 200px;
+}

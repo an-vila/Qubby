@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Necesario para directivas básicas
+import { CommonModule } from '@angular/common'; 
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service'; // <--- Importamos tu servicio
+import { AuthService } from '../../services/auth.service'; 
 
 @Component({
   selector: 'app-activate-page',

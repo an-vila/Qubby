@@ -22,15 +22,21 @@
       </div>
 
       <div class="d-flex flex-row align-items-center gap-2 mt-auto w-100">
-        <button (click)="viewDetails.emit()" class="btn btn-orange flex-grow-1 rounded-3 py-2 fw-bold" style="font-size: 0.85rem;">
+        <button (click)="viewDetails.emit()" 
+                class="btn btn-orange rounded-3 py-2 fw-bold flex-shrink-0" 
+                [ngClass]="viewMode === 'grid' ? 'flex-grow-1' : 'me-auto px-3 px-sm-4'"
+                style="font-size: 0.85rem;">
           Ver detalles
         </button>
-        <button (click)="edit.emit()" class="btn p-1 text-orange" title="Editar">
-          <i class="bi bi-pencil fs-5"></i>
-        </button>
-        <button (click)="delete.emit()" class="btn p-1 text-orange" title="Eliminar">
-          <i class="bi bi-trash fs-5"></i>
-        </button>
+        
+        <div class="d-flex gap-1">
+          <button (click)="edit.emit()" class="btn p-1 text-orange" title="Editar">
+            <i class="bi bi-pencil fs-5"></i>
+          </button>
+          <button (click)="delete.emit()" class="btn p-1 text-orange" title="Eliminar">
+            <i class="bi bi-trash fs-5"></i>
+          </button>
+        </div>
       </div>
 
     </div>
