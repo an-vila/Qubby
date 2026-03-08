@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -33,10 +33,10 @@ class UserViewSet(viewsets.ModelViewSet):
         - LISTAR usuarios: requiere autenticación (solo admin)
         - RESTO: requiere autenticación
         """
-        if self.action in ["create", "login", "check_email", "check_username"]:
+        if self.action in ["create", "login", "check_email", "check_username", "verify_email"]:
             return [AllowAny()]
         # LISTAR usuarios solo si está autenticado
-        return super().get_permissions()
+        return [IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
         """
