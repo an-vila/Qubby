@@ -66,7 +66,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                   <app-category-card
                     [name]="cat.name"
-                    [itemCount]="cat.itemCount"
+                    [itemCount]="cat.itemCount || 0"
                     [viewMode]="'grid'"
                     (delete)="handleDeleteCategory(cat.id)"
                     (edit)="handleEditCategory(cat.id)">
@@ -101,7 +101,7 @@
                   @for (cat of filteredCategories; track cat.id) {
                     <app-category-card
                       [name]="cat.name"
-                      [itemCount]="cat.itemCount"
+                      [itemCount]="cat.itemCount || 0"
                       [viewMode]="'list'"
                       (delete)="handleDeleteCategory(cat.id)"
                       (edit)="handleEditCategory(cat.id)">

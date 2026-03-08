@@ -13,4 +13,5 @@ class BoxViewSet(viewsets.ModelViewSet):
         return Box.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
+        print(f"DEBUG: Intentando crear caja para el usuario: {self.request.user}")
         serializer.save(user=self.request.user)
