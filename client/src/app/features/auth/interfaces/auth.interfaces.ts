@@ -13,10 +13,9 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-  user: string;
+  name: string;
   email: string;
   password: string;
-  password_again: string;
 }
 
 export interface PasswordResetConfirm {

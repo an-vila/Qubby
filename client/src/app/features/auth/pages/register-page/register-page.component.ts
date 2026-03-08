@@ -13,6 +13,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UiInputComponent } from '../../../../shared/ui/ui-input/ui-input.component';
 import { UiButtonComponent } from '../../../../shared/ui/ui-button/ui-button.component';
+import { RegisterRequest } from '../../interfaces/auth.interfaces';
 
 @Component({
   selector: 'app-register-page',
@@ -64,7 +65,7 @@ export class RegisterPageComponent {
   }
 
   onSubmit() {
-    const { password, confirmPassword } = this.registerForm.value;
+    const { name, email, password, confirmPassword } = this.registerForm.value;
     
     if (password !== confirmPassword) {
       this.errorMessage = 'Las contraseñas no coinciden.';
@@ -90,7 +91,15 @@ export class RegisterPageComponent {
 
     this.errorMessage = ''; 
 
-    this.authService.register(this.registerForm.value).subscribe({
+    const registerInfo: RegisterRequest = { 
+      name: name, 
+      email: email, 
+      password: password
+    };
+
+    console.log(registerInfo)
+
+    this.authService.register(registerInfo).subscribe({
       next: (response) => {
 
         this.isSuccess = true; 
