@@ -1,19 +1,13 @@
-<div class="min-vh-100 bg-light-qubby pb-5" style="background-color: rgb(227,227,227);">
-
+<div class="min-vh-100 bg-light-qubby pb-5" style="background-color: rgb(227, 227, 227)">
   <div class="d-sm-none">
-    <app-header 
-      [activeSection]="activeSection"
-      (sectionChange)="onSectionChange($event)">
+    <app-header [activeSection]="activeSection" (sectionChange)="onSectionChange($event)">
     </app-header>
   </div>
 
-  <app-sidebar 
-    [activeSection]="activeSection"
-    (sectionChange)="onSectionChange($event)">
+  <app-sidebar [activeSection]="activeSection" (sectionChange)="onSectionChange($event)">
   </app-sidebar>
-  
+
   <main class="px-4 py-4 pb-5 mb-5 main-content-desktop">
-    
     @if (activeSection === 'buscar') {
       <div class="d-sm-none">
         <app-search-view></app-search-view>
@@ -26,36 +20,40 @@
       </div>
     }
 
-    @if (activeSection === 'inicio' || true) { 
+    @if (activeSection === 'inicio' || true) {
       <div [class.d-none]="activeSection !== 'inicio'" class="d-sm-block max-w-6xl mx-auto">
-        
         <div class="fade-in d-flex flex-column gap-3">
           
           <div class="d-flex align-items-center gap-3">
             <div class="position-relative flex-grow-1">
-              <i class="bi bi-search position-absolute text-muted fs-5" style="left: 1.5rem; top: 50%; transform: translateY(-50%);"></i>
+              <i
+                class="bi bi-search position-absolute text-muted fs-5"
+                style="left: 1.5rem; top: 50%; transform: translateY(-50%)"
+              ></i>
               <input
                 type="text"
                 placeholder="Buscar"
                 [(ngModel)]="searchQuery"
                 class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white search-input"
-                style="padding-left: 3.5rem !important;"
+                style="padding-left: 3.5rem !important"
               />
             </div>
-            
+
             <div class="d-none d-sm-block">
-              <app-view-selector [currentView]="viewMode" (viewChange)="onViewChange($event)"></app-view-selector>
+              <app-view-selector
+                [currentView]="viewMode"
+                (viewChange)="onViewChange($event)"
+              ></app-view-selector>
             </div>
           </div>
 
           @if (viewMode === 'grid') {
             <div class="row g-3">
-              
               <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <button
                   (click)="handleNewCategory()"
                   class="btn w-100 h-100 rounded-4 text-white d-flex flex-column align-items-center justify-content-center gap-2 p-4 shadow-sm border-0 new-category-btn"
-                  style="background-color: rgb(255,164,0); aspect-ratio: 1;"
+                  style="background-color: rgb(255, 164, 0); aspect-ratio: 1"
                 >
                   <i class="bi bi-plus-lg fs-1"></i>
                   <span class="fw-bold fs-4">Nueva Caja</span>
@@ -68,8 +66,12 @@
                     [name]="cat.name"
                     [itemCount]="cat.itemCount || 0"
                     [viewMode]="'grid'"
-                    (delete)="handleDeleteCategory(cat.id)"
-                    (edit)="handleEditCategory(cat.id)">
+                    [isEditing]="cat.isEditing || false"
+                    (save)="saveCategory(cat, $event)"
+                    (cancel)="cancelEdit(cat)"
+                    (delete)="handleDeleteCategory(cat.id!)"
+                    (edit)="handleEditCategory(cat.id!)"
+                  >
                   </app-category-card>
                 </div>
               }
@@ -80,47 +82,48 @@
                   <p class="fs-5">No se encontraron categorías</p>
                 </div>
               }
-            </div> 
+            </div>
           }
 
           @if (viewMode === 'list') {
             <div class="row justify-content-center">
-              
               <div class="col-12 col-md-10 col-lg-8">
-
                 <div class="d-flex flex-column gap-3">
                   <button
                     (click)="handleNewCategory()"
                     class="btn w-100 rounded-4 text-white d-flex align-items-center justify-content-center gap-3 py-3 shadow-sm border-0"
-                    style="background-color: rgb(255,164,0);"
+                    style="background-color: rgb(255, 164, 0)"
                   >
                     <i class="bi bi-plus-lg fs-4"></i>
                     <span class="fw-bold fs-5">Nueva caja</span>
                   </button>
 
                   @for (cat of filteredCategories; track cat.id) {
-                    <app-category-card
-                      [name]="cat.name"
-                      [itemCount]="cat.itemCount || 0"
-                      [viewMode]="'list'"
-                      (delete)="handleDeleteCategory(cat.id)"
-                      (edit)="handleEditCategory(cat.id)">
-                    </app-category-card>
+                    <div class="col-12">
+                      <app-category-card
+                        [name]="cat.name"
+                        [itemCount]="cat.itemCount || 0"
+                        [viewMode]="'list'"
+                        [isEditing]="cat.isEditing || false"
+                        (save)="saveCategory(cat, $event)"
+                        (cancel)="cancelEdit(cat)"
+                        (delete)="handleDeleteCategory(cat.id!)"
+                        (edit)="handleEditCategory(cat.id!)"
+                      >
+                      </app-category-card>
+                    </div>
                   }
                 </div>
-              </div> 
-            </div> 
+              </div>
+            </div>
           }
-
-        </div> </div>
+        </div>
+      </div>
     }
   </main>
 
   <div class="d-sm-none">
-    <app-bottom-nav 
-      [activeSection]="activeSection"
-      (sectionChange)="onSectionChange($event)">
+    <app-bottom-nav [activeSection]="activeSection" (sectionChange)="onSectionChange($event)">
     </app-bottom-nav>
   </div>
-
 </div>

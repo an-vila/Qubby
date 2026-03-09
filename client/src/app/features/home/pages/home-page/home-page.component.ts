@@ -61,35 +61,94 @@ export class HomePageComponent implements OnInit {
   }
 
   handleNewCategory() {
-    const nombre = prompt('Escribe el nombre de la nueva caja:');
+    if (this.categories.some((box) => box.isEditing && box.id === 0)) return;
 
-    if (!nombre) return;
+    const nuevaCaja: Box = {
+      id: 0,
+      name: `Nueva Caja ${this.categories.length + 1}`,
+      itemCount: 0,
+      isEditing: true,
+    };
 
-    this.boxService.createBox(nombre).subscribe({
-      next: (nuevaCaja) => {
-        this.categories.unshift(nuevaCaja);
-        this.searchQuery = '';
-      },
-      error: (err) => {
-        console.error('Error creando la caja', err);
-        alert('Hubo un error al crear la caja en el servidor.');
-      },
-    });
+    this.categories.unshift(nuevaCaja);
+
+    // Pequeño truco para seleccionar el texto automáticamente y que el usuario empiece a teclear
+    setTimeout(() => {
+      const input = document.getElementById('edit-box-input-0') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }, 50);
+  }
+
+  saveCategory(box: Box, newName: string) {
+    if (!box.isEditing) return;
+
+    const updatedName = newName.trim();
+
+    if (!updatedName) {
+      this.cancelEdit(box);
+      return;
+    }
+
+    box.name = updatedName;
+    box.isEditing = false;
+
+    if (box.id === 0) {
+      this.boxService.createBox(box.name).subscribe({
+        next: (cajaReal) => {
+          this.categories = this.categories.map((box) => (box.id === 0 ? cajaReal : box));
+        },
+        error: () => {
+          alert('Error al guardar la caja');
+          this.categories = this.categories.filter((box) => box.id !== 0);
+        },
+      });
+    } else {
+      this.boxService.updateBox(box.id, box.name).subscribe({
+        next: () => {
+          console.log(`Caja ${box.id} actualizada correctamente`);
+        },
+        error: (err) => {
+          console.error('Error al editar la caja', err);
+          alert('Hubo un problema y no se guardó el cambio en el servidor.');
+        },
+      });
+    }
+  }
+
+  cancelEdit(box: Box) {
+    if (box.id === 0) {
+      this.categories = this.categories.filter((box) => box.id !== 0);
+    } else {
+      box.isEditing = false;
+    }
   }
 
   handleEditCategory(id: number) {
-    const category = this.categories.find((c) => c.id === id);
+    const category = this.categories.find((box) => box.id === id);
     if (category) {
-      const nuevoNombre = prompt('Escribe el nuevo nombre de la caja:', category.name);
-      if (nuevoNombre) {
-        category.name = nuevoNombre;
-      }
+        category.isEditing = true;
     }
   }
+
   handleDeleteCategory(id: number) {
-    const confirmar = confirm('¿Estás seguro de que quieres eliminar esta caja?');
+    if (!id) return;
+
+    // En el futuro habria que hacer que se vea en una alerta nativa en vez de navegador
+    const confirmar = confirm('¿Estás seguro de que quieres tirar esta caja a la basura?');
+
     if (confirmar) {
-      this.categories = this.categories.filter((c) => c.id !== id);
+      this.boxService.deleteBox(id).subscribe({
+        next: () => {
+          this.categories = this.categories.filter((c) => c.id !== id);
+        },
+        error: (err) => {
+          console.error('Error al borrar la caja:', err);
+          alert('Hubo un problema y no se pudo borrar la caja.');
+        },
+      });
     }
   }
 

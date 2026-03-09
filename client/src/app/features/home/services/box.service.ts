@@ -19,6 +19,10 @@ export class BoxService {
     return this.http.post<Box>(this.apiUrl, { name });
   }
 
+  updateBox(id: number, name: string): Observable<Box> {
+    return this.http.patch<Box>(`${this.apiUrl}${id}/`, { name });
+  }
+
   deleteBox(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }

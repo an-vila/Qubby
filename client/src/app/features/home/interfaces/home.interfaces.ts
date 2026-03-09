@@ -3,4 +3,5 @@ export interface Box {
   name: string;
   created_at?: string;
   itemCount?: number;
+  isEditing?: boolean;
 }
