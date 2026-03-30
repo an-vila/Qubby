@@ -3,31 +3,31 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-category-card',
+  selector: 'app-item-card',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './category-card.component.html',
-  styleUrls: ['./category-card.component.css'],
+  templateUrl: './item-card.component.html',
+  styleUrls: ['./item-card.component.css'],
 })
-export class CategoryCardComponent {
+export class ItemCardComponent {
   @Input() name: string = '';
-  @Input() itemCount: number = 0;
-  @Input() viewMode: 'list' | 'grid' = 'grid';
+  @Input() description: string = '';
   @Input() isEditing: boolean = false;
 
   @Output() delete = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
-  @Output() save = new EventEmitter<string>(); 
+  @Output() save = new EventEmitter<{ name: string; description: string }>();
   @Output() cancel = new EventEmitter<void>();
-  @Output() open = new EventEmitter<void>();
 
-  editName: string = ''; 
+  editName: string = '';
+  editDescription: string = '';
 
   @ViewChild('editInput') editInput!: ElementRef<HTMLInputElement>;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isEditing'] && changes['isEditing'].currentValue === true) {
       this.editName = this.name;
+      this.editDescription = this.description;
       setTimeout(() => {
         if (this.editInput) {
           this.editInput.nativeElement.focus();
@@ -38,7 +38,7 @@ export class CategoryCardComponent {
   }
 
   onSave() {
-    this.save.emit(this.editName);
+    this.save.emit({ name: this.editName, description: this.editDescription });
   }
 
   onCancel() {

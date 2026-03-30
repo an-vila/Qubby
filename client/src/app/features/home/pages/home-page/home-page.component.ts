@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { Box } from '../../interfaces/home.interfaces';
 import { BoxService } from '../../services/box.service';
@@ -39,7 +40,7 @@ export class HomePageComponent implements OnInit {
 
   searchQuery: string = '';
 
-  constructor(private boxService: BoxService) {}
+  constructor(private boxService: BoxService, private router: Router) {}
 
   ngOnInit() {
     this.checkScreenSize();
@@ -50,13 +51,10 @@ export class HomePageComponent implements OnInit {
 
   loadBoxes() {
     this.boxService.getBoxes().subscribe({
-      next: (data) => {
-        this.categories = data.map((box) => ({
-          ...box,
-          itemCount: 0,
-        }));
+      next: (data: Box[]) => {
+        this.categories = data;
       },
-      error: (error) => console.error('Error al cargar las cajas', error),
+      error: (error: unknown) => console.error('Error al cargar las cajas', error),
     });
   }
 
@@ -97,10 +95,11 @@ export class HomePageComponent implements OnInit {
 
     if (box.id === 0) {
       this.boxService.createBox(box.name).subscribe({
-        next: (cajaReal) => {
+        next: (cajaReal: Box) => {
           this.categories = this.categories.map((box) => (box.id === 0 ? cajaReal : box));
         },
-        error: () => {
+        error: (err: unknown) => {
+          console.error('Error creating box', err);
           alert('Error al guardar la caja');
           this.categories = this.categories.filter((box) => box.id !== 0);
         },
@@ -110,7 +109,7 @@ export class HomePageComponent implements OnInit {
         next: () => {
           console.log(`Caja ${box.id} actualizada correctamente`);
         },
-        error: (err) => {
+        error: (err: unknown) => {
           console.error('Error al editar la caja', err);
           alert('Hubo un problema y no se guardó el cambio en el servidor.');
         },
@@ -144,12 +143,16 @@ export class HomePageComponent implements OnInit {
         next: () => {
           this.categories = this.categories.filter((c) => c.id !== id);
         },
-        error: (err) => {
+        error: (err: unknown) => {
           console.error('Error al borrar la caja:', err);
           alert('Hubo un problema y no se pudo borrar la caja.');
         },
       });
     }
+  }
+
+  handleOpenCategory(id: number) {
+    this.router.navigate(['/home/box', id]);
   }
 
   //Logica de la UI

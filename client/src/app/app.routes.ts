@@ -23,6 +23,14 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
+  // --- RUTA PROTEGIDA (Detalle de caja → ver items) ---
+  {
+    path: 'home/box/:id',
+    loadComponent: () =>
+      import('./features/home/pages/box-detail-page/box-detail-page.component')
+        .then(m => m.BoxDetailPageComponent),
+    canActivate: [authGuard]
+  },
   // --- REDIRECCIÓN POR DEFECTO ---
   {
     path: '',
