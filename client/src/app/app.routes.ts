@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './features/auth/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -11,36 +10,28 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => 
-      import('./features/home/pages/home-page/home-page.component').then(m => m.HomePageComponent),
-    canActivate: [authGuard] 
+      import('./features/home/pages/home-page/home-page.component').then(m => m.HomePageComponent)
   },
   {
     path: 'box/:id', 
     loadComponent: () => 
-      import('./features/home/pages/box-detail-page/box-detail-page.component').then(m => m.BoxDetailPageComponent),
-    canActivate: [authGuard] 
+      import('./features/home/pages/box-detail-page/box-detail-page.component').then(m => m.BoxDetailPageComponent)
   },
   {
     path: 'box/:id/add', 
     loadComponent: () => 
-      import('./features/home/pages/add-object-page/add-object-page.component').then(m => m.AddObjectPageComponent),
-    canActivate: [authGuard]
+      import('./features/home/pages/add-object-page/add-object-page.component').then(m => m.AddObjectPageComponent)
   },
   {
     path: 'box/:id/qr', 
     loadComponent: () => 
-      import('./features/home/pages/qr-page/qr-page.component').then(m => m.QrPageComponent),
-    canActivate: [authGuard] 
+      import('./features/home/pages/qr-page/qr-page.component').then(m => m.QrPageComponent)
   },
-  
- 
   {
     path: 'box/:id/scan', 
     loadComponent: () => 
-      import('./features/home/pages/qr-scan-page/qr-scan-page.component').then(m => m.QrScanPageComponent),
-    canActivate: [authGuard] 
+      import('./features/home/pages/qr-scan-page/qr-scan-page.component').then(m => m.QrScanPageComponent)
   },
-
 
   {
     path: '',
