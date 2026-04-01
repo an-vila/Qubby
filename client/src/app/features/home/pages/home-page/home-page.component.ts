@@ -2,7 +2,6 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { SearchViewComponent } from '../../components/search-view/search-view.component';
@@ -10,6 +9,7 @@ import { SettingsViewComponent } from '../../components/settings-view/settings-v
 import { ViewSelectorComponent } from '../../components/view-selector/view-selector.component';
 import { CategoryCardComponent } from '../../components/category-card/category-card.component';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.component';
+
 @Component({
   selector: 'app-home-page',
   standalone: true,
@@ -30,10 +30,17 @@ import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.compo
 export class HomePageComponent implements OnInit { 
   
   activeSection: 'inicio' | 'buscar' | 'ajustes' = 'inicio';
-  
   viewMode: 'grid' | 'list' = 'grid'; 
+  searchQuery: string = '';
 
-  // Datos de ejemplo 
+  mostrarModal: boolean = false;
+  nuevaCaja = {
+    name: '',
+    isProtected: false,
+    pin: ''
+  };
+
+
   categories = [
     { id: 1, name: 'Caja 1 - Libros', itemCount: 24 },
     { id: 2, name: 'Estantería - Cocina', itemCount: 18 },
@@ -41,12 +48,11 @@ export class HomePageComponent implements OnInit {
     { id: 4, name: 'Caja 2 - Ropa de invierno', itemCount: 15 },
     { id: 5, name: 'Caja 3 - Documentos', itemCount: 8 }
   ];
-  
-  searchQuery: string = '';
 
   ngOnInit() {
     this.checkScreenSize();
   }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
@@ -55,8 +61,7 @@ export class HomePageComponent implements OnInit {
   checkScreenSize() {
     if (window.innerWidth < 768) {
       this.viewMode = 'list';
-    } 
-     else {
+    } else {
       this.viewMode = 'grid';
     }
   }
@@ -75,19 +80,41 @@ export class HomePageComponent implements OnInit {
     this.viewMode = mode;
   }
 
-handleNewCategory() {
-    const nuevaCaja = {
-      id: Date.now(), 
-      name: `Nueva Caja ${this.categories.length + 1}`, 
+
+  handleNewCategory() {
+    this.nuevaCaja = { name: '', isProtected: false, pin: '' };
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
+  }
+
+
+  guardarCaja() {
+    if (!this.nuevaCaja.name.trim()) return;
+
+    const cajaParaAñadir = {
+      id: Date.now(),
+      name: this.nuevaCaja.name,
       itemCount: 0
     };
 
-   this.categories.unshift(nuevaCaja);
+
+    this.categories.unshift(cajaParaAñadir);
+
+
+    if (this.nuevaCaja.isProtected) {
+      console.log('Caja creada con protección PIN:', this.nuevaCaja.pin);
+    }
+
 
     this.searchQuery = '';
+    this.cerrarModal();
   }
 
- handleEditCategory(id: number) {
+
+  handleEditCategory(id: number) {
     const category = this.categories.find(c => c.id === id);
     if (category) {
       const nuevoNombre = prompt('Escribe el nuevo nombre de la caja:', category.name);
@@ -96,7 +123,8 @@ handleNewCategory() {
       }
     }
   }
- handleDeleteCategory(id: number) {
+
+  handleDeleteCategory(id: number) {
     const confirmar = confirm('¿Estás seguro de que quieres eliminar esta caja?');
     if (confirmar) {
       this.categories = this.categories.filter(c => c.id !== id);

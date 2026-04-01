@@ -22,11 +22,7 @@ export const routes: Routes = [
     loadComponent: () => 
       import('./features/home/pages/add-object-page/add-object-page.component').then(m => m.AddObjectPageComponent)
   },
-  {
-    path: 'box/:id/qr', 
-    loadComponent: () => 
-      import('./features/home/pages/qr-page/qr-page.component').then(m => m.QrPageComponent)
-  },
+ 
   {
     path: 'box/:id/scan', 
     loadComponent: () => 

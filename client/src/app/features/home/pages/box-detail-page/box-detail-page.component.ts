@@ -13,18 +13,27 @@ import { ObjectCardComponent } from '../../components/object-card/object-card.co
 })
 export class BoxDetailPageComponent implements OnInit {
   boxId: string | null = '';
+  
   searchQuery: string = '';
   viewMode: 'grid' | 'list' = 'grid';
 
   selectedObject: any = null;
+  mostrarModalQR: boolean = false; 
+  isProtected: boolean = true; 
 
+  get qrCodeUrl(): string {
+    const id = this.boxId || '1'; 
+    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://qubby.app/box/${id}`;
+  }
+
+  // Datos de ejemplo
   objetos = [
     {
       id: 1,
       name: 'Cable HDMI',
       code: 'ELC-001',
       image: 'https://images.unsplash.com/photo-1583259034006-5ea8361109e7?w=400',
-      description: 'Cable HDMI 2.0 de alta velocidad, compatible con 4K a 60Hz. Longitud de 2 metros con conectores dorados.',
+      description: 'Cable HDMI 2.0 de alta velocidad, compatible con 4K a 60Hz...',
       tags: ['Cable', 'HDMI', '2m'],
       registrationDate: '15/01/2025',
       quantity: 3,
@@ -49,8 +58,16 @@ export class BoxDetailPageComponent implements OnInit {
     this.boxId = this.route.snapshot.paramMap.get('id');
   }
 
-  generarQR() {
-    this.router.navigate(['/box', this.boxId, 'qr']);
+  abrirModalQR() {
+    this.mostrarModalQR = true;
+  }
+
+  cerrarModalQR() {
+    this.mostrarModalQR = false;
+  }
+
+  imprimirQR() {
+    window.print();
   }
 
   eliminarCaja() {
