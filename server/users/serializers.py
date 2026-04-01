@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     3. NO devuelve la contraseña en las respuestas (write_only=True)
     4. Comprueba que el email y name sean únicos
     """
-    
+
     class Meta:
         model = User
         fields = ['id', 'name', 'email', 'password', 'is_active', 'created_at']
@@ -29,20 +29,49 @@ class UserSerializer(serializers.ModelSerializer):
                 'min_length': 3,
             }
         }
-    
+
     def validate_email(self, value):
         """Valida que el email sea único"""
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("Este email ya está registrado.")
         return value
-    
+
     def validate_name(self, value):
         """Valida que el name sea único"""
         if User.objects.filter(name=value).exists():
             raise serializers.ValidationError("Este nombre de usuario ya está registrado.")
         return value
-    
+
     def create(self, validated_data):
         """Crea un nuevo usuario (la contraseña se hash en models.py)"""
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    """
+    Serializador específico para cuando el usuario edita su perfil.
+    """
+
+    class Meta:
+        model = User
+        fields = ["id", "name", "email"]
+        read_only_fields = ["id", "email"]
+
+    def validate_name(self, value):
+        """Valida que el nuevo nombre esté disponible."""
+        user = self.context["request"].user
+
+        if User.objects.exclude(pk=user.pk).filter(name=value).exists():
+            raise serializers.ValidationError(
+                "Este nombre de usuario ya está registrado."
+            )
+        return value
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """
+    Serializador para cambiar la contraseña.
+    """
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, min_length=6)

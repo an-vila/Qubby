@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserUpdateSerializer, ChangePasswordSerializer
 from .email_utils import send_verification_email
 
 
@@ -165,26 +166,38 @@ class UserViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    @action(detail=False, methods=["get"])
+    @action(
+        detail=False,
+        methods=["get", "put", "patch"],
+        permission_classes=[IsAuthenticated],
+    )
     def profile(self, request):
         """
-        GET /api/users/profile/
-
-        Obtener perfil del usuario autenticado.
-        Requiere: Authorization: Bearer <access_token>
-
-        Respuesta:
-        {
-            "id": 1,
-            "name": "usuario123",
-            "email": "user@example.com",
-            "is_active": true,
-            "created_at": "2026-01-31T16:45:00Z"
-        }
+        GET /api/users/profile/ -> Obtener datos
+        PUT/PATCH /api/users/profile/-> Actualizar datos (ej. nombre)
         """
         user = request.user
-        serializer = self.get_serializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        if request.method == "GET":
+            serializer = self.get_serializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            serializer = UserUpdateSerializer(
+                user, data=request.data, partial=True, context={"request": request}
+            )
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        "message": "Perfil actualizado correctamente",
+                        "user": serializer.data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["post"], permission_classes=[AllowAny])
     def verify_email(self, request):
@@ -273,3 +286,31 @@ class UserViewSet(viewsets.ModelViewSet):
 
         exists = User.objects.filter(name=name).exists()
         return Response({"username_exists": exists}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["post"], permission_classes=[IsAuthenticated])
+    def change_password(self, request):
+        """
+        POST /api/users/change_password/
+        """
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = request.user
+            old_password = serializer.validated_data["old_password"]
+            new_password = serializer.validated_data["new_password"]
+
+            if not user.check_password(old_password):
+                return Response(
+                    {"error": "La contraseña actual es incorrecta."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            user.set_password(new_password)
+            user.save()
+
+            return Response(
+                {"message": "Contraseña actualizada correctamente."},
+                status=status.HTTP_200_OK,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
