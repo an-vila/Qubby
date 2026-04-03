@@ -1,21 +1,36 @@
-<div class="d-flex flex-column gap-4 fade-in">
+<div class="d-flex flex-column gap-4 fade-in search-view-container">
   
   <div class="position-relative">
-    <i class="bi bi-search position-absolute text-muted" style="left: 1.2rem; top: 50%; transform: translateY(-50%);"></i>
+    <i class="bi bi-search position-absolute text-muted search-icon"></i>
     <input 
       type="text" 
-      class="form-control border-0 shadow-sm py-3 ps-5 rounded-4 fs-6" 
+      class="form-control border-0 shadow-sm ps-5 rounded-4 fs-6 search-input" 
       placeholder="Buscar"
-      style="background-color: white;"
     >
   </div>
 
-  <button class="btn btn-primary border-0 shadow-sm rounded-4 py-3 d-flex align-items-center justify-content-center gap-2 qr-btn">
+  <button 
+    (click)="activarEscaneo()" 
+    class="btn border-0 shadow-sm rounded-4 py-3 d-flex align-items-center justify-content-center gap-2 qr-btn"
+  >
     <i class="bi bi-qr-code-scan fs-4"></i>
     <span class="fw-bold fs-5">Escanear código QR</span>
   </button>
 
-  <p class="text-center text-secondary small px-4" style="line-height: 1.5;">
+  @if (scannerEnabled) {
+    <div class="qr-wrapper rounded-4 shadow-lg overflow-hidden position-relative bg-dark">
+      <zxing-scanner 
+        (scanSuccess)="handleQrCodeResult($event)"
+        [formats]="allowedFormats">
+      </zxing-scanner>
+      
+      <button (click)="scannerEnabled = false" class="btn btn-dark btn-sm position-absolute top-0 end-0 m-3 z-3">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  }
+
+  <p class="text-center text-secondary small px-4 explanation-text">
     Busca tu caja o escanea el código QR de tu caja para ver los objetos que contiene.
   </p>
 

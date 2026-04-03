@@ -1,20 +1,20 @@
 
 .btn-qubby {
-  background-color: #F39200;
+  background-color: #ffa400;
   color: white;
 }
 
 .text-qubby {
-  color: #F39200 !important;
+  color: #ffa400 !important;
   text-decoration: none;
 }
 
 .form-check-input:checked {
-  background-color: #F39200; /* Puedes cambiar este código por tu color naranja exacto */
-  border-color: #F39200;
+  background-color: #ffa400; 
+  border-color: #ffa400;
 }
 
 .form-check-input:focus {
-  border-color: #F39200;
-  box-shadow: none; /* Mantiene tu estilo shadow-none */
+  border-color: #ffa400;
+  box-shadow: none; 
 }

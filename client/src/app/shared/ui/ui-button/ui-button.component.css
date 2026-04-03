@@ -1,5 +1,5 @@
 .btn {
-  background-color: #F39200;
+  background-color: #ffa400;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -8,7 +8,7 @@
 }
 
 .text-qubby {
-  color: #F39200 !important;
+  color: #ffa400 !important;
 }
 
 :host {

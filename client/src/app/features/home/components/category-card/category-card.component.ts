@@ -1,15 +1,28 @@
 import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+<<<<<<< HEAD
 import { FormsModule } from '@angular/forms';
+=======
+import { RouterLink } from '@angular/router'; 
+>>>>>>> feat/auth
 
 @Component({
   selector: 'app-category-card',
   standalone: true,
+<<<<<<< HEAD
   imports: [CommonModule, FormsModule],
+=======
+  imports: [CommonModule, RouterLink], 
+>>>>>>> feat/auth
   templateUrl: './category-card.component.html',
   styleUrls: ['./category-card.component.css'],
 })
 export class CategoryCardComponent {
+<<<<<<< HEAD
+=======
+  
+  @Input() id: number = 0; 
+>>>>>>> feat/auth
   @Input() name: string = '';
   @Input() itemCount: number = 0;
   @Input() viewMode: 'list' | 'grid' = 'grid';

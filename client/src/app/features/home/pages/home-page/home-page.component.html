@@ -1,4 +1,5 @@
-<div class="min-vh-100 bg-light-qubby pb-5" style="background-color: rgb(227, 227, 227)">
+<div class="min-vh-100 bg-gray-custom pb-5">
+
   <div class="d-sm-none">
     <app-header [activeSection]="activeSection" (sectionChange)="onSectionChange($event)">
     </app-header>
@@ -20,22 +21,19 @@
       </div>
     }
 
-    @if (activeSection === 'inicio' || true) {
-      <div [class.d-none]="activeSection !== 'inicio'" class="d-sm-block max-w-6xl mx-auto">
+    @if (activeSection === 'inicio') { 
+      <div class="d-sm-block max-w-6xl mx-auto">
+        
         <div class="fade-in d-flex flex-column gap-3">
           
           <div class="d-flex align-items-center gap-3">
             <div class="position-relative flex-grow-1">
-              <i
-                class="bi bi-search position-absolute text-muted fs-5"
-                style="left: 1.5rem; top: 50%; transform: translateY(-50%)"
-              ></i>
+              <i class="bi bi-search position-absolute text-muted fs-5 search-icon-position"></i>
               <input
                 type="text"
                 placeholder="Buscar"
                 [(ngModel)]="searchQuery"
-                class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white search-input"
-                style="padding-left: 3.5rem !important"
+                class="form-control border-0 shadow-sm rounded-4 py-3 fs-5 bg-white search-input-custom"
               />
             </div>
 
@@ -49,11 +47,11 @@
 
           @if (viewMode === 'grid') {
             <div class="row g-3">
-              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              
+              <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                 <button
                   (click)="handleNewCategory()"
-                  class="btn w-100 h-100 rounded-4 text-white d-flex flex-column align-items-center justify-content-center gap-2 p-4 shadow-sm border-0 new-category-btn"
-                  style="background-color: rgb(255, 164, 0); aspect-ratio: 1"
+                  class="btn w-100 rounded-4 text-white d-flex flex-column align-items-center justify-content-center gap-2 p-4 shadow-sm border-0 btn-orange-qubby aspect-square"
                 >
                   <i class="bi bi-plus-lg fs-1"></i>
                   <span class="fw-bold fs-4">Nueva Caja</span>
@@ -61,8 +59,9 @@
               </div>
 
               @for (cat of filteredCategories; track cat.id) {
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                   <app-category-card
+                    [id]="cat.id" 
                     [name]="cat.name"
                     [itemCount]="cat.itemCount || 0"
                     [viewMode]="'grid'"
@@ -75,49 +74,38 @@
                   </app-category-card>
                 </div>
               }
-
-              @if (filteredCategories.length === 0) {
-                <div class="col-12 text-center py-5 text-muted">
-                  <i class="bi bi-box-seam fs-1 d-block mb-3"></i>
-                  <p class="fs-5">No se encontraron categorías</p>
-                </div>
-              }
-            </div>
+            </div> 
           }
 
           @if (viewMode === 'list') {
             <div class="row justify-content-center">
               <div class="col-12 col-md-10 col-lg-8">
                 <div class="d-flex flex-column gap-3">
+                  
                   <button
                     (click)="handleNewCategory()"
-                    class="btn w-100 rounded-4 text-white d-flex align-items-center justify-content-center gap-3 py-3 shadow-sm border-0"
-                    style="background-color: rgb(255, 164, 0)"
+                    class="btn w-100 rounded-4 text-white d-flex align-items-center justify-content-center gap-3 py-3 shadow-sm border-0 btn-orange-qubby"
                   >
                     <i class="bi bi-plus-lg fs-4"></i>
                     <span class="fw-bold fs-5">Nueva caja</span>
                   </button>
 
                   @for (cat of filteredCategories; track cat.id) {
-                    <div class="col-12">
-                      <app-category-card
-                        [name]="cat.name"
-                        [itemCount]="cat.itemCount || 0"
-                        [viewMode]="'list'"
-                        [isEditing]="cat.isEditing || false"
-                        (save)="saveCategory(cat, $event)"
-                        (cancel)="cancelEdit(cat)"
-                        (delete)="handleDeleteCategory(cat.id!)"
-                        (edit)="handleEditCategory(cat.id!)"
-                      >
-                      </app-category-card>
-                    </div>
+                    <app-category-card
+                      [id]="cat.id" 
+                      [name]="cat.name"
+                      [itemCount]="cat.itemCount"
+                      [viewMode]="'list'"
+                      (delete)="handleDeleteCategory(cat.id)"
+                      (edit)="handleEditCategory(cat.id)">
+                    </app-category-card>
                   }
                 </div>
               </div>
             </div>
           }
-        </div>
+
+        </div> 
       </div>
     }
   </main>
@@ -126,4 +114,66 @@
     <app-bottom-nav [activeSection]="activeSection" (sectionChange)="onSectionChange($event)">
     </app-bottom-nav>
   </div>
+
+  @if (mostrarModal) {
+    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 z-3" 
+         style="background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
+         (click)="cerrarModal()">
+      
+      <div class="bg-white rounded-4 shadow-lg p-4 w-100 mx-3 scale-in" 
+           style="max-width: 450px;" 
+           (click)="$event.stopPropagation()">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fs-5 fw-bold mb-0 text-dark">Configurar Nueva Caja</h3>
+          <button class="btn-close shadow-none" (click)="cerrarModal()"></button>
+        </div>
+
+        <form (ngSubmit)="guardarCaja()">
+          <div class="mb-4">
+            <label class="form-label fw-medium text-secondary small text-uppercase">Nombre de la caja</label>
+            <input type="text" name="name" [(ngModel)]="nuevaCaja.name" 
+                   class="form-control py-3 border-light-subtle shadow-sm rounded-3 bg-light-subtle" 
+                   placeholder="Ej: Trastero - Herramientas" required autofocus>
+          </div>
+
+          <div class="bg-light p-3 rounded-4 mb-4 border border-light-subtle">
+            <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
+              <input class="form-check-input fs-4 mt-0 border-secondary-subtle" type="checkbox" role="switch" id="pinSwitch" 
+                     name="isProtected" [(ngModel)]="nuevaCaja.isProtected">
+              <label class="form-check-label fw-bold text-dark" for="pinSwitch">
+                <i class="bi bi-shield-lock-fill text-orange-qubby me-1"></i> Proteger con PIN
+              </label>
+            </div>
+
+            @if (nuevaCaja.isProtected) {
+              <div class="mt-3 pt-3 border-top border-secondary-subtle fade-in">
+                <label class="form-label small text-muted mb-2">PIN de acceso (4 dígitos)</label>
+                <input type="password" name="pin" [(ngModel)]="nuevaCaja.pin" 
+                       class="form-control text-center fs-3 fw-bold shadow-sm rounded-3 py-2" 
+                       style="letter-spacing: 1rem;"
+                       placeholder="0000" maxlength="4" inputmode="numeric">
+                <div class="mt-2 d-flex align-items-start gap-2">
+                  <i class="bi bi-exclamation-triangle-fill text-warning small mt-1"></i>
+                  <p class="text-muted" style="font-size: 0.75rem;">
+                    Este PIN se solicitará a cualquier persona que escanee el código QR de esta caja.
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end mt-2">
+            <button type="button" class="btn btn-light px-4 py-2 rounded-3 fw-medium text-secondary" (click)="cerrarModal()">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-orange-qubby text-white px-4 py-2 rounded-3 shadow-sm fw-bold">
+              Guardar Caja
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
 </div>

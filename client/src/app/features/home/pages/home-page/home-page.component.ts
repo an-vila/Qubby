@@ -2,8 +2,6 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { Box } from '../../interfaces/home.interfaces';
-import { BoxService } from '../../services/box.service';
 
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
@@ -32,128 +30,24 @@ import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.compo
 })
 export class HomePageComponent implements OnInit {
   activeSection: 'inicio' | 'buscar' | 'ajustes' = 'inicio';
-  viewMode: 'grid' | 'list' = 'grid';
+  
+  viewMode: 'grid' | 'list' = 'grid'; 
 
-  // Datos de ejemplo
-  categories: Box[] = [];
-
+  // Datos de ejemplo 
+  categories = [
+    { id: 1, name: 'Caja 1 - Libros', itemCount: 24 },
+    { id: 2, name: 'Estantería - Cocina', itemCount: 18 },
+    { id: 3, name: 'Trastero - Herramientas', itemCount: 32 },
+    { id: 4, name: 'Caja 2 - Ropa de invierno', itemCount: 15 },
+    { id: 5, name: 'Caja 3 - Documentos', itemCount: 8 }
+  ];
+  
   searchQuery: string = '';
-
-  constructor(private boxService: BoxService) {}
 
   ngOnInit() {
     this.checkScreenSize();
     this.loadBoxes();
   }
-
-  // Logica del server
-
-  loadBoxes() {
-    this.boxService.getBoxes().subscribe({
-      next: (data) => {
-        this.categories = data.map((box) => ({
-          ...box,
-          itemCount: 0,
-        }));
-      },
-      error: (error) => console.error('Error al cargar las cajas', error),
-    });
-  }
-
-  handleNewCategory() {
-    if (this.categories.some((box) => box.isEditing && box.id === 0)) return;
-
-    const nuevaCaja: Box = {
-      id: 0,
-      name: `Nueva Caja ${this.categories.length + 1}`,
-      itemCount: 0,
-      isEditing: true,
-    };
-
-    this.categories.unshift(nuevaCaja);
-
-    // Pequeño truco para seleccionar el texto automáticamente y que el usuario empiece a teclear
-    setTimeout(() => {
-      const input = document.getElementById('edit-box-input-0') as HTMLInputElement;
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 50);
-  }
-
-  saveCategory(box: Box, newName: string) {
-    if (!box.isEditing) return;
-
-    const updatedName = newName.trim();
-
-    if (!updatedName) {
-      this.cancelEdit(box);
-      return;
-    }
-
-    box.name = updatedName;
-    box.isEditing = false;
-
-    if (box.id === 0) {
-      this.boxService.createBox(box.name).subscribe({
-        next: (cajaReal) => {
-          this.categories = this.categories.map((box) => (box.id === 0 ? cajaReal : box));
-        },
-        error: () => {
-          alert('Error al guardar la caja');
-          this.categories = this.categories.filter((box) => box.id !== 0);
-        },
-      });
-    } else {
-      this.boxService.updateBox(box.id, box.name).subscribe({
-        next: () => {
-          console.log(`Caja ${box.id} actualizada correctamente`);
-        },
-        error: (err) => {
-          console.error('Error al editar la caja', err);
-          alert('Hubo un problema y no se guardó el cambio en el servidor.');
-        },
-      });
-    }
-  }
-
-  cancelEdit(box: Box) {
-    if (box.id === 0) {
-      this.categories = this.categories.filter((box) => box.id !== 0);
-    } else {
-      box.isEditing = false;
-    }
-  }
-
-  handleEditCategory(id: number) {
-    const category = this.categories.find((box) => box.id === id);
-    if (category) {
-        category.isEditing = true;
-    }
-  }
-
-  handleDeleteCategory(id: number) {
-    if (!id) return;
-
-    // En el futuro habria que hacer que se vea en una alerta nativa en vez de navegador
-    const confirmar = confirm('¿Estás seguro de que quieres tirar esta caja a la basura?');
-
-    if (confirmar) {
-      this.boxService.deleteBox(id).subscribe({
-        next: () => {
-          this.categories = this.categories.filter((c) => c.id !== id);
-        },
-        error: (err) => {
-          console.error('Error al borrar la caja:', err);
-          alert('Hubo un problema y no se pudo borrar la caja.');
-        },
-      });
-    }
-  }
-
-  //Logica de la UI
-
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
@@ -179,5 +73,33 @@ export class HomePageComponent implements OnInit {
 
   onViewChange(mode: 'grid' | 'list') {
     this.viewMode = mode;
+  }
+
+handleNewCategory() {
+    const nuevaCaja = {
+      id: Date.now(), 
+      name: `Nueva Caja ${this.categories.length + 1}`, 
+      itemCount: 0
+    };
+
+   this.categories.unshift(nuevaCaja);
+
+    this.searchQuery = '';
+  }
+
+ handleEditCategory(id: number) {
+    const category = this.categories.find(c => c.id === id);
+    if (category) {
+      const nuevoNombre = prompt('Escribe el nuevo nombre de la caja:', category.name);
+      if (nuevoNombre) {
+        category.name = nuevoNombre;
+      }
+    }
+  }
+ handleDeleteCategory(id: number) {
+    const confirmar = confirm('¿Estás seguro de que quieres eliminar esta caja?');
+    if (confirmar) {
+      this.categories = this.categories.filter(c => c.id !== id);
+    }
   }
 }
