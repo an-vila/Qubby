@@ -26,4 +26,8 @@ export class BoxService {
   deleteBox(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }
+
+  getBoxQrCode(boxId: string | number) {
+    return this.http.get<any>(`${this.apiUrl}${boxId}/qrcode/`);
+  }
 }

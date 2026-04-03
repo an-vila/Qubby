@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthLayoutComponent } from './layout/auth-layout/auth-layout.component';
 
-// Configuración de rutas para el módulo de Autenticación de Qubby
+
 export const authRoutes: Routes = [
   {
     // Ruta principal del módulo (ej: /auth)

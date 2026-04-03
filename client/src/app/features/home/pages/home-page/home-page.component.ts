@@ -2,7 +2,6 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 import { HeaderComponent } from '../../components/header/header.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { SearchViewComponent } from '../../components/search-view/search-view.component';
@@ -10,6 +9,8 @@ import { SettingsViewComponent } from '../../components/settings-view/settings-v
 import { ViewSelectorComponent } from '../../components/view-selector/view-selector.component';
 import { CategoryCardComponent } from '../../components/category-card/category-card.component';
 import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.component';
+
+import { BoxService } from '../../services/box.service';
 
 @Component({
   selector: 'app-home-page',
@@ -30,35 +31,46 @@ import { BottomNavComponent } from '../../components/bottom-nav/bottom-nav.compo
 })
 export class HomePageComponent implements OnInit {
   activeSection: 'inicio' | 'buscar' | 'ajustes' = 'inicio';
-  
-  viewMode: 'grid' | 'list' = 'grid'; 
+  viewMode: 'grid' | 'list' = 'grid';
 
-  // Datos de ejemplo 
-  categories = [
-    { id: 1, name: 'Caja 1 - Libros', itemCount: 24 },
-    { id: 2, name: 'Estantería - Cocina', itemCount: 18 },
-    { id: 3, name: 'Trastero - Herramientas', itemCount: 32 },
-    { id: 4, name: 'Caja 2 - Ropa de invierno', itemCount: 15 },
-    { id: 5, name: 'Caja 3 - Documentos', itemCount: 8 }
-  ];
-  
+  categories: any[] = [];
+
   searchQuery: string = '';
+
+  mostrarModal: boolean = false;
+  newBox = {
+    name: '',
+    isProtected: false,
+    pin: '',
+  };
+
+  constructor(private boxService: BoxService) {}
 
   ngOnInit() {
     this.checkScreenSize();
     this.loadBoxes();
   }
+
+  loadBoxes() {
+    this.boxService.getBoxes().subscribe({
+      next: (boxesFromDjango) => {
+        this.categories = boxesFromDjango.map((box) => ({
+          ...box,
+          isEditing: false,
+          itemCount: box.itemCount || 0,
+        }));
+      },
+      error: (err) => console.error('Error al cargar las cajas desde Django', err),
+    });
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
   }
 
   checkScreenSize() {
-    if (window.innerWidth < 768) {
-      this.viewMode = 'list';
-    } else {
-      this.viewMode = 'grid';
-    }
+    this.viewMode = window.innerWidth < 768 ? 'list' : 'grid';
   }
 
   get filteredCategories() {
@@ -75,31 +87,76 @@ export class HomePageComponent implements OnInit {
     this.viewMode = mode;
   }
 
-handleNewCategory() {
-    const nuevaCaja = {
-      id: Date.now(), 
-      name: `Nueva Caja ${this.categories.length + 1}`, 
-      itemCount: 0
-    };
-
-   this.categories.unshift(nuevaCaja);
-
-    this.searchQuery = '';
+  // Ahora el botón "Nueva Caja" abre el modal
+  handleNewCategory() {
+    this.newBox = { name: '', isProtected: false, pin: '' };
+    this.mostrarModal = true;
   }
 
- handleEditCategory(id: number) {
-    const category = this.categories.find(c => c.id === id);
+  closeModal() {
+    this.mostrarModal = false;
+  }
+
+  saveBox() {
+    if (!this.newBox.name.trim()) return;
+
+    this.boxService.createBox(this.newBox.name).subscribe({
+      next: (createdBox) => {
+        const newBoxView = {
+          ...createdBox,
+          isEditing: false,
+          itemCount: 0,
+        };
+
+        this.categories.unshift(newBoxView);
+        this.closeModal();
+        this.searchQuery = '';
+      },
+      error: (err) => console.error('Error al crear la caja en Django', err),
+    });
+  }
+
+  handleEditCategory(id: number) {
+    const category = this.categories.find((c) => c.id === id);
     if (category) {
-      const nuevoNombre = prompt('Escribe el nuevo nombre de la caja:', category.name);
-      if (nuevoNombre) {
-        category.name = nuevoNombre;
-      }
+      category.isEditing = true; // Esto activa el input de la tarjeta
     }
   }
- handleDeleteCategory(id: number) {
-    const confirmar = confirm('¿Estás seguro de que quieres eliminar esta caja?');
-    if (confirmar) {
-      this.categories = this.categories.filter(c => c.id !== id);
+
+  saveCategory(category: any, newName: string) {
+    if (!category.isEditing) return;
+
+    const cleanName = newName.trim();
+    if (!cleanName) {
+      this.cancelEdit(category);
+      return;
+    }
+
+    this.boxService.updateBox(category.id, cleanName).subscribe({
+      next: (updatedBox) => {
+        category.name = updatedBox.name;
+        category.isEditing = false;
+      },
+      error: (err) => {
+        console.error('Error al actualizar el nombre en Django', err);
+        category.isEditing = false;
+      },
+    });
+  }
+
+  cancelEdit(category: any) {
+    category.isEditing = false;
+  }
+
+  handleDeleteCategory(id: number) {
+    const confirmation = confirm('¿Estás seguro de que quieres eliminar esta caja?');
+    if (confirmation) {
+      this.boxService.deleteBox(id).subscribe({
+        next: () => {
+          this.categories = this.categories.filter((c) => c.id !== id);
+        },
+        error: (err) => console.error('Error al borrar la caja en Django', err),
+      });
     }
   }
 }

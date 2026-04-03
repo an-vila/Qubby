@@ -3,28 +3,27 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ObjectCardComponent } from '../../components/object-card/object-card.component';
+import { BoxService } from '../../services/box.service';
 
 @Component({
   selector: 'app-box-detail-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, ObjectCardComponent, FormsModule], 
+  imports: [CommonModule, RouterLink, ObjectCardComponent, FormsModule],
   templateUrl: './box-detail-page.component.html',
-  styleUrls: ['./box-detail-page.component.css']
+  styleUrls: ['./box-detail-page.component.css'],
 })
 export class BoxDetailPageComponent implements OnInit {
   boxId: string | null = '';
-  
+
   searchQuery: string = '';
   viewMode: 'grid' | 'list' = 'grid';
 
   selectedObject: any = null;
-  mostrarModalQR: boolean = false; 
-  isProtected: boolean = true; 
+  mostrarModalQR: boolean = false;
+  isProtected: boolean = true;
 
-  get qrCodeUrl(): string {
-    const id = this.boxId || '1'; 
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://qubby.app/box/${id}`;
-  }
+  qrCodeUrl: string = '';
+  loadingQR: boolean = false;
 
   // Datos de ejemplo
   objetos = [
@@ -37,7 +36,7 @@ export class BoxDetailPageComponent implements OnInit {
       tags: ['Cable', 'HDMI', '2m'],
       registrationDate: '15/01/2025',
       quantity: 3,
-      status: 'Guardado'
+      status: 'Guardado',
     },
     {
       id: 2,
@@ -48,18 +47,37 @@ export class BoxDetailPageComponent implements OnInit {
       tags: ['Cargador', '20W'],
       registrationDate: '18/01/2025',
       quantity: 1,
-      status: 'Prestado'
-    }
+      status: 'Prestado',
+    },
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private boxService: BoxService,
+  ) {}
 
   ngOnInit() {
     this.boxId = this.route.snapshot.paramMap.get('id');
   }
 
-  abrirModalQR() {
+  openModalQR() {
     this.mostrarModalQR = true;
+
+    if (!this.qrCodeUrl && this.boxId) {
+      this.loadingQR = true;
+
+      this.boxService.getBoxQrCode(this.boxId).subscribe({
+        next: (res) => {
+          this.qrCodeUrl = res.qr_image;
+          this.loadingQR = false;
+        },
+        error: (err) => {
+          console.error('Error al generar el QR en Django', err);
+          this.loadingQR = false;
+        },
+      });
+    }
   }
 
   cerrarModalQR() {
@@ -71,13 +89,13 @@ export class BoxDetailPageComponent implements OnInit {
   }
 
   eliminarCaja() {
-    if(confirm("¿Seguro que quieres borrar toda la caja?")) {
+    if (confirm('¿Seguro que quieres borrar toda la caja?')) {
       this.router.navigate(['/home']);
     }
   }
 
   abrirDetalles(obj: any) {
-    this.selectedObject = obj; 
+    this.selectedObject = obj;
   }
 
   cerrarDetalles() {
@@ -89,9 +107,9 @@ export class BoxDetailPageComponent implements OnInit {
   }
 
   eliminarObjeto(obj: any) {
-    if(confirm('¿Borrar ' + obj.name + ' de esta caja?')) {
-      this.objetos = this.objetos.filter(o => o.id !== obj.id);
-      this.cerrarDetalles(); 
+    if (confirm('¿Borrar ' + obj.name + ' de esta caja?')) {
+      this.objetos = this.objetos.filter((o) => o.id !== obj.id);
+      this.cerrarDetalles();
     }
   }
 }

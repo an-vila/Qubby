@@ -42,34 +42,23 @@
     <p class="text-muted small mb-0">{{ itemCount }} artículos</p>
   </div>
 
-<<<<<<< HEAD
   @if (!isEditing) {
     <div class="d-flex gap-2 opacity-50 action-buttons">
-      <button (click)="$event.stopPropagation(); edit.emit()" class="btn btn-sm btn-light text-primary rounded-circle p-2" title="Editar">
+      
+      <button 
+        (click)="$event.stopPropagation(); edit.emit()" 
+        class="btn btn-sm p-2 boton-editar" 
+        title="Editar">
         <i class="bi bi-pencil-fill"></i>
       </button>
-      <button (click)="$event.stopPropagation(); delete.emit()" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Eliminar">
+
+      <button 
+        (click)="$event.stopPropagation(); delete.emit()" 
+        class="btn btn-sm p-2 boton-eliminar" 
+        title="Eliminar">
         <i class="bi bi-trash-fill"></i>
       </button>
+
     </div>
   }
-=======
-  <div class="d-flex gap-2 opacity-50 action-buttons">
-    
-    <button 
-      (click)="$event.stopPropagation(); edit.emit()" 
-      class="btn btn-sm p-2 boton-editar" 
-      title="Editar">
-      <i class="bi bi-pencil-fill"></i>
-    </button>
-
-    <button 
-      (click)="$event.stopPropagation(); delete.emit()" 
-      class="btn btn-sm p-2 boton-eliminar" 
-      title="Eliminar">
-      <i class="bi bi-trash-fill"></i>
-    </button>
-
-  </div>
->>>>>>> feat/auth
 </div>

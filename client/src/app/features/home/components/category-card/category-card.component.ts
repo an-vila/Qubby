@@ -1,39 +1,36 @@
-import { Component, ElementRef, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-<<<<<<< HEAD
-import { FormsModule } from '@angular/forms';
-=======
-import { RouterLink } from '@angular/router'; 
->>>>>>> feat/auth
+import { FormsModule } from '@angular/forms'; // Tu parte
+import { RouterLink } from '@angular/router'; // La parte de tu compañero
 
 @Component({
   selector: 'app-category-card',
   standalone: true,
-<<<<<<< HEAD
-  imports: [CommonModule, FormsModule],
-=======
-  imports: [CommonModule, RouterLink], 
->>>>>>> feat/auth
+  imports: [CommonModule, FormsModule, RouterLink], // Combinados
   templateUrl: './category-card.component.html',
   styleUrls: ['./category-card.component.css'],
 })
 export class CategoryCardComponent {
-<<<<<<< HEAD
-=======
-  
-  @Input() id: number = 0; 
->>>>>>> feat/auth
+  @Input() id: number = 0; // Añadido por tu compañero
   @Input() name: string = '';
   @Input() itemCount: number = 0;
   @Input() viewMode: 'list' | 'grid' = 'grid';
-  @Input() isEditing: boolean = false;
+  @Input() isEditing: boolean = false; // Tu estado de edición
 
   @Output() delete = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
-  @Output() save = new EventEmitter<string>(); 
+  @Output() save = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<void>();
 
-  editName: string = ''; 
+  editName: string = '';
 
   @ViewChild('editInput') editInput!: ElementRef<HTMLInputElement>;
 

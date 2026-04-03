@@ -12,7 +12,7 @@
       <p class="small opacity-75">{{ objetos.length }} objetos</p>
     </div>
     <nav class="d-flex flex-column gap-2">
-      <button (click)="abrirModalQR()" class="btn btn-sidebar d-flex align-items-center gap-2">
+      <button (click)="openModalQR()" class="btn btn-sidebar d-flex align-items-center gap-2">
         <i class="bi bi-qr-code text-orange-qubby"></i> Generar QR
       </button>
       <button (click)="eliminarCaja()" class="btn btn-sidebar d-flex align-items-center gap-2 text-orange-qubby">
@@ -38,7 +38,7 @@
         
         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2 rounded-4 mt-2">
           <li>
-            <button class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 fw-medium" (click)="abrirModalQR()">
+            <button class="dropdown-item d-flex align-items-center gap-3 py-2 rounded-3 fw-medium" (click)="openModalQR()">
               <i class="bi bi-qr-code fs-5 text-orange-qubby"></i>
               <span class="text-secondary">Generar QR</span>
             </button>
