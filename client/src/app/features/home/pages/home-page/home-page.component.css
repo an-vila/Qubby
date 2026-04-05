@@ -76,3 +76,33 @@ input:focus {
     max-width: 1000px !important; 
   }
 }
+.modal-backdrop-custom {
+  z-index: 10000 !important; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px); 
+}
+
+
+.scale-in {
+  z-index: 10001 !important;
+  animation: modalAppear 0.25s ease-out;
+}
+
+
+@keyframes modalAppear {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+.bg-danger-subtle {
+  background-color: #fee2e2 !important;
+}

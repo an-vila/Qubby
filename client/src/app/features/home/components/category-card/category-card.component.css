@@ -76,3 +76,52 @@
     transform: scale(1.1);
     opacity: 1;
 }
+.card-container, .category-card, .object-card {
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.card-container:hover, .category-card:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.02);
+}
+
+
+.edit-popover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 110%; 
+    background: white;
+    border: 1px solid rgba(255, 164, 0, 0.3);
+    z-index: 10;
+    animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: translate(-50%, -40%) scale(0.95); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.btn-xs-custom {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+}
+
+
+.edit-popover input {
+    font-size: 0.9rem;
+    color: #333;
+    outline: none !important;
+}
+
+.edit-popover input:focus {
+    box-shadow: none;
+}
+:host-context(.es-list) .edit-popover {
+    left: 0;
+    transform: translateY(-50%);
+    width: 250px;
+}

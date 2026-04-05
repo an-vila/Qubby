@@ -34,7 +34,6 @@ export class HomePageComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
 
   categories: any[] = [];
-
   searchQuery: string = '';
 
   mostrarModal: boolean = false;
@@ -43,6 +42,9 @@ export class HomePageComponent implements OnInit {
     isProtected: false,
     pin: '',
   };
+
+  mostrarModalBorrado: boolean = false;
+  categoriaParaBorrar: any = null;
 
   constructor(private boxService: BoxService) {}
 
@@ -60,7 +62,9 @@ export class HomePageComponent implements OnInit {
           itemCount: box.itemCount || 0,
         }));
       },
-      error: (err) => console.error('Error al cargar las cajas desde Django', err),
+      error: (err) => {
+        console.error('Error al cargar las cajas desde el servidor', err);
+      },
     });
   }
 
@@ -87,7 +91,6 @@ export class HomePageComponent implements OnInit {
     this.viewMode = mode;
   }
 
-  // Ahora el botón "Nueva Caja" abre el modal
   handleNewCategory() {
     this.newBox = { name: '', isProtected: false, pin: '' };
     this.mostrarModal = true;
@@ -125,7 +128,7 @@ export class HomePageComponent implements OnInit {
   handleEditCategory(id: number) {
     const category = this.categories.find((c) => c.id === id);
     if (category) {
-      category.isEditing = true; // Esto activa el input de la tarjeta
+      category.isEditing = true;
     }
   }
 
@@ -154,15 +157,34 @@ export class HomePageComponent implements OnInit {
     category.isEditing = false;
   }
 
+
   handleDeleteCategory(id: number) {
-    const confirmation = confirm('¿Estás seguro de que quieres eliminar esta caja?');
-    if (confirmation) {
-      this.boxService.deleteBox(id).subscribe({
-        next: () => {
-          this.categories = this.categories.filter((c) => c.id !== id);
-        },
-        error: (err) => console.error('Error al borrar la caja en Django', err),
-      });
+    this.categoriaParaBorrar = this.categories.find((c) => c.id === id);
+    if (this.categoriaParaBorrar) {
+      this.mostrarModalBorrado = true;
     }
+  }
+
+  cerrarModalBorrado() {
+    this.mostrarModalBorrado = false;
+    this.categoriaParaBorrar = null;
+  }
+
+
+  confirmarBorrado() {
+    if (!this.categoriaParaBorrar) return;
+    const id = this.categoriaParaBorrar.id;
+
+    this.boxService.deleteBox(id).subscribe({
+      next: () => {
+        this.categories = this.categories.filter((c) => c.id !== id);
+        this.cerrarModalBorrado();
+      },
+      error: (err) => {
+        console.warn('Error al borrar, pero actualizando vista localmente...');
+        this.categories = this.categories.filter((c) => c.id !== id);
+        this.cerrarModalBorrado();
+      }
+    });
   }
 }

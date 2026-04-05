@@ -1,0 +1,77 @@
+<div class="min-vh-100 bg-gray-main pb-5">
+  
+  <header class="sticky-top p-3 d-flex align-items-center gap-3 settings-header z-3 shadow-sm">
+    <button routerLink="/home" class="btn p-0 text-orange-qubby shadow-none d-flex align-items-center justify-content-center btn-back border-0 bg-transparent">
+  <i class="bi bi-chevron-left fs-4"></i>
+</button>
+    <h1 class="fs-5 fw-bold mb-0 text-orange-qubby">Mi Perfil</h1>
+  </header>
+
+  <main class="container mx-auto px-3 mt-4 settings-container">
+    
+    <div class="text-center mb-5 fade-in">
+      <div class="position-relative d-inline-block">
+        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-3 border-white avatar-wrapper overflow-hidden">
+          <i class="bi bi-person-fill text-secondary opacity-50 icon-avatar"></i>
+        </div>
+        <button class="btn btn-orange-qubby rounded-circle position-absolute bottom-0 end-0 p-0 shadow-sm d-flex align-items-center justify-content-center border border-2 border-white btn-camera">
+          <i class="bi bi-camera-fill text-white small"></i>
+        </button>
+      </div>
+      <h2 class="fs-4 fw-bold mt-3 mb-0 text-dark">Tu Nombre</h2>
+      <p class="text-muted small">tu_correo@qubby.com</p>
+    </div>
+
+    <div class="bg-white rounded-4 shadow-sm p-4 mb-4 scale-in">
+      <h3 class="fs-6 fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill text-orange-qubby me-2"></i>Datos Personales</h3>
+      
+      <div class="mb-3">
+        <label class="form-label small fw-medium text-secondary">Nombre completo</label>
+        <input type="text" class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none" placeholder="Escribe tu nombre">
+      </div>
+      
+      <div class="mb-4">
+        <label class="form-label small fw-medium text-secondary">Correo electrónico</label>
+        <input type="email" class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none" placeholder="Escribe tu email">
+      </div>
+
+      <button class="btn btn-orange-qubby w-100 rounded-3 py-2 fw-bold text-white shadow-sm border-0">
+        Guardar cambios
+      </button>
+    </div>
+
+    <div class="bg-white rounded-4 shadow-sm p-4 mb-4 scale-in anim-delay-1">
+      <h3 class="fs-6 fw-bold text-dark mb-3"><i class="bi bi-shield-lock-fill text-orange-qubby me-2"></i>Seguridad</h3>
+      
+      <div class="mb-3">
+        <label class="form-label small fw-medium text-secondary">Contraseña actual</label>
+        <input type="password" class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none" placeholder="••••••••">
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label small fw-medium text-secondary">Nueva contraseña</label>
+        <input type="password" class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none" placeholder="••••••••">
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-medium text-secondary">Repetir nueva contraseña</label>
+        <input type="password" class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none" placeholder="••••••••">
+      </div>
+
+      <button class="btn btn-outline-secondary w-100 rounded-3 py-2 fw-bold">
+        Actualizar contraseña
+      </button>
+    </div>
+
+    <div class="bg-white rounded-4 shadow-sm p-4 mb-5 border border-danger-subtle scale-in anim-delay-2">
+      <h3 class="fs-6 fw-bold text-danger mb-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Zona de peligro</h3>
+      <p class="text-muted small mb-4">Cerrar sesión en este dispositivo. Tendrás que volver a introducir tus credenciales para acceder a tus cajas.</p>
+      
+      <button class="btn bg-danger-subtle text-danger border border-danger-subtle w-100 rounded-3 py-2 fw-bold d-flex align-items-center justify-content-center gap-2 transition-all hover-danger">
+        <i class="bi bi-box-arrow-right"></i>
+        Cerrar sesión
+      </button>
+    </div>
+
+  </main>
+</div>

@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // 👈 1. Añadimos esta importación
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule], 
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
@@ -16,5 +17,5 @@ export class SidebarComponent {
 
   toggleSettings() {
     this.isSettingsOpen = !this.isSettingsOpen;
- }
+  }
 }

@@ -15,6 +15,12 @@ export const routes: Routes = [
       import('./features/home/pages/home-page/home-page.component').then(m => m.HomePageComponent)
   },
   {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () => 
+      import('./features/home/pages/settings-page/settings-page.component').then(m => m.SettingsPageComponent)
+  },
+  {
     path: 'box/:id',
     canActivate: [authGuard],
     loadComponent: () => 

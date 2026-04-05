@@ -14,6 +14,10 @@ export class BoxService {
   getBoxes(): Observable<Box[]> {
     return this.http.get<Box[]>(this.apiUrl);
   }
+  
+  getBox(id: string | number): Observable<Box> {
+    return this.http.get<Box>(`${this.apiUrl}${id}/`);
+  }
 
   createBox(boxData: { name: string; is_protected: boolean; pin: string }): Observable<Box> {
     return this.http.post<Box>(this.apiUrl, boxData);
@@ -30,6 +34,7 @@ export class BoxService {
   getBoxQrCode(boxId: string | number) {
     return this.http.get<any>(`${this.apiUrl}${boxId}/qrcode/`);
   }
+  
 
   verifyPin(boxId: string | number, pin: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}${boxId}/verify_pin/`, { pin });

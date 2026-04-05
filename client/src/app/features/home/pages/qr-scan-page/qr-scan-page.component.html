@@ -93,19 +93,22 @@
     </div>
   </main>
   
-  @if (selectedObject) {
+@if (selectedObject) {
     <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 z-3 modal-backdrop-dark" (click)="cerrarDetalles()">
       <div class="custom-modal bg-white rounded-4 d-flex flex-column shadow-lg w-100 mx-3 modal-scan-content" (click)="$event.stopPropagation()">
         
         <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
           <h5 class="fw-bold mb-0 text-dark">Detalles del objeto</h5>
-          <button class="btn-close" (click)="cerrarDetalles()"></button>
+          <button class="btn-close shadow-none" (click)="cerrarDetalles()"></button>
         </div>
 
         <div class="p-4 overflow-auto">
           <img [src]="selectedObject.image" class="w-100 rounded-4 mb-4 object-fit-cover shadow-sm modal-scan-img">
-          <h3 class="fw-bold text-dark mb-0">{{ selectedObject.name }}</h3>
-          <p class="text-secondary small mb-4">Código: <span class="text-muted">{{ selectedObject.code }}</span></p>
+          
+          <div class="mb-2">
+            <h3 class="fw-bold text-dark mb-0">{{ selectedObject.name }}</h3>
+            <p class="text-secondary small">Código: <span class="text-muted">{{ selectedObject.code }}</span></p>
+          </div>
           
           <h6 class="fw-bold text-dark small mb-2">Etiquetas</h6>
           <div class="d-flex flex-wrap gap-2 mb-4">
@@ -114,21 +117,13 @@
             }
           </div>
           
-          <div class="row">
-            <div class="col-6">
-              <h6 class="fw-bold text-dark small mb-1">Cantidad</h6>
-              <p class="text-muted small mb-0">{{ selectedObject.quantity }} uds.</p>
-            </div>
+          <div class="bg-light p-3 rounded-4">
+            <h6 class="fw-bold text-dark small mb-1">Cantidad disponible</h6>
+            <p class="text-muted mb-0 fs-5">{{ selectedObject.quantity }} unidades</p>
           </div>
         </div>
 
-        <div class="p-3 border-top text-center bg-light rounded-bottom-4">
-          <button class="btn text-white py-2 fw-bold rounded-pill w-100 shadow-sm bg-scan-accent" (click)="cerrarDetalles()">
-            Cerrar detalles
-          </button>
         </div>
-
-      </div>
     </div>
   }
 

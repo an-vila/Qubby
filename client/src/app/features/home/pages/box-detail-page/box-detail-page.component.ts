@@ -20,12 +20,12 @@ export class BoxDetailPageComponent implements OnInit {
 
   selectedObject: any = null;
   mostrarModalQR: boolean = false;
-  isProtected: boolean = true;
+  
+  isProtected: boolean = false; 
 
   qrCodeUrl: string = '';
   loadingQR: boolean = false;
 
-  // Datos de ejemplo
   objetos = [
     {
       id: 1,
@@ -59,7 +59,26 @@ export class BoxDetailPageComponent implements OnInit {
 
   ngOnInit() {
     this.boxId = this.route.snapshot.paramMap.get('id');
+
+    if (this.boxId) {
+      this.cargarDetallesCaja();
+    }
   }
+
+
+  cargarDetallesCaja() {
+    if (!this.boxId) return;
+
+    this.boxService.getBox(this.boxId).subscribe({
+      next: (box: any ) => {
+        this.isProtected = box.is_protected;
+      },
+      error: (err) => {
+        console.error('Error al obtener los detalles de la caja:', err);
+      }
+    });
+  }
+
 
   openModalQR() {
     this.mostrarModalQR = true;
@@ -73,7 +92,7 @@ export class BoxDetailPageComponent implements OnInit {
           this.loadingQR = false;
         },
         error: (err) => {
-          console.error('Error al generar el QR en Django', err);
+          console.error('Error al generar el QR en Django:', err);
           this.loadingQR = false;
         },
       });
@@ -88,11 +107,15 @@ export class BoxDetailPageComponent implements OnInit {
     window.print();
   }
 
+
   eliminarCaja() {
-    if (confirm('¿Seguro que quieres borrar toda la caja?')) {
+
+    const confirmacion = confirm('¿Seguro que quieres borrar toda la caja y su contenido?');
+    if (confirmacion) {
       this.router.navigate(['/home']);
     }
   }
+
 
   abrirDetalles(obj: any) {
     this.selectedObject = obj;
@@ -103,11 +126,12 @@ export class BoxDetailPageComponent implements OnInit {
   }
 
   editarObjeto(obj: any) {
-    alert('Editar objeto: ' + obj.name);
+    // TODO: Implementar navegación a la página de edición o abrir modal
+    console.log('Navegando a edición de:', obj.name);
   }
 
   eliminarObjeto(obj: any) {
-    if (confirm('¿Borrar ' + obj.name + ' de esta caja?')) {
+    if (confirm(`¿Deseas eliminar "${obj.name}" definitivamente?`)) {
       this.objetos = this.objetos.filter((o) => o.id !== obj.id);
       this.cerrarDetalles();
     }

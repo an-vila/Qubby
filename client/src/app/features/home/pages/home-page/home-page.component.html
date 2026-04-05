@@ -119,7 +119,7 @@
   </div>
 
   @if (mostrarModal) {
-    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 z-3" 
+    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" 
          style="background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
          (click)="closeModal()">
       
@@ -141,12 +141,20 @@
           </div>
 
           <div class="bg-light p-3 rounded-4 mb-4 border border-light-subtle">
-            <div class="form-check form-switch d-flex align-items-center gap-2 mb-0">
-              <input class="form-check-input fs-4 mt-0 border-secondary-subtle" type="checkbox" role="switch" id="pinSwitch" 
-                     name="isProtected" [(ngModel)]="newBox.isProtected">
-              <label class="form-check-label fw-bold text-dark" for="pinSwitch">
-                <i class="bi bi-shield-lock-fill text-orange-qubby me-1"></i> Proteger con PIN
-              </label>
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock-fill text-orange-qubby fs-5"></i>
+                <label class="fw-bold text-dark mb-0" style="cursor: pointer;" for="pinSwitch">
+                  Proteger con PIN
+                </label>
+              </div>
+              
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input mt-0 fs-4 border-secondary-subtle" 
+                       type="checkbox" role="switch" id="pinSwitch" 
+                       name="isProtected" [(ngModel)]="newBox.isProtected"
+                       style="cursor: pointer;">
+              </div>
             </div>
 
             @if (newBox.isProtected) {
@@ -156,21 +164,22 @@
                        class="form-control text-center fs-3 fw-bold shadow-sm rounded-3 py-2" 
                        style="letter-spacing: 1rem;"
                        placeholder="0000" maxlength="4" inputmode="numeric">
+                
                 <div class="mt-2 d-flex align-items-start gap-2">
-                  <i class="bi bi-exclamation-triangle-fill text-warning small mt-1"></i>
-                  <p class="text-muted" style="font-size: 0.75rem;">
-                    Este PIN se solicitará a cualquier persona que escanee el código QR de esta caja.
+                  <i class="bi bi-info-circle text-orange-qubby small mt-1"></i>
+                  <p class="text-muted mb-0" style="font-size: 0.75rem;">
+                    Se solicitará este PIN al escanear el QR de la caja.
                   </p>
                 </div>
               </div>
             }
           </div>
 
-          <div class="d-flex gap-2 justify-content-end mt-2">
-            <button type="button" class="btn btn-light px-4 py-2 rounded-3 fw-medium text-secondary" (click)="closeModal()">
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-light flex-grow-1 py-2 rounded-3 fw-medium text-secondary" (click)="closeModal()">
               Cancelar
             </button>
-            <button type="submit" class="btn btn-orange-qubby text-white px-4 py-2 rounded-3 shadow-sm fw-bold">
+            <button type="submit" class="btn btn-orange-qubby text-white flex-grow-1 py-2 rounded-3 shadow-sm fw-bold">
               Guardar Caja
             </button>
           </div>
@@ -178,4 +187,41 @@
       </div>
     </div>
   }
+
+  @if (mostrarModalBorrado) {
+    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" 
+         style="background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
+         (click)="cerrarModalBorrado()">
+      
+      <div class="bg-white rounded-4 shadow-lg p-4 w-100 mx-3 scale-in" 
+           style="max-width: 400px;" 
+           (click)="$event.stopPropagation()">
+        
+        <div class="text-center mb-4">
+          <div class="bg-danger-subtle rounded-circle d-inline-flex p-3 mb-3">
+            <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+          </div>
+          <h3 class="fs-5 fw-bold text-dark">¿Eliminar esta caja?</h3>
+          <p class="text-muted small px-3">
+            Estás a punto de borrar <strong>"{{ categoriaParaBorrar?.name }}"</strong>. 
+            Esta acción no se puede deshacer y perderás todos los objetos que contenga.
+          </p>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="button" 
+                  class="btn btn-light flex-grow-1 py-2 rounded-3 fw-medium text-secondary" 
+                  (click)="cerrarModalBorrado()">
+            No, volver
+          </button>
+          <button type="button" 
+                  class="btn btn-danger flex-grow-1 py-2 rounded-3 shadow-sm fw-bold" 
+                  (click)="confirmarBorrado()">
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>

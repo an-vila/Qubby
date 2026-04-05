@@ -77,31 +77,56 @@
         </div>
       </div>
 
-      <div [class.mx-auto]="viewMode === 'list'" [style.max-width]="viewMode === 'list' ? '800px' : 'none'">
-        <div class="row g-4">
-          <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3 d-none d-lg-block' : 'col-12 d-none d-lg-block'">
-            <button [routerLink]="['/box', boxId, 'add']" class="btn-add-object w-100 rounded-4 d-flex align-items-center justify-content-center shadow-sm" [ngClass]="viewMode === 'grid' ? 'h-100 p-4 flex-column gap-3' : 'py-3 flex-row gap-3 btn-list-mode'">
-              <i class="bi bi-plus-lg" [class.fs-1]="viewMode === 'grid'" [class.fs-4]="viewMode === 'list'"></i>
-              <span class="fw-bold" [class.fs-5]="viewMode === 'list'">Añadir Objeto</span>
-            </button>
+      @if (objetos.length === 0) {
+        <div class="d-flex flex-column align-items-center justify-content-center py-5 fade-in text-center mt-sm-5 mt-4">
+          <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center mb-4 border border-light-subtle" style="width: 120px; height: 120px;">
+            <i class="bi text-muted opacity-50" [ngClass]="searchQuery ? 'bi-search' : 'bi-box-seam'" style="font-size: 3.5rem;"></i>
           </div>
-          @for (obj of objetos; track obj.id) {
-            <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3' : 'col-12'">
-              <app-object-card [image]="obj.image" [name]="obj.name" [code]="obj.code" [tags]="obj.tags" [viewMode]="viewMode" (viewDetails)="abrirDetalles(obj)" (edit)="editarObjeto(obj)" (delete)="eliminarObjeto(obj)"></app-object-card>
-            </div>
+          
+          <h3 class="fw-bold text-dark mb-2">
+            {{ searchQuery ? 'No hay resultados' : 'Esta caja está vacía' }}
+          </h3>
+          
+          <p class="text-muted mb-4 px-3" style="max-width: 450px;">
+            {{ searchQuery 
+              ? 'No hemos encontrado ningún objeto que coincida con "' + searchQuery + '". Prueba con otro nombre.' 
+              : 'Aún no has añadido ningún objeto a esta caja. ¡Empieza a llenar tu inventario!' }}
+          </p>
+
+          @if (!searchQuery) {
+            <button [routerLink]="['/box', boxId, 'add']" class="btn btn-orange-qubby text-white px-4 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2 transition-all hover-lift">
+              <i class="bi bi-plus-lg fs-5"></i>
+              Añadir mi primer objeto
+            </button>
           }
         </div>
-      </div>
+      } @else {
+        <div [class.mx-auto]="viewMode === 'list'" [style.max-width]="viewMode === 'list' ? '800px' : 'none'">
+          <div class="row g-4">
+            <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3 d-none d-lg-block' : 'col-12 d-none d-lg-block'">
+              <button [routerLink]="['/box', boxId, 'add']" class="btn-add-object w-100 rounded-4 d-flex align-items-center justify-content-center shadow-sm" [ngClass]="viewMode === 'grid' ? 'h-100 p-4 flex-column gap-3' : 'py-3 flex-row gap-3 btn-list-mode'">
+                <i class="bi bi-plus-lg" [class.fs-1]="viewMode === 'grid'" [class.fs-4]="viewMode === 'list'"></i>
+                <span class="fw-bold" [class.fs-5]="viewMode === 'list'">Añadir Objeto</span>
+              </button>
+            </div>
+            @for (obj of objetos; track obj.id) {
+              <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3' : 'col-12'">
+                <app-object-card [image]="obj.image" [name]="obj.name" [code]="obj.code" [tags]="obj.tags" [viewMode]="viewMode" (viewDetails)="abrirDetalles(obj)" (edit)="editarObjeto(obj)" (delete)="eliminarObjeto(obj)"></app-object-card>
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
     <button [routerLink]="['/box', boxId, 'add']" class="btn-fab d-lg-none"><i class="bi bi-plus-lg"></i></button>
   </main>
 
   @if (selectedObject) {
-    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center" (click)="cerrarDetalles()">
-      <div class="custom-modal bg-white rounded-4 d-flex flex-column shadow-lg" (click)="$event.stopPropagation()">
+    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" style="z-index: 10000; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" (click)="cerrarDetalles()">
+      <div class="custom-modal bg-white rounded-4 d-flex flex-column shadow-lg w-100 mx-3" style="max-width: 500px;" (click)="$event.stopPropagation()">
         <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
           <h5 class="fw-bold mb-0 text-dark">Detalles del objeto</h5>
-          <button class="btn-close" (click)="cerrarDetalles()"></button>
+          <button class="btn-close shadow-none" (click)="cerrarDetalles()"></button>
         </div>
         <div class="p-4 overflow-auto">
           <img [src]="selectedObject.image" class="w-100 rounded-4 mb-4 object-fit-cover shadow-sm modal-image-custom">
@@ -125,57 +150,49 @@
               <p class="text-muted small mb-0">{{ selectedObject.quantity }}</p>
             </div>
           </div>
-          <h6 class="fw-bold text-dark small mb-2">Estado</h6>
-          <div class="mb-2">
-            <span class="badge rounded-pill px-3 py-2 fw-medium small" [ngClass]="{'bg-success-subtle text-success border border-success-subtle': selectedObject.status === 'Guardado', 'bg-warning-subtle text-warning border border-warning-subtle': selectedObject.status === 'Prestado', 'bg-danger-subtle text-danger border border-danger-subtle': selectedObject.status === 'Dañado'}">{{ selectedObject.status }}</span>
-          </div>
         </div>
         <div class="p-3 border-top d-flex gap-2 bg-white rounded-bottom-4">
-          <button class="btn btn-orange flex-grow-1 py-2 fw-bold rounded-3 shadow-sm" (click)="editarObjeto(selectedObject)">Editar objeto</button>
-          <button class="btn btn-outline-secondary py-2 fw-bold rounded-3 px-3" (click)="cerrarDetalles()">Cerrar</button>
+          <button class="btn btn-orange flex-grow-1 py-2 fw-bold rounded-3 shadow-sm text-white" (click)="editarObjeto(selectedObject)">Editar objeto</button>
         </div>
       </div>
     </div>
   }
 
-  @if (mostrarModalQR) {
-    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 z-3" 
-         style="background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
+@if (mostrarModalQR) {
+    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" 
+         style="z-index: 10000; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
          (click)="cerrarModalQR()">
       
       <div class="bg-white rounded-4 shadow-lg p-0 overflow-hidden w-100 mx-3 scale-in" 
-           style="max-width: 480px;" 
+           style="max-width: 400px;" 
            (click)="$event.stopPropagation()">
         
-        <div class="p-3 d-flex align-items-center justify-content-between border-bottom" style="background-color: #535252;">
+        <div class="p-3 d-flex align-items-center justify-content-between border-bottom modal-header-dark">
           <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-qr-code text-orange-qubby fs-5"></i>
+            <i class="bi bi-qr-code-scan text-orange-qubby fs-4"></i>
             <h3 class="fs-6 fw-bold text-white mb-0">Generar Código QR</h3>
           </div>
-          <button class="btn text-white border-0 p-0 opacity-75" (click)="cerrarModalQR()">
-            <i class="bi bi-x-lg"></i>
+          <button class="btn text-white border-0 p-0 opacity-75 shadow-none" (click)="cerrarModalQR()">
+            <i class="bi bi-x-lg fs-5"></i>
           </button>
         </div>
 
         <div class="p-4 text-center seccion-imprimible">
-          <div class="bg-light rounded-4 p-4 mb-3 border border-light-subtle text-center">
+          <div class="bg-light rounded-4 p-4 mb-4 border border-light-subtle text-center">
             
             @if (isProtected) {
               <div class="mb-3">
                 <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1 fw-medium">
-                  <i class="bi bi-lock-fill me-1"></i> Caja Protegida con PIN
+                  <i class="bi bi-lock-fill me-1"></i> Protegida con PIN
                 </span>
               </div>
             }
 
             <div class="bg-white border rounded-4 p-3 d-inline-block mb-3 shadow-sm">
-              <img [src]="qrCodeUrl" 
-                   alt="Código QR" 
-                   class="img-fluid" 
-                   style="width: 180px; height: 180px;">
+              <img [src]="qrCodeUrl" alt="Código QR" class="img-fluid" style="width: 160px; height: 160px;">
             </div>
             
-            <h4 class="fs-6 fw-bold text-dark mb-1">Caja {{ boxId }}</h4>
+            <h4 class="fs-5 fw-bold text-dark mb-1">Caja {{ boxId }}</h4>
             
             @if (isProtected) {
               <p class="text-danger fw-medium small mb-0 px-3">
@@ -188,17 +205,16 @@
             }
           </div>
 
-          <div class="d-flex gap-2">
-            <button (click)="imprimirQR()" class="btn btn-orange flex-grow-1 rounded-3 py-2 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2">
-              <i class="bi bi-printer"></i>
-              Imprimir
-            </button>
-            <button (click)="cerrarModalQR()" class="btn btn-outline-secondary rounded-3 px-3">
-              Cerrar
+          <div class="d-grid">
+            <button (click)="imprimirQR()" class="btn btn-orange-qubby rounded-3 py-3 fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 border-0 fs-6">
+              <i class="bi bi-printer fs-5"></i>
+              Imprimir Código
             </button>
           </div>
+
         </div>
       </div>
     </div>
   }
+
 </div>
