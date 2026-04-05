@@ -7,7 +7,7 @@ import { Box } from '../interfaces/home.interfaces';
   providedIn: 'root',
 })
 export class BoxService {
-  private apiUrl = 'http://localhost:8000/api/boxes/';
+  private apiUrl = 'http://192.168.86.102:8000/api/boxes/';
 
   constructor(private http: HttpClient) {}
 
@@ -15,8 +15,8 @@ export class BoxService {
     return this.http.get<Box[]>(this.apiUrl);
   }
 
-  createBox(name: string): Observable<Box> {
-    return this.http.post<Box>(this.apiUrl, { name });
+  createBox(boxData: { name: string; is_protected: boolean; pin: string }): Observable<Box> {
+    return this.http.post<Box>(this.apiUrl, boxData);
   }
 
   updateBox(id: number, name: string): Observable<Box> {
@@ -29,5 +29,9 @@ export class BoxService {
 
   getBoxQrCode(boxId: string | number) {
     return this.http.get<any>(`${this.apiUrl}${boxId}/qrcode/`);
+  }
+
+  verifyPin(boxId: string | number, pin: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}${boxId}/verify_pin/`, { pin });
   }
 }

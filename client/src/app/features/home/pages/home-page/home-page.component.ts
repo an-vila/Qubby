@@ -100,7 +100,13 @@ export class HomePageComponent implements OnInit {
   saveBox() {
     if (!this.newBox.name.trim()) return;
 
-    this.boxService.createBox(this.newBox.name).subscribe({
+    const boxData = {
+      name: this.newBox.name,
+      is_protected: this.newBox.isProtected,
+      pin: this.newBox.isProtected ? this.newBox.pin : '',
+    };
+
+    this.boxService.createBox(boxData).subscribe({
       next: (createdBox) => {
         const newBoxView = {
           ...createdBox,

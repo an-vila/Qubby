@@ -1,4 +1,39 @@
 <div class="min-vh-100 pb-5 bg-scan-main">
+  @if (pinNeeded) {
+    <div class="position-fixed top-0 start-0 w-100 h-100 z-3 d-flex flex-column align-items-center justify-content-center bg-scan-main" style="z-index: 1050;">
+      
+      <div class="text-center mb-4 fade-in">
+        <div class="bg-white rounded-circle d-inline-flex p-4 mb-3 shadow-sm">
+          <i class="bi bi-shield-lock-fill text-orange-qubby" style="font-size: 4rem;"></i>
+        </div>
+        <h2 class="text-white fw-bold">Caja Protegida</h2>
+        <p class="text-white-50">Introduce el PIN de 4 dígitos para ver el contenido</p>
+      </div>
+
+      <div class="bg-white p-4 rounded-4 shadow-lg mx-3 text-center scale-in" style="max-width: 350px; width: 100%;">
+        <input 
+          type="password" 
+          [(ngModel)]="pinEnter"
+          (keyup.enter)="verifyPin()"
+          class="form-control text-center fs-1 fw-bold mb-3 shadow-sm rounded-3 py-3" 
+          style="letter-spacing: 1.5rem;"
+          placeholder="••••" 
+          maxlength="4" 
+          inputmode="numeric"
+          autofocus
+        >
+        
+        @if (pinError) {
+          <p class="text-danger small fw-bold mb-3"><i class="bi bi-exclamation-triangle-fill"></i> PIN Incorrecto. Inténtalo de nuevo.</p>
+        }
+
+        <button class="btn btn-orange-qubby w-100 py-3 rounded-pill fw-bold text-white shadow-sm fs-5" (click)="verifyPin()">
+          Desbloquear
+        </button>
+      </div>
+
+    </div>
+  }
   
   <header class="sticky-top shadow-sm z-3 header-scan">
     <div class="mx-auto p-3 d-flex align-items-center justify-content-between scan-container">

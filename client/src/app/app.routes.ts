@@ -29,7 +29,6 @@ export const routes: Routes = [
  
   {
     path: 'box/:id/scan',
-    canActivate: [authGuard],
     loadComponent: () => 
       import('./features/home/pages/qr-scan-page/qr-scan-page.component').then(m => m.QrScanPageComponent)
   },
