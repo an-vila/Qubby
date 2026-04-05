@@ -29,6 +29,7 @@ export class CategoryCardComponent {
   @Output() edit = new EventEmitter<void>();
   @Output() save = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<void>();
+  @Output() open = new EventEmitter<void>();
 
   editName: string = '';
 

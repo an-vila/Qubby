@@ -8,6 +8,7 @@ export const routes: Routes = [
       import('./features/auth/auth.routes').then(m => m.authRoutes)
   },
 
+<<<<<<< HEAD
   {
     path: 'home',
     canActivate: [authGuard],
@@ -39,12 +40,35 @@ export const routes: Routes = [
       import('./features/home/pages/qr-scan-page/qr-scan-page.component').then(m => m.QrScanPageComponent)
   },
 
+=======
+
+  {
+    path: 'home',
+    loadComponent: () => 
+  import('./features/home/pages/home-page/home-page.component')
+        .then(m => m.HomePageComponent),
+    canActivate: [authGuard]
+  },
+
+  {
+    path: 'home/box/:id',
+    loadComponent: () =>
+      import('./features/home/pages/box-detail-page/box-detail-page.component')
+        .then(m => m.BoxDetailPageComponent),
+    canActivate: [authGuard]
+  },
+
+>>>>>>> origin/develop
   {
     path: '',
     redirectTo: 'home', 
     pathMatch: 'full'
   },
   
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
   {
     path: '**',
     redirectTo: 'home' 

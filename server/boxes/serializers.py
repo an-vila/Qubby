@@ -2,7 +2,12 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import Box
 
-
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ["id", "name", "description", "box", "created_at"]
+        read_only_fields = ["box"]
+        
 class BoxSerializer(serializers.ModelSerializer):
     itemCount = serializers.IntegerField(source="items.count", read_only=True)
 

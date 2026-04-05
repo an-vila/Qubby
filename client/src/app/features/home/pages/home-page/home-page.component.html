@@ -70,6 +70,7 @@
                     (cancel)="cancelEdit(cat)"
                     (delete)="handleDeleteCategory(cat.id!)"
                     (edit)="handleEditCategory(cat.id!)"
+                    (open)="handleOpenCategory(cat.id!)"
                   >
                   </app-category-card>
                 </div>
@@ -91,6 +92,7 @@
                   </button>
 
                   @for (cat of filteredCategories; track cat.id) {
+<<<<<<< HEAD
                     <app-category-card
                       [id]="cat.id" 
                       [name]="cat.name"
@@ -102,6 +104,22 @@
                       (delete)="handleDeleteCategory(cat.id)"
                       (edit)="handleEditCategory(cat.id)">
                     </app-category-card>
+=======
+                    <div class="col-12">
+                      <app-category-card
+                        [name]="cat.name"
+                        [itemCount]="cat.itemCount || 0"
+                        [viewMode]="'list'"
+                        [isEditing]="cat.isEditing || false"
+                        (save)="saveCategory(cat, $event)"
+                        (cancel)="cancelEdit(cat)"
+                        (delete)="handleDeleteCategory(cat.id!)"
+                        (edit)="handleEditCategory(cat.id!)"
+                        (open)="handleOpenCategory(cat.id!)"
+                      >
+                      </app-category-card>
+                    </div>
+>>>>>>> origin/develop
                   }
                 </div>
               </div>

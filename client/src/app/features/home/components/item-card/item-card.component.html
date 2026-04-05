@@ -1,0 +1,57 @@
+<div
+  class="card border-0 shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3 position-relative"
+  style="transition: all 0.2s ease;"
+>
+  <!-- Icono -->
+  <div
+    class="rounded-3 d-flex align-items-center justify-content-center bg-light"
+    style="width: 40px; height: 40px; min-width: 40px;"
+  >
+    <i class="bi bi-box-seam" style="font-size: 1.1rem; opacity: 0.6;"></i>
+  </div>
+
+  <!-- Contenido -->
+  <div class="flex-grow-1 d-flex flex-column justify-content-center" style="min-width: 0;">
+
+    @if (!isEditing) {
+      <h6 class="fw-bold text-dark mb-0 text-truncate">{{ name }}</h6>
+      @if (description) {
+        <p class="text-muted small mb-0 text-truncate">{{ description }}</p>
+      }
+    } @else {
+      <input
+        #editInput
+        type="text"
+        [(ngModel)]="editName"
+        (keyup.enter)="onSave()"
+        (keyup.escape)="onCancel()"
+        (click)="$event.stopPropagation()"
+        class="form-control form-control-sm fw-bold shadow-none mb-1 px-0 py-0 text-dark bg-transparent border-0"
+        style="outline: none; box-shadow: none; caret-color: rgb(255, 164, 0);"
+        placeholder="Nombre del objeto..."
+      >
+      <input
+        type="text"
+        [(ngModel)]="editDescription"
+        (keyup.enter)="onSave()"
+        (keyup.escape)="onCancel()"
+        (click)="$event.stopPropagation()"
+        class="form-control form-control-sm shadow-none px-0 py-0 text-muted bg-transparent border-0 small"
+        style="outline: none; box-shadow: none; caret-color: rgb(255, 164, 0);"
+        placeholder="Descripción (opcional)..."
+      >
+    }
+  </div>
+
+  <!-- Botones de acción -->
+  @if (!isEditing) {
+    <div class="d-flex gap-2 opacity-50 action-buttons">
+      <button (click)="$event.stopPropagation(); edit.emit()" class="btn btn-sm btn-light text-primary rounded-circle p-2" title="Editar">
+        <i class="bi bi-pencil-fill"></i>
+      </button>
+      <button (click)="$event.stopPropagation(); delete.emit()" class="btn btn-sm btn-light text-danger rounded-circle p-2" title="Eliminar">
+        <i class="bi bi-trash-fill"></i>
+      </button>
+    </div>
+  }
+</div>
