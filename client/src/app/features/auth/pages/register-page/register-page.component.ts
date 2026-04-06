@@ -9,7 +9,6 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-// Ajuste de ruta: subimos 2 niveles para salir de 'pages' y 'auth' y entrar en 'services'
 import { AuthService } from '../../services/auth.service';
 import { UiInputComponent } from '../../../../shared/ui/ui-input/ui-input.component';
 import { UiButtonComponent } from '../../../../shared/ui/ui-button/ui-button.component';

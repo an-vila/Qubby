@@ -57,17 +57,13 @@ export class LoginPageComponent {
 
     this.authService.login(data).subscribe({
       next: (response: any) => {
-        // El usuario fue autenticado exitosamente
-        // response tiene: {message, user, tokens}
         this.isLoading = false;
         
-        // Redirigir a /home
         this.router.navigate(['/home']);
       },
       error: (err) => {
         this.isLoading = false;
-        
-        // Manejar diferentes tipos de errores
+
         if (err.status === 401) {
           this.errorMessage = 'Email o contraseña incorrectos.';
         } else if (err.status === 403) {

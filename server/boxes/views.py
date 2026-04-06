@@ -8,7 +8,6 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import (
     action,
-    permission_classes,
 )
 from rest_framework.response import Response
 
@@ -19,6 +18,9 @@ ip = os.getenv("IP", "localhost")
 
 
 class BoxViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para manejar las operaciones CRUD de las cajas.
+    """
     serializer_class = BoxSerializer
     permission_classes = [IsAuthenticated]
 
@@ -32,6 +34,9 @@ class BoxViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def qrcode(self, request, pk=None):
+        """
+        Crea un código QR único para una caja específica.
+        """
         box = self.get_object()
 
         qr_data = f"http://{ip}:4200/box/{box.id}/scan"
@@ -52,7 +57,7 @@ class BoxViewSet(viewsets.ModelViewSet):
     def verify_pin(self, request, pk=None):
         """
         POST /api/boxes/{id}/verify_pin/
-        Recibe {"pin": "1234"} y devuelve si es correcto o no.
+        Endpoint para verificar el PIN de la caja.
         """
         box = get_object_or_404(Box, pk=pk)
         pin = str(request.data.get("pin")).strip()
@@ -69,7 +74,7 @@ class BoxViewSet(viewsets.ModelViewSet):
     def add_item(self, request, pk=None):
         """
         POST /api/boxes/{id}/add_item/
-        Recibe {"name": "Cable HDMI", "description": "Para la tele"}
+        Endpoint para añadir un item.
         """
         box = self.get_object()
         serializer = ItemSerializer(data=request.data)
@@ -81,11 +86,17 @@ class BoxViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=400)
 
 class ItemViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet para manejar las operaciones CRUD de items.
+    """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        """
+        Define la consulta base para obtener los objetos del modelo.
+        """
         box_id = self.request.query_params.get("box_id")
         if box_id:
             return self.queryset.filter(box_id=box_id)

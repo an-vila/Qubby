@@ -185,24 +185,24 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-  cerrarModalBorrado() {
+  closeDeletedModal() {
     this.mostrarModalBorrado = false;
     this.categoriaParaBorrar = null;
   }
 
-  confirmarBorrado() {
+  confirmDelete() {
     if (!this.categoriaParaBorrar) return;
     const id = this.categoriaParaBorrar.id;
 
     this.boxService.deleteBox(id).subscribe({
       next: () => {
         this.categories = this.categories.filter((c) => c.id !== id);
-        this.cerrarModalBorrado();
+        this.closeDeletedModal();
       },
       error: (err) => {
         console.warn('Error al borrar, pero actualizando vista localmente...');
         this.categories = this.categories.filter((c) => c.id !== id);
-        this.cerrarModalBorrado();
+        this.closeDeletedModal();
       },
     });
   }

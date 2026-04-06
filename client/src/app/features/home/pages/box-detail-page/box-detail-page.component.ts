@@ -29,7 +29,7 @@ export class BoxDetailPageComponent implements OnInit {
 
   selectedObject: any = null;
 
-  mostrarModalQR: boolean = false;
+  showModalQR: boolean = false;
   qrCodeUrl: string = '';
   loadingQR: boolean = false;
 
@@ -87,7 +87,7 @@ export class BoxDetailPageComponent implements OnInit {
   }
 
   openModalQR() {
-    this.mostrarModalQR = true;
+    this.showModalQR = true;
 
     if (!this.qrCodeUrl && this.boxId) {
       this.loadingQR = true;
@@ -106,7 +106,7 @@ export class BoxDetailPageComponent implements OnInit {
   }
 
   closeModalQR() {
-    this.mostrarModalQR = false;
+    this.showModalQR = false;
   }
 
   printQR() {

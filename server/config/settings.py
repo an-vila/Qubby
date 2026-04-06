@@ -55,7 +55,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # Added for CORS
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -144,7 +144,7 @@ CORS_ALLOWED_ORIGINS = [
 
 AUTH_USER_MODEL = "users.User"
 
-# REST Framework Configuration
+# REST Framework Configuracion
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -152,7 +152,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
-# JWT Configuration
+# JWT Configuracion
 from datetime import timedelta
 
 SIMPLE_JWT = {
@@ -162,7 +162,7 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
 }
 
-# Email Configuration
+# Email Configuracion
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Consola para desarrollo
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # SMTP en producción
 

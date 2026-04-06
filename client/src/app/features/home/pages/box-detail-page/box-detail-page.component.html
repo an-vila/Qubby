@@ -206,7 +206,7 @@
     </div>
   }
 
-  @if (mostrarModalQR) {
+  @if (showModalQR) {
     <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" style="z-index: 10000; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px)" (click)="closeModalQR()">
       <div class="bg-white rounded-4 shadow-lg p-0 overflow-hidden w-100 mx-3 scale-in" style="max-width: 400px" (click)="$event.stopPropagation()">
         <div class="p-3 d-flex align-items-center justify-content-between border-bottom bg-dark">

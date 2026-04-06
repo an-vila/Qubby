@@ -47,7 +47,6 @@ export class ResetPasswordPageComponent implements OnInit {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
 
-    // Si coinciden (o alguno está vacío aún), todo ok (null). Si no, error.
     return password === confirmPassword ? null : { mismatch: true };
   }
   

@@ -16,7 +16,7 @@ export interface Box {
   id: number;
   name: string;
   created_at?: string;
-  itemCount?: number; // Viene del backend (items.count)
-  items?: Item[]; // Viene anidado del BoxSerializer
+  itemCount?: number;
+  items?: Item[];
   isEditing?: boolean;
 }

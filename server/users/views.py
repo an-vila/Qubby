@@ -13,15 +13,6 @@ from .email_utils import send_verification_email
 class UserViewSet(viewsets.ModelViewSet):
     """
     ViewSet para manejar las operaciones CRUD de usuarios.
-
-    Endpoints disponibles:
-    - POST /api/users/           → Crear nuevo usuario (REGISTRO)
-    - POST /api/users/login/     → Iniciar sesión (LOGIN)
-    - GET /api/users/            → Listar todos los usuarios
-    - GET /api/users/{id}/       → Obtener un usuario
-    - PUT /api/users/{id}/       → Actualizar usuario completo
-    - PATCH /api/users/{id}/     → Actualizar parcialmente
-    - DELETE /api/users/{id}/    → Eliminar usuario
     """
 
     queryset = User.objects.all()
@@ -36,16 +27,12 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         if self.action in ["create", "login", "check_email", "check_username", "verify_email"]:
             return [AllowAny()]
-        # LISTAR usuarios solo si está autenticado
         return [IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
         """
         POST /api/users/
-
-        Crear nuevo usuario (REGISTRO).
-        Angular envía: {name, email, password, confirmPassword}
-        Django devuelve: {message, user}
+        Endpoint para crear nuevo usuario.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -70,40 +57,11 @@ class UserViewSet(viewsets.ModelViewSet):
     def login(self, request):
         """
         POST /api/users/login/
-
-        INICIAR SESIÓN - Devuelve JWT tokens.
-
-        Request body:
-        {
-            "email": "user@email.com",
-            "password": "1234"
-        }
-
-        Response (200):
-        {
-            "message": "Inicio de sesión exitoso",
-            "user": {
-                "id": 1,
-                "name": "usuario123",
-                "email": "user@email.com"
-            },
-            "tokens": {
-                "access": "eyJ0eXAi...",  ← Usar en cada solicitud
-                "refresh": "eyJ0eXAi..."  ← Usar para renovar token
-            }
-        }
-
-        ¿CÓMO FUNCIONA?
-        1. Angular envía email + contraseña
-        2. Django verifica que la contraseña sea correcta
-        3. Genera JWT tokens (access + refresh)
-        4. Angular guarda el token en localStorage
-        5. Cada solicitud futura incluye: Authorization: Bearer <access_token>
+        Endpoint para realizar el login
         """
         email = request.data.get("email")
         password = request.data.get("password")
 
-        # Validar que ambos campos estén presentes
         if not email or not password:
             return Response(
                 {
@@ -114,7 +72,6 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
         try:
-            # Buscar usuario por email
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             return Response(
@@ -125,7 +82,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        # Verificar contraseña
         # check_password() compara la contraseña ingresada con el hash guardado
         if not check_password(password, user.password):
             return Response(
@@ -136,7 +92,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        # ¿Es es el usuario está activo?
         if not user.is_active:
             return Response(
                 {
@@ -146,7 +101,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # Generar JWT tokens
         refresh = RefreshToken.for_user(user)
 
         return Response(
@@ -174,7 +128,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def profile(self, request):
         """
         GET /api/users/profile/ -> Obtener datos
-        PUT/PATCH /api/users/profile/-> Actualizar datos (ej. nombre)
+        PUT/PATCH /api/users/profile/-> Actualizar datos
         """
         user = request.user
 
@@ -203,23 +157,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def verify_email(self, request):
         """
         POST /api/users/verify_email/
-
-        Verificar email usando el token.
-
-        Request body:
-        {
-            "token": "abc123def456..."
-        }
-
-        Response (200):
-        {
-            "message": "Email verificado exitosamente",
-            "user": {...}
-        }
-
-        Errors:
-        - 400: Token no proporcionado
-        - 404: Token inválido o expirado
+        Endpoint para verificar email usando el token.
         """
         token = request.data.get("token")
 
@@ -239,7 +177,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         user.email_verified = True
         user.is_active = True
-        user.verification_token = None  # Eliminar token después de usar
+        user.verification_token = None
         user.save()
 
         return Response(
@@ -254,9 +192,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def check_email(self, request):
         """
         Endpoint custom para verificar si un email ya existe.
-
-        Uso desde Angular:
-        POST /api/users/check_email/ con body: {"email": "test@email.com"}
         """
         email = request.data.get("email")
         if not email:
@@ -271,9 +206,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def check_username(self, request):
         """
         Endpoint custom para verificar si un username ya existe.
-
-        Uso desde Angular:
-        POST /api/users/check_username/ con body: {"name": "usuario123"}
         """
         name = request.data.get("name")
         if not name:
@@ -289,6 +221,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def change_password(self, request):
         """
         POST /api/users/change_password/
+        Endpoint para cambiar la contraseña
         """
         serializer = ChangePasswordSerializer(data=request.data)
 

@@ -71,7 +71,7 @@ export class AddObjectPageComponent implements OnInit {
           status: item.status || 'saved',
         });
         this.tags = item.tags || [];
-        this.imagePreview = item.image; // URL de la imagen que ya existe
+        this.imagePreview = item.image;
       },
       error: (err) => console.error('Error al cargar el objeto:', err),
     });
@@ -134,12 +134,12 @@ export class AddObjectPageComponent implements OnInit {
       formData.append('image', this.selectedImage);
     }
 
-    const operacion$ =
+    const operation$ =
       this.isEditMode && this.itemId
         ? this.itemService.updateItem(this.itemId, formData)
         : this.itemService.createItem(formData);
 
-    operacion$.subscribe({
+    operation$.subscribe({
       next: (res) => {
         this.isSubmitting = false;
         this.showSuccess = true;
