@@ -9,7 +9,6 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (authService.isAuthenticated()) {
     return true;
   } else {
-    console.log('🔒 Guard: Bloqueado por falta de token. Redirigiendo al login...');
     router.navigate(['/auth/login']);
     
     return false;

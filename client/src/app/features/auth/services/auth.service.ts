@@ -33,8 +33,7 @@ export class AuthService {
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login/`, data).pipe(
       tap((response: any) => {
-        localStorage.clear();
-        sessionStorage.clear();
+        this.clearStorage();
 
         const storage = data.rememberMe ? localStorage : sessionStorage;
 
@@ -45,16 +44,29 @@ export class AuthService {
     );
   }
 
+  private clearStorage(): void {
+    ['access_token', 'refresh_token', 'user'].forEach((key) => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
+  }
+
+  private getStorage(): Storage | null {
+    if (localStorage.getItem('access_token')) return localStorage;
+    if (sessionStorage.getItem('access_token')) return sessionStorage;
+    return null;
+  }
+
   getAccessToken(): string | null {
-    return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    return this.getStorage()?.getItem('access_token') || null;
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token') || sessionStorage.getItem('user');
+    return this.getStorage()?.getItem('refresh_token') || null;
   }
 
   getUser(): any {
-    const user = localStorage.getItem('user') || sessionStorage.getItem('user');
+    const user = this.getStorage()?.getItem('user');
     return user ? JSON.parse(user) : null;
   }
 
