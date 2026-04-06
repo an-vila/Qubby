@@ -6,14 +6,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Item, Box } from '../../interfaces/home.interfaces';
 import { ItemService } from '../../services/item.service';
 import { BoxService } from '../../services/box.service';
-import { ItemCardComponent } from '../../components/item-card/item-card.component';
 import { ObjectCardComponent } from '../../components/object-card/object-card.component';
 
 
 @Component({
   selector: 'app-box-detail-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ItemCardComponent, ObjectCardComponent],
+  imports: [CommonModule, FormsModule, ObjectCardComponent],
   templateUrl: './box-detail-page.component.html',
   styleUrls: ['./box-detail-page.component.css'],
 })
@@ -231,5 +230,25 @@ export class BoxDetailPageComponent implements OnInit {
     if (confirmacion) {
       this.router.navigate(['/home']);
     }
+  }
+
+  
+  // FUNCIONES PUENTE PARA EL HTML 
+ 
+  abrirDetalles(obj: any) {
+    this.selectedObject = obj;
+  }
+
+  cerrarDetalles() {
+    this.selectedObject = null;
+  }
+
+  editarObjeto(obj: any) {
+    this.handleEditItem(obj.id);
+    this.cerrarDetalles(); 
+  }
+
+  eliminarObjeto(obj: any) {
+    this.handleDeleteItem(obj.id);
   }
 }
