@@ -14,21 +14,18 @@ def send_verification_email(user_email: str, verification_token: str, user_name:
         user_email: Email del usuario
         verification_token: Token único para verificar
         user_name: Nombre del usuario (para personalización)
-    
-    Returns:
-        True si se envió correctamente, False en caso contrario
     """
-    
+
     verification_url = f"http://localhost:4200/auth/activate?token={verification_token}"
-    
+
     context = {
         'user_name': user_name,
         'verification_url': verification_url,
         'token': verification_token,
     }
-    
+
     subject = '¡Verifica tu email en Qubby!'
-    
+
     message = f"""
 Hola {user_name},
 
@@ -42,7 +39,7 @@ Si no hiciste esta solicitud, ignora este email.
 Saludos,
 El equipo de Qubby
     """
-    
+
     html_message = f"""
     <html>
         <body style="font-family: Arial, sans-serif;">
@@ -53,7 +50,7 @@ El equipo de Qubby
                 
                 <a href="{verification_url}" 
                    style="display: inline-block; padding: 12px 24px; 
-                           background-color: #007bff; color: white; 
+                           background-color: #ffa400; color: white; 
                            text-decoration: none; border-radius: 4px;
                            margin: 20px 0;">
                     Verificar Email
@@ -70,7 +67,7 @@ El equipo de Qubby
         </body>
     </html>
     """
-    
+
     try:
         send_mail(
             subject=subject,
@@ -83,4 +80,74 @@ El equipo de Qubby
         return True
     except Exception as e:
         print(f"Error enviando email: {str(e)}")
+        return False
+
+def send_password_reset_email(user_email: str, user_name: str, reset_link: str) -> bool:
+    """
+    Enviar email para la recuperación de contraseña.
+    
+    Args:
+        user_email: Email del usuario
+        user_name: Nombre del usuario (para personalización)
+        reset_link: URL completa generada en la vista para el reseteo
+    """
+
+    subject = 'Recupera tu contraseña en Qubby'
+
+    message = f"""
+Hola {user_name},
+
+Hemos recibido una solicitud para restablecer tu contraseña en Qubby. 
+Para crear una nueva, haz click en el siguiente enlace:
+
+{reset_link}
+
+Si no solicitaste este cambio, puedes ignorar este email tranquilamente. 
+Tu contraseña actual seguirá siendo la misma.
+
+Saludos,
+El equipo de Qubby
+    """
+
+    html_message = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif;">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h2>Recuperación de contraseña</h2>
+                
+                <p>Hola <strong>{user_name}</strong>,</p>
+                <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en Qubby. Para crear una nueva, haz click en el botón de abajo:</p>
+                
+                <a href="{reset_link}" 
+                   style="display: inline-block; padding: 12px 24px; 
+                          background-color: #ffa400; color: white; 
+                          text-decoration: none; border-radius: 4px;
+                          margin: 20px 0; font-weight: bold;">
+                    Restablecer Contraseña
+                </a>
+                
+                <p>O copia y pega este enlace en tu navegador:</p>
+                <p><code>{reset_link}</code></p>
+                
+                <hr>
+                <p style="color: #666; font-size: 12px;">
+                    Si no has sido tú quien ha solicitado este cambio, simplemente ignora este email. Tu cuenta sigue estando totalmente segura.
+                </p>
+            </div>
+        </body>
+    </html>
+    """
+
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user_email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        print(f"Error enviando email de recuperación: {str(e)}")
         return False

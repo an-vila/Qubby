@@ -139,7 +139,6 @@ STATIC_URL = "static/"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
-    "http://192.168.86.102:4200",
 ]
 
 AUTH_USER_MODEL = "users.User"

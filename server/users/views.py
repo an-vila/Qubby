@@ -5,9 +5,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 
+# Chicos, a ultima hora he visto que en un merge se han perdido las views para restablecer contraseñas 
+# y he tenido que arreglarlo a ultima hora
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+
 from .models import User
 from .serializers import UserSerializer, UserUpdateSerializer, ChangePasswordSerializer
-from .email_utils import send_verification_email
+from .email_utils import send_verification_email, send_password_reset_email
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -25,7 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
         - LISTAR usuarios: requiere autenticación (solo admin)
         - RESTO: requiere autenticación
         """
-        if self.action in ["create", "login", "check_email", "check_username", "verify_email"]:
+        if self.action in ["create", "login", "check_email", "check_username", "verify_email", "request_password_reset", "reset_password"]:
             return [AllowAny()]
         return [IsAuthenticated()]
 
@@ -216,6 +223,61 @@ class UserViewSet(viewsets.ModelViewSet):
 
         exists = User.objects.filter(name=name).exists()
         return Response({"username_exists": exists}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+    def request_password_reset(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({"error": "El email es requerido"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email=email).first()
+
+        if user:
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            reset_url = f"http://192.168.86.102:4200/auth/reset/{uid}/{token}"
+
+            send_password_reset_email(
+                user_email=user.email, user_name=user.name, reset_link=reset_url
+            )
+
+            return Response({"message": "Si el email existe, recibirás instrucciones en breve."})
+
+    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+    def reset_password(self, request):
+        """
+        POST /api/users/reset_password/
+        Endpoint para guardar la nueva contraseña usando el link del correo.
+        """
+        uidb64 = request.data.get("uid")
+        token = request.data.get("token")
+        new_password = request.data.get("new_password")
+
+        if not uidb64 or not token or not new_password:
+            return Response(
+                {"error": "Faltan datos para restablecer la contraseña."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            user.set_password(new_password)
+            user.save()
+            return Response(
+                {"message": "Contraseña restablecida correctamente."},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"error": "El enlace no es válido o ya ha sido utilizado."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     @action(detail=False, methods=["post"], permission_classes=[IsAuthenticated])
     def change_password(self, request):

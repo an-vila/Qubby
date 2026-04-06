@@ -1,55 +1,58 @@
 .bg-scan-main {
-  background-color: #e9ecef;
+  background-color: #f8f9fa; 
 }
 
 .header-scan {
-  background-color: #4b4b4b;
+  background-color: #343a40;
 }
 
 .scan-container {
   max-width: 800px;
 }
 
-.text-scan-accent {
+
+.text-scan-accent, .title-orange {
   color: #ffa400;
 }
 
-.bg-scan-accent {
-  background-color: #ffa400;
+.bg-scan-accent, .btn-orange-qubby {
+  background-color: #ffa400 !important;
+  border: none;
+  color: white !important;
 }
+
+.btn-orange-qubby:disabled {
+  background-color: #ffd080 !important;
+  opacity: 0.8;
+}
+
+
+.pin-input {
+  letter-spacing: 1rem;
+  font-size: 2.5rem !important;
+  border: 2px solid #dee2e6 !important;
+  transition: border-color 0.2s;
+}
+
+.pin-input:focus {
+  border-color: #ffa400 !important;
+  box-shadow: 0 0 0 0.25rem rgba(255, 164, 0, 0.25) !important;
+}
+
 
 .btn-back-scan {
-  background-color: #5c5c5c;
+  background-color: rgba(255, 255, 255, 0.1);
   width: 40px;
   height: 40px;
-}
-
-.btn-scan-sm {
-  font-size: 0.85rem;
-}
-
-.spacer-40 {
-  width: 40px;
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 .img-scan-thumbnail {
   width: 80px;
   height: 80px;
+  object-fit: cover;
 }
 
 .modal-backdrop-dark {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.modal-scan-content {
-  max-width: 500px;
-  max-height: 90vh;
-}
-
-.modal-scan-img {
-  height: 200px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
 }

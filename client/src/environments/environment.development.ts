@@ -1,4 +1,6 @@
-const IP = '192.168.86.102';
+// Colocar la IP del ordenador propio para poder entrar desde el movil
+// mientas no se publique el proyecto en el servidor y haya IP fijo
+const IP = 'localhost';
 
 export const environment = {
   production: false,

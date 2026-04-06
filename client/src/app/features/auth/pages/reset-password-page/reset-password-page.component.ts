@@ -21,6 +21,7 @@ export class ResetPasswordPageComponent implements OnInit {
   status: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   message: string = '';
 
+  uid: string = '';
   token: string = '';
   showPassword: boolean = false;
 
@@ -33,12 +34,15 @@ export class ResetPasswordPageComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
+    this.route.params.subscribe((params) => {
+      this.uid = params['uid']
       this.token = params['token'];
 
       if (!this.token) {
         this.status = 'error';
         this.message = 'Enlace no válido.';
+      } else {
+        this.status = 'idle';
       }
     });
   }
@@ -71,6 +75,7 @@ export class ResetPasswordPageComponent implements OnInit {
     }
 
     const requestData = {
+      uid: this.uid,
       token: this.token,
       new_password: this.resetForm.get('password')?.value || '',
     };

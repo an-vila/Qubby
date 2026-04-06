@@ -34,7 +34,7 @@ export const authRoutes: Routes = [
           ),
       },
       {
-        path: 'reset',
+        path: 'reset/:uid/:token',
         loadComponent: () =>
           import('./pages/reset-password-page/reset-password-page.component').then(
             (m) => m.ResetPasswordPageComponent,

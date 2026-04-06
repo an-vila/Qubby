@@ -20,16 +20,10 @@ export class AuthService {
 
   constructor(private router: Router) {}
 
-  /**
-   * REGISTRO: POST /api/users/
-   */
   register(data: RegisterRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/`, data);
   }
 
-  /**
-   * LOGIN: POST /api/users/login/
-   */
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login/`, data).pipe(
       tap((response: any) => {

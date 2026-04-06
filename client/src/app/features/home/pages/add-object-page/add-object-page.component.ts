@@ -47,7 +47,6 @@ export class AddObjectPageComponent implements OnInit {
 
     this.objectForm = this.fb.group({
       name: ['', Validators.required],
-      category: ['', Validators.required],
       description: [''],
       quantity: [1, [Validators.required, Validators.min(1)]],
       status: ['saved', Validators.required],
@@ -65,7 +64,6 @@ export class AddObjectPageComponent implements OnInit {
       next: (item: any) => {
         this.objectForm.patchValue({
           name: item.name,
-          category: item.category || '',
           description: item.description,
           quantity: item.quantity,
           status: item.status || 'saved',
@@ -116,7 +114,6 @@ export class AddObjectPageComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('name', formValues.name);
-    formData.append('category', formValues.category);
     formData.append('description', formValues.description || '');
     formData.append('box', this.boxId.toString());
     formData.append('quantity', formValues.quantity.toString());
