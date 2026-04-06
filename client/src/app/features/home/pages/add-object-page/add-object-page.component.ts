@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-// 1️⃣ Importamos las herramientas reactivas de Angular
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -20,27 +19,32 @@ import { ItemService } from '../../services/item.service';
 })
 export class AddObjectPageComponent implements OnInit {
   boxId: number = 0;
+  itemId: number | null = null;
+  isEditMode: boolean = false;
 
   private fb = inject(FormBuilder);
-  objectForm: FormGroup;
+  objectForm!: FormGroup;
 
   tagInput = new FormControl('');
   tags: string[] = [];
 
   selectedImage: File | null = null;
   imagePreview: string | null = null;
+
   isSubmitting: boolean = false;
   showSuccess: boolean = false;
-
-  isEditMode: boolean = false;
-  itemId: number | null = null;
 
   constructor(
     private location: Location,
     private route: ActivatedRoute,
     private router: Router,
     private itemService: ItemService,
-  ) {
+  ) {}
+
+  ngOnInit() {
+    this.boxId = +this.route.snapshot.params['id'];
+    const itemIdParam = this.route.snapshot.params['itemId'];
+
     this.objectForm = this.fb.group({
       name: ['', Validators.required],
       category: ['', Validators.required],
@@ -48,12 +52,6 @@ export class AddObjectPageComponent implements OnInit {
       quantity: [1, [Validators.required, Validators.min(1)]],
       status: ['saved', Validators.required],
     });
-  }
-
-  ngOnInit() {
-    this.boxId = +this.route.snapshot.params['id'];
-
-    const itemIdParam = this.route.snapshot.params['itemId'];
 
     if (itemIdParam) {
       this.isEditMode = true;
@@ -72,9 +70,8 @@ export class AddObjectPageComponent implements OnInit {
           quantity: item.quantity,
           status: item.status || 'saved',
         });
-
         this.tags = item.tags || [];
-        this.imagePreview = item.image;
+        this.imagePreview = item.image; // URL de la imagen que ya existe
       },
       error: (err) => console.error('Error al cargar el objeto:', err),
     });
@@ -88,7 +85,6 @@ export class AddObjectPageComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.selectedImage = file;
-
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -119,7 +115,6 @@ export class AddObjectPageComponent implements OnInit {
     const formValues = this.objectForm.value;
 
     const formData = new FormData();
-
     formData.append('name', formValues.name);
     formData.append('category', formValues.category);
     formData.append('description', formValues.description || '');
@@ -148,13 +143,12 @@ export class AddObjectPageComponent implements OnInit {
       next: (res) => {
         this.isSubmitting = false;
         this.showSuccess = true;
-
         setTimeout(() => {
           this.router.navigate(['/box', this.boxId]);
         }, 1500);
       },
       error: (err: any) => {
-        console.error('Error al procesar en Django:', err);
+        console.error('Error en el servidor:', err);
         this.isSubmitting = false;
         alert('Hubo un error al guardar los cambios.');
       },

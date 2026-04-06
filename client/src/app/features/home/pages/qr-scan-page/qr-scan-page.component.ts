@@ -1,24 +1,31 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { BoxService } from '../../services/box.service';
 import { ItemService } from '../../services/item.service';
 
 @Component({
   selector: 'app-qr-scan-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './qr-scan-page.component.html',
   styleUrls: ['./qr-scan-page.component.css'],
 })
 export class QrScanPageComponent implements OnInit {
   boxId: string = '';
-  searchQuery: string = '';
   selectedObject: any = null;
 
+  searchControl = new FormControl('');
+  pinForm!: FormGroup;
+
   pinNeeded: boolean = true;
-  pinEnter: string = '';
   pinError: boolean = false;
 
   objetos: any[] = [];
@@ -29,9 +36,14 @@ export class QrScanPageComponent implements OnInit {
     private router: Router,
     private boxService: BoxService,
     private itemService: ItemService,
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
+    this.pinForm = this.fb.group({
+      pin: ['', [Validators.required]],
+    });
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.boxId = id;
@@ -58,7 +70,11 @@ export class QrScanPageComponent implements OnInit {
   }
 
   verifyPin() {
-    this.boxService.verifyPin(this.boxId, this.pinEnter).subscribe({
+    if (this.pinForm.invalid) return;
+
+    const pinValue = this.pinForm.value.pin;
+
+    this.boxService.verifyPin(this.boxId, pinValue).subscribe({
       next: (res) => {
         if (res.success) {
           this.pinNeeded = false;
@@ -66,11 +82,12 @@ export class QrScanPageComponent implements OnInit {
           this.loadItems();
         } else {
           this.pinError = true;
+          this.pinForm.reset();
         }
       },
       error: (err) => {
         this.pinError = true;
-        this.pinEnter = '';
+        this.pinForm.reset();
       },
     });
   }

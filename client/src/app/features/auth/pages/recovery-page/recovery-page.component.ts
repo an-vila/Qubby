@@ -6,7 +6,6 @@ import { UiInputComponent } from '../../../../shared/ui/ui-input/ui-input.compon
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -20,7 +19,6 @@ import { AuthService } from '../../services/auth.service';
     RouterModule,
     UiInputComponent,
     UiButtonComponent,
-    FormsModule,
     ReactiveFormsModule,
   ],
   templateUrl: './recovery-page.component.html',
@@ -44,27 +42,32 @@ export class RecoveryPageComponent {
   onSubmit() {
     if (this.recoveryForm.invalid) {
       this.recoveryForm.markAllAsTouched();
-      if (this.recoveryForm.get('email')?.hasError('email')) {
+      const emailControl = this.recoveryForm.get('email');
+      
+      if (emailControl?.hasError('email')) {
         this.errorMessage = 'El formato del correo electrónico no es válido';
-      } else if (this.recoveryForm.get('email')?.hasError('required')) {
+      } else if (emailControl?.hasError('required')) {
         this.errorMessage = 'Debes introducir un correo electrónico.';
       }
 
       return;
     }
 
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.isLoading = true;
+
     const email = this.recoveryForm.get('email')?.value;
 
     this.authService.requestPassword(email).subscribe({
       next: (response) => {
+        this.isLoading = false;
         this.successMessage = response.message;
-
         this.recoveryForm.reset();
       },
-
-      // Error que solo salta si por lo que sea no funciona el backend
       error: (error) => {
-        this.errorMessage = 'Ha habido un error de conexion. Intentalo más tarde';
+        this.isLoading = false;
+        this.errorMessage = 'Ha habido un error de conexión. Inténtalo más tarde';
       },
     });
   }

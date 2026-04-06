@@ -27,7 +27,7 @@
         <input
           #editInput
           type="text"
-          [(ngModel)]="editName"
+          [formControl]="editControl"
           (keyup.enter)="onSave()"
           (keyup.escape)="onCancel()"
           (click)="$event.stopPropagation()"

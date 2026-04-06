@@ -27,10 +27,19 @@
         </div>
       }
 
-      <ui-button type="submit" customClass="btn-qubby" class="my-3"
-        >Restablecer contraseña</ui-button
+      <ui-button 
+        type="submit" 
+        customClass="btn-qubby" 
+        class="my-3"
+        [disabled]="recoveryForm.invalid || isLoading"
       >
+        @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span> Enviando...
+        } @else {
+          Restablecer contraseña
+        }
+      </ui-button>
     </form>
   }
-  <a href="/auth/login" class="text-qubby small">Volver a Iniciar sesión</a>
+  <a routerLink="/auth/login" class="text-qubby small">Volver a Iniciar sesión</a>
 </div>

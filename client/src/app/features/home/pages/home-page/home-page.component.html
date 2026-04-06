@@ -26,10 +26,11 @@
           <div class="d-flex align-items-center gap-3">
             <div class="position-relative flex-grow-1">
               <i class="bi bi-search position-absolute text-muted fs-5 search-icon-position"></i>
+              
               <input
                 type="text"
                 placeholder="Buscar"
-                [(ngModel)]="searchQuery"
+                [formControl]="searchControl"
                 class="form-control border-0 shadow-sm rounded-4 py-3 fs-5 bg-white search-input-custom"
               />
             </div>
@@ -130,18 +131,16 @@
           <button class="btn-close shadow-none" (click)="closeModal()"></button>
         </div>
 
-        <form (ngSubmit)="saveBox()">
+        <form [formGroup]="newBoxForm" (ngSubmit)="saveBox()">
           <div class="mb-4">
             <label class="form-label fw-medium text-secondary small text-uppercase"
               >Nombre de la caja</label
             >
             <input
               type="text"
-              name="name"
-              [(ngModel)]="newBox.name"
+              formControlName="name"
               class="form-control py-3 border-light-subtle shadow-sm rounded-3 bg-light-subtle"
               placeholder="Ej: Trastero - Herramientas"
-              required
               autofocus
             />
           </div>
@@ -161,20 +160,18 @@
                   type="checkbox"
                   role="switch"
                   id="pinSwitch"
-                  name="isProtected"
-                  [(ngModel)]="newBox.isProtected"
+                  formControlName="isProtected"
                   style="cursor: pointer"
                 />
               </div>
             </div>
 
-            @if (newBox.isProtected) {
+            @if (newBoxForm.get('isProtected')?.value) {
               <div class="mt-3 pt-3 border-top border-secondary-subtle fade-in">
                 <label class="form-label small text-muted mb-2">PIN de acceso (4 dígitos)</label>
                 <input
                   type="password"
-                  name="pin"
-                  [(ngModel)]="newBox.pin"
+                  formControlName="pin"
                   class="form-control text-center fs-3 fw-bold shadow-sm rounded-3 py-2"
                   style="letter-spacing: 1rem"
                   placeholder="0000"
@@ -202,6 +199,7 @@
             </button>
             <button
               type="submit"
+              [disabled]="newBoxForm.invalid"
               class="btn btn-orange-qubby text-white flex-grow-1 py-2 rounded-3 shadow-sm fw-bold"
             >
               Guardar Caja

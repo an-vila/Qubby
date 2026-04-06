@@ -27,7 +27,7 @@
       <p class="text-muted small">{{ userEmail }}</p>
     </div>
 
-    <div class="bg-white rounded-4 shadow-sm p-4 mb-4 scale-in">
+    <form [formGroup]="profileForm" (ngSubmit)="updateName()" class="bg-white rounded-4 shadow-sm p-4 mb-4 scale-in">
       <h3 class="fs-6 fw-bold text-dark mb-3">
         <i class="bi bi-person-lines-fill text-orange-qubby me-2"></i>Datos Personales
       </h3>
@@ -36,7 +36,7 @@
         <label class="form-label small fw-medium text-secondary">Nombre completo</label>
         <input
           type="text"
-          [(ngModel)]="editName"
+          formControlName="name"
           class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none"
           placeholder="Escribe tu nombre"
         />
@@ -46,20 +46,22 @@
         <label class="form-label small fw-medium text-secondary">Correo electrónico</label>
         <input
           type="email"
-          class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none"
-          placeholder="Escribe tu email"
+          [value]="userEmail"
+          readonly
+          class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none text-muted"
         />
       </div>
 
       <button
-        (click)="updateName()"
+        type="submit"
+        [disabled]="profileForm.invalid"
         class="btn btn-orange-qubby w-100 rounded-3 py-2 fw-bold text-white shadow-sm border-0"
       >
         Guardar cambios
       </button>
-    </div>
+    </form>
 
-    <div class="bg-white rounded-4 shadow-sm p-4 mb-4 scale-in anim-delay-1">
+    <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="bg-white rounded-4 shadow-sm p-4 mb-4 scale-in anim-delay-1">
       <h3 class="fs-6 fw-bold text-dark mb-3">
         <i class="bi bi-shield-lock-fill text-orange-qubby me-2"></i>Seguridad
       </h3>
@@ -68,7 +70,7 @@
         <label class="form-label small fw-medium text-secondary">Contraseña actual</label>
         <input
           type="password"
-          [(ngModel)]="passwordData.old_password"
+          formControlName="old_password"
           class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none"
           placeholder="••••••••"
         />
@@ -78,7 +80,7 @@
         <label class="form-label small fw-medium text-secondary">Nueva contraseña</label>
         <input
           type="password"
-          [(ngModel)]="passwordData.new_password"
+          formControlName="new_password"
           class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none"
           placeholder="••••••••"
         />
@@ -88,18 +90,20 @@
         <label class="form-label small fw-medium text-secondary">Repetir nueva contraseña</label>
         <input
           type="password"
-          [(ngModel)]="passwordData.confirm_password"
+          formControlName="confirm_password"
           class="form-control bg-light border-0 rounded-3 py-2 px-3 shadow-none"
           placeholder="••••••••"
         />
       </div>
 
       <button 
-      (click)="updatePassword()"
-      class="btn btn-outline-secondary w-100 rounded-3 py-2 fw-bold">
+        type="submit"
+        [disabled]="passwordForm.invalid"
+        class="btn btn-outline-secondary w-100 rounded-3 py-2 fw-bold"
+      >
         Actualizar contraseña
       </button>
-    </div>
+    </form>
 
     <div
       class="bg-white rounded-4 shadow-sm p-4 mb-5 border border-danger-subtle scale-in anim-delay-2"

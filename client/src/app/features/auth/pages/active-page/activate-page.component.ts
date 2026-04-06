@@ -6,7 +6,6 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-activate-page',
   standalone: true,
-  // Importamos los módulos necesarios para el HTML
   imports: [CommonModule, RouterModule],
   templateUrl: './activate-page.component.html',
   styleUrls: ['./activate-page.component.css'],
