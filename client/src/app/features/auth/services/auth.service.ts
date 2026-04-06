@@ -8,15 +8,17 @@ import {
   ActivateAccountRequest,
   AuthResponse,
 } from '../interfaces/auth.interfaces';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8000/api/users';
+  private apiUrl = `${environment.apiUrl}users`;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   /**
    * REGISTRO: POST /api/users/
@@ -31,23 +33,28 @@ export class AuthService {
   login(data: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login/`, data).pipe(
       tap((response: any) => {
-        localStorage.setItem('access_token', response.tokens.access);
-        localStorage.setItem('refresh_token', response.tokens.refresh);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.clear();
+        sessionStorage.clear();
+
+        const storage = data.rememberMe ? localStorage : sessionStorage;
+
+        storage.setItem('access_token', response.tokens.access);
+        storage.setItem('refresh_token', response.tokens.refresh);
+        storage.setItem('user', JSON.stringify(response.user));
       }),
     );
   }
 
   getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+    return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
+    return localStorage.getItem('refresh_token') || sessionStorage.getItem('user');
   }
 
   getUser(): any {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem('user') || sessionStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }
 
@@ -56,9 +63,11 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
+    localStorage.clear();
+
+    this.router.navigate(['/auth/login']).then(() => {
+      window.location.reload();
+    });
   }
 
   activateAccount(data: ActivateAccountRequest): Observable<any> {
@@ -77,5 +86,13 @@ export class AuthService {
     const url = `${this.apiUrl}/reset_password/`;
 
     return this.http.post(url, data);
+  }
+
+  updateProfile(data: { name: string }): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/profile/`, data);
+  }
+
+  changePassword(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/change_password/`, data);
   }
 }

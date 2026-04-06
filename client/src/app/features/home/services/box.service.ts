@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root',
 })
 export class BoxService {
-  private apiUrl = `http://${environment.apiUrl}:8000/api/boxes/`;
+  private apiUrl = `${environment.apiUrl}boxes/`;
 
   constructor(private http: HttpClient) {}
 

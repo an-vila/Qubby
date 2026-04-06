@@ -1,15 +1,23 @@
+import os
 import qrcode
 import base64
 from io import BytesIO
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import check_password
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.decorators import action, permission_classes
-from .models import Box
-from .serializers import BoxSerializer
+from rest_framework.decorators import (
+    action,
+    permission_classes,
+)
+from rest_framework.response import Response
+
+from .models import Box, Item
+from .serializers import BoxSerializer, ItemSerializer
+
+# Le he añadido 'localhost' como plan B por si en algún momento falla la variable de entorno
+ip = os.getenv("IP", "localhost")
+
 
 class BoxViewSet(viewsets.ModelViewSet):
     serializer_class = BoxSerializer
@@ -27,7 +35,9 @@ class BoxViewSet(viewsets.ModelViewSet):
     def qrcode(self, request, pk=None):
         box = self.get_object()
 
-        qr_data = f"http://192.168.86.102:4200/box/{box.id}/scan"
+        # OJO: Si tu frontend de Angular corre en el puerto 4200, recuerda añadir :4200
+        # Ejemplo: f"http://{ip}:4200/box/{box.id}/scan"
+        qr_data = f"http://{ip}/box/{box.id}/scan"
 
         qr = qrcode.QRCode(version=1, box_size=10, border=4)
         qr.add_data(qr_data)
@@ -50,12 +60,36 @@ class BoxViewSet(viewsets.ModelViewSet):
         box = get_object_or_404(Box, pk=pk)
         pin = str(request.data.get("pin")).strip()
 
-        if not getattr(
-            box, "is_protected", False
-        ):
+        if not getattr(box, "is_protected", False):
             return Response({"success": True, "message": "Sin protección"})
 
         if check_password(pin, box.pin):
             return Response({"success": True, "message": "PIN correcto"})
         else:
             return Response({"success": False, "error": "PIN incorrecto"}, status=400)
+
+    @action(detail=True, methods=["post"])
+    def add_item(self, request, pk=None):
+        """
+        POST /api/boxes/{id}/add_item/
+        Recibe {"name": "Cable HDMI", "description": "Para la tele"}
+        """
+        box = self.get_object()
+        serializer = ItemSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(box=box)
+            return Response(serializer.data, status=201)
+
+        return Response(serializer.errors, status=400)
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        box_id = self.request.query_params.get("box_id")
+        if box_id:
+            return self.queryset.filter(box_id=box_id)
+        return self.queryset

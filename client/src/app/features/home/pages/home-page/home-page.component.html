@@ -1,5 +1,4 @@
 <div class="min-vh-100 bg-gray-custom pb-5">
-
   <div class="d-sm-none">
     <app-header [activeSection]="activeSection" (sectionChange)="onSectionChange($event)">
     </app-header>
@@ -21,11 +20,9 @@
       </div>
     }
 
-    @if (activeSection === 'inicio') { 
+    @if (activeSection === 'inicio') {
       <div class="d-sm-block max-w-6xl mx-auto">
-        
         <div class="fade-in d-flex flex-column gap-3">
-          
           <div class="d-flex align-items-center gap-3">
             <div class="position-relative flex-grow-1">
               <i class="bi bi-search position-absolute text-muted fs-5 search-icon-position"></i>
@@ -47,7 +44,6 @@
 
           @if (viewMode === 'grid') {
             <div class="row g-3">
-              
               <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                 <button
                   (click)="handleNewCategory()"
@@ -61,7 +57,7 @@
               @for (cat of filteredCategories; track cat.id) {
                 <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                   <app-category-card
-                    [id]="cat.id" 
+                    [id]="cat.id"
                     [name]="cat.name"
                     [itemCount]="cat.itemCount || 0"
                     [viewMode]="'grid'"
@@ -75,14 +71,13 @@
                   </app-category-card>
                 </div>
               }
-            </div> 
+            </div>
           }
 
           @if (viewMode === 'list') {
             <div class="row justify-content-center">
               <div class="col-12 col-md-10 col-lg-8">
                 <div class="d-flex flex-column gap-3">
-                  
                   <button
                     (click)="handleNewCategory()"
                     class="btn w-100 rounded-4 text-white d-flex align-items-center justify-content-center gap-3 py-3 shadow-sm border-0 btn-orange-qubby"
@@ -92,9 +87,8 @@
                   </button>
 
                   @for (cat of filteredCategories; track cat.id) {
-<<<<<<< HEAD
                     <app-category-card
-                      [id]="cat.id" 
+                      [id]="cat.id"
                       [name]="cat.name"
                       [itemCount]="cat.itemCount"
                       [viewMode]="'list'"
@@ -102,31 +96,15 @@
                       (save)="saveCategory(cat, $event)"
                       (cancel)="cancelEdit(cat)"
                       (delete)="handleDeleteCategory(cat.id)"
-                      (edit)="handleEditCategory(cat.id)">
+                      (edit)="handleEditCategory(cat.id)"
+                    >
                     </app-category-card>
-=======
-                    <div class="col-12">
-                      <app-category-card
-                        [name]="cat.name"
-                        [itemCount]="cat.itemCount || 0"
-                        [viewMode]="'list'"
-                        [isEditing]="cat.isEditing || false"
-                        (save)="saveCategory(cat, $event)"
-                        (cancel)="cancelEdit(cat)"
-                        (delete)="handleDeleteCategory(cat.id!)"
-                        (edit)="handleEditCategory(cat.id!)"
-                        (open)="handleOpenCategory(cat.id!)"
-                      >
-                      </app-category-card>
-                    </div>
->>>>>>> origin/develop
                   }
                 </div>
               </div>
             </div>
           }
-
-        </div> 
+        </div>
       </div>
     }
   </main>
@@ -137,14 +115,16 @@
   </div>
 
   @if (mostrarModal) {
-    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" 
-         style="background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
-         (click)="closeModal()">
-      
-      <div class="bg-white rounded-4 shadow-lg p-4 w-100 mx-3 scale-in" 
-           style="max-width: 450px;" 
-           (click)="$event.stopPropagation()">
-        
+    <div
+      class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100"
+      style="background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px)"
+      (click)="closeModal()"
+    >
+      <div
+        class="bg-white rounded-4 shadow-lg p-4 w-100 mx-3 scale-in"
+        style="max-width: 450px"
+        (click)="$event.stopPropagation()"
+      >
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h3 class="fs-5 fw-bold mb-0 text-dark">Configurar Nueva Caja</h3>
           <button class="btn-close shadow-none" (click)="closeModal()"></button>
@@ -152,40 +132,59 @@
 
         <form (ngSubmit)="saveBox()">
           <div class="mb-4">
-            <label class="form-label fw-medium text-secondary small text-uppercase">Nombre de la caja</label>
-            <input type="text" name="name" [(ngModel)]="newBox.name" 
-                   class="form-control py-3 border-light-subtle shadow-sm rounded-3 bg-light-subtle" 
-                   placeholder="Ej: Trastero - Herramientas" required autofocus>
+            <label class="form-label fw-medium text-secondary small text-uppercase"
+              >Nombre de la caja</label
+            >
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="newBox.name"
+              class="form-control py-3 border-light-subtle shadow-sm rounded-3 bg-light-subtle"
+              placeholder="Ej: Trastero - Herramientas"
+              required
+              autofocus
+            />
           </div>
 
           <div class="bg-light p-3 rounded-4 mb-4 border border-light-subtle">
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-shield-lock-fill text-orange-qubby fs-5"></i>
-                <label class="fw-bold text-dark mb-0" style="cursor: pointer;" for="pinSwitch">
+                <label class="fw-bold text-dark mb-0" style="cursor: pointer" for="pinSwitch">
                   Proteger con PIN
                 </label>
               </div>
-              
+
               <div class="form-check form-switch mb-0">
-                <input class="form-check-input mt-0 fs-4 border-secondary-subtle" 
-                       type="checkbox" role="switch" id="pinSwitch" 
-                       name="isProtected" [(ngModel)]="newBox.isProtected"
-                       style="cursor: pointer;">
+                <input
+                  class="form-check-input mt-0 fs-4 border-secondary-subtle"
+                  type="checkbox"
+                  role="switch"
+                  id="pinSwitch"
+                  name="isProtected"
+                  [(ngModel)]="newBox.isProtected"
+                  style="cursor: pointer"
+                />
               </div>
             </div>
 
             @if (newBox.isProtected) {
               <div class="mt-3 pt-3 border-top border-secondary-subtle fade-in">
                 <label class="form-label small text-muted mb-2">PIN de acceso (4 dígitos)</label>
-                <input type="password" name="pin" [(ngModel)]="newBox.pin" 
-                       class="form-control text-center fs-3 fw-bold shadow-sm rounded-3 py-2" 
-                       style="letter-spacing: 1rem;"
-                       placeholder="0000" maxlength="4" inputmode="numeric">
-                
+                <input
+                  type="password"
+                  name="pin"
+                  [(ngModel)]="newBox.pin"
+                  class="form-control text-center fs-3 fw-bold shadow-sm rounded-3 py-2"
+                  style="letter-spacing: 1rem"
+                  placeholder="0000"
+                  maxlength="4"
+                  inputmode="numeric"
+                />
+
                 <div class="mt-2 d-flex align-items-start gap-2">
                   <i class="bi bi-info-circle text-orange-qubby small mt-1"></i>
-                  <p class="text-muted mb-0" style="font-size: 0.75rem;">
+                  <p class="text-muted mb-0" style="font-size: 0.75rem">
                     Se solicitará este PIN al escanear el QR de la caja.
                   </p>
                 </div>
@@ -194,10 +193,17 @@
           </div>
 
           <div class="d-flex gap-2">
-            <button type="button" class="btn btn-light flex-grow-1 py-2 rounded-3 fw-medium text-secondary" (click)="closeModal()">
+            <button
+              type="button"
+              class="btn btn-light flex-grow-1 py-2 rounded-3 fw-medium text-secondary"
+              (click)="closeModal()"
+            >
               Cancelar
             </button>
-            <button type="submit" class="btn btn-orange-qubby text-white flex-grow-1 py-2 rounded-3 shadow-sm fw-bold">
+            <button
+              type="submit"
+              class="btn btn-orange-qubby text-white flex-grow-1 py-2 rounded-3 shadow-sm fw-bold"
+            >
               Guardar Caja
             </button>
           </div>
@@ -207,39 +213,44 @@
   }
 
   @if (mostrarModalBorrado) {
-    <div class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100" 
-         style="background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
-         (click)="cerrarModalBorrado()">
-      
-      <div class="bg-white rounded-4 shadow-lg p-4 w-100 mx-3 scale-in" 
-           style="max-width: 400px;" 
-           (click)="$event.stopPropagation()">
-        
+    <div
+      class="modal-backdrop-custom d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100"
+      style="background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px)"
+      (click)="cerrarModalBorrado()"
+    >
+      <div
+        class="bg-white rounded-4 shadow-lg p-4 w-100 mx-3 scale-in"
+        style="max-width: 400px"
+        (click)="$event.stopPropagation()"
+      >
         <div class="text-center mb-4">
           <div class="bg-danger-subtle rounded-circle d-inline-flex p-3 mb-3">
             <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
           </div>
           <h3 class="fs-5 fw-bold text-dark">¿Eliminar esta caja?</h3>
           <p class="text-muted small px-3">
-            Estás a punto de borrar <strong>"{{ categoriaParaBorrar?.name }}"</strong>. 
-            Esta acción no se puede deshacer y perderás todos los objetos que contenga.
+            Estás a punto de borrar <strong>"{{ categoriaParaBorrar?.name }}"</strong>. Esta acción
+            no se puede deshacer y perderás todos los objetos que contenga.
           </p>
         </div>
 
         <div class="d-flex gap-2">
-          <button type="button" 
-                  class="btn btn-light flex-grow-1 py-2 rounded-3 fw-medium text-secondary" 
-                  (click)="cerrarModalBorrado()">
+          <button
+            type="button"
+            class="btn btn-light flex-grow-1 py-2 rounded-3 fw-medium text-secondary"
+            (click)="cerrarModalBorrado()"
+          >
             No, volver
           </button>
-          <button type="button" 
-                  class="btn btn-danger flex-grow-1 py-2 rounded-3 shadow-sm fw-bold" 
-                  (click)="confirmarBorrado()">
+          <button
+            type="button"
+            class="btn btn-danger flex-grow-1 py-2 rounded-3 shadow-sm fw-bold"
+            (click)="confirmarBorrado()"
+          >
             Sí, eliminar
           </button>
         </div>
       </div>
     </div>
   }
-
 </div>

@@ -37,7 +37,7 @@ export class HomePageComponent implements OnInit {
   categories: any[] = [];
   searchQuery: string = '';
 
-<<<<<<< HEAD
+  // Variables para el modal de Crear (Tuyas)
   mostrarModal: boolean = false;
   newBox = {
     name: '',
@@ -45,13 +45,15 @@ export class HomePageComponent implements OnInit {
     pin: '',
   };
 
+  // Variables para el modal de Borrar (Tuyas)
   mostrarModalBorrado: boolean = false;
   categoriaParaBorrar: any = null;
 
-  constructor(private boxService: BoxService) {}
-=======
-  constructor(private boxService: BoxService, private router: Router) {}
->>>>>>> origin/develop
+  // ✨ Unimos el BoxService (tuyo) con el Router (compañero)
+  constructor(
+    private boxService: BoxService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.checkScreenSize();
@@ -60,12 +62,12 @@ export class HomePageComponent implements OnInit {
 
   loadBoxes() {
     this.boxService.getBoxes().subscribe({
-<<<<<<< HEAD
-      next: (boxesFromDjango) => {
+      next: (boxesFromDjango: any[]) => {
         this.categories = boxesFromDjango.map((box) => ({
           ...box,
           isEditing: false,
-          itemCount: box.itemCount || 0,
+          // Cogemos itemCount o item_count por si Django lo manda con barra baja
+          itemCount: box.itemCount || box.item_count || 0,
         }));
       },
       error: (err) => {
@@ -74,114 +76,6 @@ export class HomePageComponent implements OnInit {
     });
   }
 
-=======
-      next: (data: Box[]) => {
-        this.categories = data;
-      },
-      error: (error: unknown) => console.error('Error al cargar las cajas', error),
-    });
-  }
-
-  handleNewCategory() {
-    if (this.categories.some((box) => box.isEditing && box.id === 0)) return;
-
-    const nuevaCaja: Box = {
-      id: 0,
-      name: `Nueva Caja ${this.categories.length + 1}`,
-      itemCount: 0,
-      isEditing: true,
-    };
-
-    this.categories.unshift(nuevaCaja);
-
-    // Pequeño truco para seleccionar el texto automáticamente y que el usuario empiece a teclear
-    setTimeout(() => {
-      const input = document.getElementById('edit-box-input-0') as HTMLInputElement;
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 50);
-  }
-
-  saveCategory(box: Box, newName: string) {
-    if (!box.isEditing) return;
-
-    const updatedName = newName.trim();
-
-    if (!updatedName) {
-      this.cancelEdit(box);
-      return;
-    }
-
-    box.name = updatedName;
-    box.isEditing = false;
-
-    if (box.id === 0) {
-      this.boxService.createBox(box.name).subscribe({
-        next: (cajaReal: Box) => {
-          this.categories = this.categories.map((box) => (box.id === 0 ? cajaReal : box));
-        },
-        error: (err: unknown) => {
-          console.error('Error creating box', err);
-          alert('Error al guardar la caja');
-          this.categories = this.categories.filter((box) => box.id !== 0);
-        },
-      });
-    } else {
-      this.boxService.updateBox(box.id, box.name).subscribe({
-        next: () => {
-          console.log(`Caja ${box.id} actualizada correctamente`);
-        },
-        error: (err: unknown) => {
-          console.error('Error al editar la caja', err);
-          alert('Hubo un problema y no se guardó el cambio en el servidor.');
-        },
-      });
-    }
-  }
-
-  cancelEdit(box: Box) {
-    if (box.id === 0) {
-      this.categories = this.categories.filter((box) => box.id !== 0);
-    } else {
-      box.isEditing = false;
-    }
-  }
-
-  handleEditCategory(id: number) {
-    const category = this.categories.find((box) => box.id === id);
-    if (category) {
-        category.isEditing = true;
-    }
-  }
-
-  handleDeleteCategory(id: number) {
-    if (!id) return;
-
-    // En el futuro habria que hacer que se vea en una alerta nativa en vez de navegador
-    const confirmar = confirm('¿Estás seguro de que quieres tirar esta caja a la basura?');
-
-    if (confirmar) {
-      this.boxService.deleteBox(id).subscribe({
-        next: () => {
-          this.categories = this.categories.filter((c) => c.id !== id);
-        },
-        error: (err: unknown) => {
-          console.error('Error al borrar la caja:', err);
-          alert('Hubo un problema y no se pudo borrar la caja.');
-        },
-      });
-    }
-  }
-
-  handleOpenCategory(id: number) {
-    this.router.navigate(['/home/box', id]);
-  }
-
-  //Logica de la UI
-
->>>>>>> origin/develop
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.checkScreenSize();
@@ -205,6 +99,12 @@ export class HomePageComponent implements OnInit {
     this.viewMode = mode;
   }
 
+  // --- NAVEGACIÓN (De tu compañero) ---
+  handleOpenCategory(id: number) {
+    this.router.navigate(['/box', id]); // Te llevará a la ruta de los items
+  }
+
+  // --- CREAR CAJA (Con tu modal de seguridad) ---
   handleNewCategory() {
     this.newBox = { name: '', isProtected: false, pin: '' };
     this.mostrarModal = true;
@@ -224,7 +124,7 @@ export class HomePageComponent implements OnInit {
     };
 
     this.boxService.createBox(boxData).subscribe({
-      next: (createdBox) => {
+      next: (createdBox: any) => {
         const newBoxView = {
           ...createdBox,
           isEditing: false,
@@ -239,6 +139,7 @@ export class HomePageComponent implements OnInit {
     });
   }
 
+  // --- EDITAR CAJA ---
   handleEditCategory(id: number) {
     const category = this.categories.find((c) => c.id === id);
     if (category) {
@@ -256,7 +157,7 @@ export class HomePageComponent implements OnInit {
     }
 
     this.boxService.updateBox(category.id, cleanName).subscribe({
-      next: (updatedBox) => {
+      next: (updatedBox: any) => {
         category.name = updatedBox.name;
         category.isEditing = false;
       },
@@ -271,7 +172,6 @@ export class HomePageComponent implements OnInit {
     category.isEditing = false;
   }
 
-
   handleDeleteCategory(id: number) {
     this.categoriaParaBorrar = this.categories.find((c) => c.id === id);
     if (this.categoriaParaBorrar) {
@@ -283,7 +183,6 @@ export class HomePageComponent implements OnInit {
     this.mostrarModalBorrado = false;
     this.categoriaParaBorrar = null;
   }
-
 
   confirmarBorrado() {
     if (!this.categoriaParaBorrar) return;
@@ -298,7 +197,7 @@ export class HomePageComponent implements OnInit {
         console.warn('Error al borrar, pero actualizando vista localmente...');
         this.categories = this.categories.filter((c) => c.id !== id);
         this.cerrarModalBorrado();
-      }
+      },
     });
   }
 }

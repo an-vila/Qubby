@@ -19,7 +19,7 @@ class Item(models.Model):
     box = models.ForeignKey(
         Box,
         on_delete=models.CASCADE,
-        related_name='items'  # lo que busca serializer
+        related_name='items'
     )
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)

@@ -9,7 +9,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor]) // ← registra el interceptor
+      withInterceptors([authInterceptor])
     )
   ]
 };

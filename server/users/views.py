@@ -230,7 +230,6 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
         try:
-            # Buscar usuario por token
             user = User.objects.get(verification_token=token)
         except User.DoesNotExist:
             return Response(
@@ -238,7 +237,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Marcar como verificado
         user.email_verified = True
         user.is_active = True
         user.verification_token = None  # Eliminar token después de usar
