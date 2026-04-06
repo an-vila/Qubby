@@ -78,56 +78,65 @@
         </div>
       </div>
 
-      @if (items.length === 0) {
-        <div class="d-flex flex-column align-items-center justify-content-center py-5 fade-in text-center mt-sm-5 mt-4">
-          <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center mb-4 border border-light-subtle" style="width: 120px; height: 120px;">
-            <i class="bi text-muted opacity-50" [ngClass]="searchQuery ? 'bi-search' : 'bi-box-seam'" style="font-size: 3.5rem;"></i>
+      @if (isLoading) {
+        <div class="d-flex justify-content-center py-5">
+          <div class="spinner-border text-orange-qubby" role="status">
+            <span class="visually-hidden">Cargando...</span>
           </div>
-          
-          <h3 class="fw-bold text-dark mb-2">
-            {{ searchQuery ? 'No hay resultados' : 'Esta caja está vacía' }}
-          </h3>
-          
-          <p class="text-muted mb-4 px-3" style="max-width: 450px;">
-            {{ searchQuery 
-              ? 'No hemos encontrado ningún objeto que coincida con "' + searchQuery + '". Prueba con otro nombre.' 
-              : 'Aún no has añadido ningún objeto a esta caja. ¡Empieza a llenar tu inventario!' }}
-          </p>
-
-          @if (!searchQuery) {
-            <button (click)="handleNewItem()" class="btn btn-orange-qubby text-white px-4 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2 transition-all hover-lift">
-              <i class="bi bi-plus-lg fs-5"></i>
-              Añadir mi primer objeto
-            </button>
-          }
         </div>
       } @else {
-        
-        <div [class.mx-auto]="viewMode === 'list'" [style.max-width]="viewMode === 'list' ? '800px' : 'none'">
-          <div class="row g-4">
-            <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3 d-none d-lg-block' : 'col-12 d-none d-lg-block'">
-              <button (click)="handleNewItem()" class="btn-add-object w-100 rounded-4 d-flex align-items-center justify-content-center shadow-sm" [ngClass]="viewMode === 'grid' ? 'h-100 p-4 flex-column gap-3' : 'py-3 flex-row gap-3 btn-list-mode'">
-                <i class="bi bi-plus-lg" [class.fs-1]="viewMode === 'grid'" [class.fs-4]="viewMode === 'list'"></i>
-                <span class="fw-bold" [class.fs-5]="viewMode === 'list'">Añadir Objeto</span>
-              </button>
+        @if (items.length === 0) {
+          <div class="d-flex flex-column align-items-center justify-content-center py-5 fade-in text-center mt-sm-5 mt-4">
+            <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center mb-4 border border-light-subtle" style="width: 120px; height: 120px;">
+              <i class="bi text-muted opacity-50" [ngClass]="searchQuery ? 'bi-search' : 'bi-box-seam'" style="font-size: 3.5rem;"></i>
             </div>
             
-            @for (item of items; track item.id) {
-              <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3' : 'col-12'">
-                <app-object-card 
-                  [image]="item.image || '/images/default-item.png'" 
-                  [name]="item.name" 
-                  [code]="item.code || 'S/N'" 
-                  [tags]="item.tags || []" 
-                  [viewMode]="viewMode" 
-                  (viewDetails)="abrirDetalles(item)" 
-                  (edit)="editarObjeto(item)" 
-                  (delete)="eliminarObjeto(item)">
-                </app-object-card>
-              </div>
+            <h3 class="fw-bold text-dark mb-2">
+              {{ searchQuery ? 'No hay resultados' : 'Esta caja está vacía' }}
+            </h3>
+            
+            <p class="text-muted mb-4 px-3" style="max-width: 450px;">
+              {{ searchQuery 
+                ? 'No hemos encontrado ningún objeto que coincida con "' + searchQuery + '". Prueba con otro nombre.' 
+                : 'Aún no has añadido ningún objeto a esta caja. ¡Empieza a llenar tu inventario!' }}
+            </p>
+
+            @if (!searchQuery) {
+              <button (click)="handleNewItem()" class="btn btn-orange-qubby text-white px-4 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2 transition-all hover-lift">
+                <i class="bi bi-plus-lg fs-5"></i>
+                Añadir mi primer objeto
+              </button>
             }
           </div>
-        </div>
+        } @else {
+          
+          <div [class.mx-auto]="viewMode === 'list'" [style.max-width]="viewMode === 'list' ? '800px' : 'none'">
+            <div class="row g-4">
+              <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3 d-none d-lg-block' : 'col-12 d-none d-lg-block'">
+                <button (click)="handleNewItem()" class="btn-add-object w-100 rounded-4 d-flex align-items-center justify-content-center shadow-sm" [ngClass]="viewMode === 'grid' ? 'h-100 p-4 flex-column gap-3' : 'py-3 flex-row gap-3 btn-list-mode'">
+                  <i class="bi bi-plus-lg" [class.fs-1]="viewMode === 'grid'" [class.fs-4]="viewMode === 'list'"></i>
+                  <span class="fw-bold" [class.fs-5]="viewMode === 'list'">Añadir Objeto</span>
+                </button>
+              </div>
+              
+              @for (item of items; track item.id) {
+                <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3' : 'col-12'">
+                  <app-object-card 
+                    [image]="item.image || '/images/default-item.png'" 
+                    [name]="item.name" 
+                    [description]="item.description || 'Sin descripción'"
+                    [code]="item.code || 'S/N'" 
+                    [tags]="item.tags || []" 
+                    [viewMode]="viewMode" 
+                    (viewDetails)="abrirDetalles(item)" 
+                    (edit)="editarObjeto(item)" 
+                    (delete)="eliminarObjeto(item)">
+                  </app-object-card>
+                </div>
+              }
+            </div>
+          </div>
+        }
       }
     </div>
     

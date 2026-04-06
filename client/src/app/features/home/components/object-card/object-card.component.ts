@@ -12,8 +12,11 @@ export class ObjectCardComponent {
   @Input() image: string = '';
   @Input() name: string = '';
   @Input() code: string = '';
+  @Input() description: string = ''; 
+  
   @Input() tags: string[] = [];
   @Input() viewMode: 'grid' | 'list' = 'grid'; 
+  
   @Output() viewDetails = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
