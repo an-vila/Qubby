@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 
 class Box(models.Model):
     user = models.ForeignKey(
@@ -16,14 +17,17 @@ class Box(models.Model):
         return f"{self.name} (Usuario: {self.user})"
 
 class Item(models.Model):
-    box = models.ForeignKey(
-        Box,
-        on_delete=models.CASCADE,
-        related_name='items'
-    )
-    name = models.CharField(max_length=100)
+    box = models.ForeignKey(Box, on_delete=models.CASCADE, related_name="items")
+    name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    code = models.CharField(max_length=50, blank=True, null=True)
+    image = models.ImageField(upload_to="items_images/", blank=True, null=True)
+    tags = ArrayField(
+        models.CharField(max_length=50, blank=True), blank=True, default=list
+    )
+    registration_date = models.DateField(auto_now_add=True)
+    quantity = models.IntegerField(default=1)
+    status = models.CharField(max_length=50, default="Guardado")
 
     def __str__(self):
-        return f"{self.name} (Caja: {self.box.name})"
+        return self.name
