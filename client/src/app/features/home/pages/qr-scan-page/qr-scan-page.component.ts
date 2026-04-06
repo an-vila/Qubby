@@ -1,42 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'; 
 import { BoxService } from '../../services/box.service';
 
 @Component({
   selector: 'app-qr-scan-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule], 
   templateUrl: './qr-scan-page.component.html',
   styleUrls: ['./qr-scan-page.component.css'],
 })
 export class QrScanPageComponent implements OnInit {
   boxId: string = '';
-  searchQuery: string = '';
   selectedObject: any = null;
 
+  searchControl = new FormControl(''); 
+  pinForm!: FormGroup;                 
+  
   pinNeeded: boolean = true;
-  pinEnter: string = '';
   pinError: boolean = false;
   
-  constructor(private route: ActivatedRoute, private boxService: BoxService) {}
-
-  verifyPin() {
-    this.boxService.verifyPin(this.boxId, this.pinEnter).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.pinNeeded = false;
-          this.pinError = false;
-        }
-      },
-      error: (err) => {
-        this.pinError = true;
-        this.pinEnter = '';
-      },
-    });
-  }
-
   objetos: any[] = [
     {
       id: 1,
@@ -58,8 +42,37 @@ export class QrScanPageComponent implements OnInit {
     },
   ];
 
+  constructor(
+    private route: ActivatedRoute, 
+    private boxService: BoxService,
+    private fb: FormBuilder 
+  ) {}
+
   ngOnInit(): void {
     this.boxId = this.route.snapshot.paramMap.get('id') || 'Desconocida';
+
+    this.pinForm = this.fb.group({
+      pin: ['', Validators.required]
+    });
+  }
+
+  verifyPin() {
+    if (this.pinForm.invalid) return;
+
+    const pinEnter = this.pinForm.value.pin;
+
+    this.boxService.verifyPin(this.boxId, pinEnter).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.pinNeeded = false;
+          this.pinError = false;
+        }
+      },
+      error: (err) => {
+        this.pinError = true;
+        this.pinForm.reset(); 
+      },
+    });
   }
 
   abrirDetalles(obj: any): void {

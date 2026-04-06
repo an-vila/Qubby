@@ -10,17 +10,17 @@
     </div>
   </header>
 
-  <form (ngSubmit)="handleSubmit()" #objectForm="ngForm" class="container py-4 form-container">
+  <form [formGroup]="objectForm" (ngSubmit)="handleSubmit()" class="container py-4 form-container">
     
     <div class="mb-4">
       <label class="form-label fw-bold text-secondary">Nombre del objeto *</label>
-      <input type="text" name="name" [(ngModel)]="objectName" required
+      <input type="text" formControlName="name"
              class="form-control form-control-lg border-2 shadow-none custom-input" placeholder="Ej: Laptop Dell XPS">
     </div>
 
     <div class="mb-4">
       <label class="form-label fw-bold text-secondary">Categoría *</label>
-      <select name="category" [(ngModel)]="category" required class="form-select form-select-lg border-2 shadow-none custom-input text-secondary">
+      <select formControlName="category" class="form-select form-select-lg border-2 shadow-none custom-input text-secondary">
         <option value="" disabled selected>Selecciona una categoría</option>
         <option value="Electrónica">💻 Electrónica</option>
         <option value="Hogar">🏠 Hogar</option>
@@ -32,7 +32,7 @@
 
     <div class="mb-4">
       <label class="form-label fw-bold text-secondary">Descripción</label>
-      <textarea name="desc" [(ngModel)]="description" rows="3"
+      <textarea formControlName="description" rows="3"
                 class="form-control border-2 shadow-none custom-input" placeholder="Detalles adicionales..."></textarea>
     </div>
 
@@ -65,7 +65,7 @@
     <div class="mb-4">
       <label class="form-label fw-bold text-secondary">Etiquetas</label>
       <div class="d-flex gap-2 mb-3">
-        <input type="text" name="tagInput" [(ngModel)]="currentTag" (keyup.enter)="handleAddTag()"
+        <input type="text" [formControl]="tagInput" (keyup.enter)="handleAddTag()"
                class="form-control border-2 shadow-none custom-input" placeholder="Ej: frágil, invierno...">
         <button type="button" (click)="handleAddTag()" class="btn btn-orange px-3 rounded-3">
           <i class="bi bi-plus-lg"></i>
@@ -85,19 +85,19 @@
     <div class="row mb-5 g-3">
       <div class="col-md-4">
         <label class="form-label fw-bold text-secondary">Cantidad</label>
-        <input type="number" name="qty" [(ngModel)]="quantity" min="1" class="form-control border-2 custom-input">
+        <input type="number" formControlName="quantity" class="form-control border-2 custom-input">
       </div>
       <div class="col-md-8">
         <label class="form-label fw-bold text-secondary">Estado</label>
         <div class="btn-group w-100 shadow-none">
-          <button type="button" (click)="status = 'saved'" class="btn" [ngClass]="status === 'saved' ? 'btn-success' : 'btn-outline-secondary'">Guardado</button>
-          <button type="button" (click)="status = 'loaned'" class="btn" [ngClass]="status === 'loaned' ? 'btn-warning text-white' : 'btn-outline-secondary'">Prestado</button>
-          <button type="button" (click)="status = 'damaged'" class="btn" [ngClass]="status === 'damaged' ? 'btn-danger' : 'btn-outline-secondary'">Dañado</button>
+          <button type="button" (click)="objectForm.get('status')?.setValue('saved')" class="btn" [ngClass]="objectForm.get('status')?.value === 'saved' ? 'btn-success' : 'btn-outline-secondary'">Guardado</button>
+          <button type="button" (click)="objectForm.get('status')?.setValue('loaned')" class="btn" [ngClass]="objectForm.get('status')?.value === 'loaned' ? 'btn-warning text-white' : 'btn-outline-secondary'">Prestado</button>
+          <button type="button" (click)="objectForm.get('status')?.setValue('damaged')" class="btn" [ngClass]="objectForm.get('status')?.value === 'damaged' ? 'btn-danger' : 'btn-outline-secondary'">Dañado</button>
         </div>
       </div>
     </div>
 
-    <button type="submit" [disabled]="!objectName || !category || isSubmitting" 
+    <button type="submit" [disabled]="objectForm.invalid || isSubmitting" 
             class="btn btn-orange w-100 py-3 fs-5 fw-bold rounded-4 shadow-sm d-flex align-items-center justify-content-center gap-2">
       @if (showSuccess) {
         <i class="bi bi-check-circle-fill fs-4"></i> Objeto guardado

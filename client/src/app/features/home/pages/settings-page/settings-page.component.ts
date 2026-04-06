@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { AuthService } from '../../../auth/services/auth.service';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-settings-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule], 
   templateUrl: './settings-page.component.html',
   styleUrls: ['./settings-page.component.css'],
 })
 export class SettingsPageComponent implements OnInit {
-  constructor(private authService: AuthService) {}
-
   userName: string = 'Usuario';
-  editName: string = '';
   userEmail: string = 'tu_correo@qubby.com';
 
-  passwordData = {
-    old_password: '',
-    new_password: '',
-    confirm_password: '',
-  };
+ 
+  profileForm!: FormGroup;
+  passwordForm!: FormGroup;
+
+  constructor(
+    private authService: AuthService,
+    private fb: FormBuilder 
+  ) {}
 
   ngOnInit(): void {
     const userData = this.authService.getUser();
@@ -31,16 +31,30 @@ export class SettingsPageComponent implements OnInit {
       this.userName = userData.name || 'Usuario';
       this.userEmail = userData.email || 'tu_correo@qubby.com';
     }
+
+   
+    this.profileForm = this.fb.group({
+      name: ['', Validators.required]
+    });
+
+   
+    this.passwordForm = this.fb.group({
+      old_password: ['', Validators.required],
+      new_password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm_password: ['', Validators.required]
+    });
   }
 
   updateName() {
-    if (!this.editName.trim()) return;
+    if (this.profileForm.invalid) return;
 
-    this.authService.updateProfile({ name: this.editName }).subscribe({
+    const newName = this.profileForm.value.name.trim();
+
+    this.authService.updateProfile({ name: newName }).subscribe({
       next: (res: any) => {
         alert('Nombre actualizado correctamente');
-        this.userName = this.editName;
-        this.editName = '';
+        this.userName = newName;
+        this.profileForm.reset(); 
         this.updateLocalStorage(this.userName);
       },
       error: (err) => {
@@ -51,15 +65,22 @@ export class SettingsPageComponent implements OnInit {
   }
 
   updatePassword() {
-    if (this.passwordData.new_password !== this.passwordData.confirm_password) {
+    if (this.passwordForm.invalid) {
+      alert('Por favor, rellena todos los campos correctamente.');
+      return;
+    }
+
+    const formValues = this.passwordForm.value;
+
+    if (formValues.new_password !== formValues.confirm_password) {
       alert('Las contraseñas nuevas no coinciden.');
       return;
     }
 
-    this.authService.changePassword(this.passwordData).subscribe({
+    this.authService.changePassword(formValues).subscribe({
       next: () => {
         alert('Contraseña cambiada con éxito');
-        this.passwordData = { old_password: '', new_password: '', confirm_password: '' };
+        this.passwordForm.reset(); 
       },
       error: (err) => {
         console.error('Error cambiando contraseña', err);

@@ -8,22 +8,22 @@ import {
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Tu parte
-import { RouterLink } from '@angular/router'; // La parte de tu compañero
+import { ReactiveFormsModule, FormControl } from '@angular/forms'; 
+import { RouterLink } from '@angular/router'; 
 
 @Component({
   selector: 'app-category-card',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink], // Combinados
+  imports: [CommonModule, ReactiveFormsModule, RouterLink], 
   templateUrl: './category-card.component.html',
   styleUrls: ['./category-card.component.css'],
 })
 export class CategoryCardComponent {
-  @Input() id: number = 0; // Añadido por tu compañero
+  @Input() id: number = 0; 
   @Input() name: string = '';
   @Input() itemCount: number = 0;
   @Input() viewMode: 'list' | 'grid' = 'grid';
-  @Input() isEditing: boolean = false; // Tu estado de edición
+  @Input() isEditing: boolean = false; 
 
   @Output() delete = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
@@ -31,13 +31,13 @@ export class CategoryCardComponent {
   @Output() cancel = new EventEmitter<void>();
   @Output() open = new EventEmitter<void>();
 
-  editName: string = '';
+  editControl = new FormControl('');
 
   @ViewChild('editInput') editInput!: ElementRef<HTMLInputElement>;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isEditing'] && changes['isEditing'].currentValue === true) {
-      this.editName = this.name;
+      this.editControl.setValue(this.name);
       setTimeout(() => {
         if (this.editInput) {
           this.editInput.nativeElement.focus();
@@ -48,7 +48,7 @@ export class CategoryCardComponent {
   }
 
   onSave() {
-    this.save.emit(this.editName);
+    this.save.emit(this.editControl.value || '');
   }
 
   onCancel() {

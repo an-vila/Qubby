@@ -54,7 +54,8 @@
     </div>
     <div class="position-relative">
       <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar objeto..." 
+      
+      <input type="text" [formControl]="searchControl" placeholder="Buscar objeto..." 
              class="form-control border-0 rounded-3 ps-5 py-2 search-input-mobile">
     </div>
   </header>
@@ -65,7 +66,8 @@
       <div class="d-none d-lg-flex align-items-center gap-3 mb-4">
         <div class="position-relative flex-grow-1">
           <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-          <input type="text" [(ngModel)]="searchQuery" placeholder="Buscar objeto..." 
+          
+          <input type="text" [formControl]="searchControl" placeholder="Buscar objeto..." 
                  class="form-control border-0 shadow-sm rounded-4 ps-5 py-3 fs-5 bg-white w-100">
         </div>
         <div class="bg-white p-1 rounded-4 shadow-sm d-flex align-items-center gap-1 view-selector-wrapper">
@@ -85,23 +87,23 @@
           </div>
         </div>
       } @else {
-        @if (items.length === 0) {
+        @if (filteredItems.length === 0) {
           <div class="d-flex flex-column align-items-center justify-content-center py-5 fade-in text-center mt-sm-5 mt-4">
             <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center mb-4 border border-light-subtle" style="width: 120px; height: 120px;">
-              <i class="bi text-muted opacity-50" [ngClass]="searchQuery ? 'bi-search' : 'bi-box-seam'" style="font-size: 3.5rem;"></i>
+              <i class="bi text-muted opacity-50" [ngClass]="searchControl.value ? 'bi-search' : 'bi-box-seam'" style="font-size: 3.5rem;"></i>
             </div>
             
             <h3 class="fw-bold text-dark mb-2">
-              {{ searchQuery ? 'No hay resultados' : 'Esta caja está vacía' }}
+              {{ searchControl.value ? 'No hay resultados' : 'Esta caja está vacía' }}
             </h3>
             
             <p class="text-muted mb-4 px-3" style="max-width: 450px;">
-              {{ searchQuery 
-                ? 'No hemos encontrado ningún objeto que coincida con "' + searchQuery + '". Prueba con otro nombre.' 
+              {{ searchControl.value 
+                ? 'No hemos encontrado ningún objeto que coincida con "' + searchControl.value + '". Prueba con otro nombre.' 
                 : 'Aún no has añadido ningún objeto a esta caja. ¡Empieza a llenar tu inventario!' }}
             </p>
 
-            @if (!searchQuery) {
+            @if (!searchControl.value) {
               <button [routerLink]="['/box', boxId, 'add']" class="btn btn-orange-qubby text-white px-4 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2 transition-all hover-lift">
                 <i class="bi bi-plus-lg fs-5"></i>
                 Añadir mi primer objeto
@@ -119,7 +121,7 @@
                 </button>
               </div>
               
-              @for (item of items; track item.id) {
+              @for (item of filteredItems; track item.id) {
                 <div [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4 col-xxl-3' : 'col-12'">
                   <app-object-card 
                     [image]="item.image || '/images/default-item.png'" 

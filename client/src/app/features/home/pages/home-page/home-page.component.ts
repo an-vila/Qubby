@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'; 
 import { Router } from '@angular/router';
 
 import { HeaderComponent } from '../../components/header/header.component';
@@ -18,7 +18,7 @@ import { BoxService } from '../../services/box.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule, 
     HeaderComponent,
     SidebarComponent,
     CategoryCardComponent,
@@ -35,29 +35,31 @@ export class HomePageComponent implements OnInit {
   viewMode: 'grid' | 'list' = 'grid';
 
   categories: any[] = [];
-  searchQuery: string = '';
+  
+ 
+  searchControl = new FormControl(''); 
+  newBoxForm!: FormGroup;              
 
-  // Variables para el modal de Crear (Tuyas)
   mostrarModal: boolean = false;
-  newBox = {
-    name: '',
-    isProtected: false,
-    pin: '',
-  };
-
-  // Variables para el modal de Borrar (Tuyas)
   mostrarModalBorrado: boolean = false;
   categoriaParaBorrar: any = null;
 
-  // ✨ Unimos el BoxService (tuyo) con el Router (compañero)
   constructor(
     private boxService: BoxService,
     private router: Router,
+    private fb: FormBuilder 
   ) {}
 
   ngOnInit() {
     this.checkScreenSize();
     this.loadBoxes();
+
+
+    this.newBoxForm = this.fb.group({
+      name: ['', Validators.required],
+      isProtected: [false],
+      pin: ['']
+    });
   }
 
   loadBoxes() {
@@ -66,7 +68,6 @@ export class HomePageComponent implements OnInit {
         this.categories = boxesFromDjango.map((box) => ({
           ...box,
           isEditing: false,
-          // Cogemos itemCount o item_count por si Django lo manda con barra baja
           itemCount: box.itemCount || box.item_count || 0,
         }));
       },
@@ -85,9 +86,11 @@ export class HomePageComponent implements OnInit {
     this.viewMode = window.innerWidth < 768 ? 'list' : 'grid';
   }
 
+
   get filteredCategories() {
+    const query = (this.searchControl.value || '').toLowerCase();
     return this.categories.filter((c) =>
-      c.name.toLowerCase().includes(this.searchQuery.toLowerCase()),
+      c.name.toLowerCase().includes(query)
     );
   }
 
@@ -99,14 +102,12 @@ export class HomePageComponent implements OnInit {
     this.viewMode = mode;
   }
 
-  // --- NAVEGACIÓN (De tu compañero) ---
   handleOpenCategory(id: number) {
-    this.router.navigate(['/box', id]); // Te llevará a la ruta de los items
+    this.router.navigate(['/box', id]); 
   }
 
-  // --- CREAR CAJA (Con tu modal de seguridad) ---
   handleNewCategory() {
-    this.newBox = { name: '', isProtected: false, pin: '' };
+    this.newBoxForm.reset({ isProtected: false, pin: '' }); 
     this.mostrarModal = true;
   }
 
@@ -115,12 +116,17 @@ export class HomePageComponent implements OnInit {
   }
 
   saveBox() {
-    if (!this.newBox.name.trim()) return;
+    if (this.newBoxForm.invalid) return;
+
+    const formValues = this.newBoxForm.value;
+    const cleanName = formValues.name?.trim();
+    
+    if (!cleanName) return;
 
     const boxData = {
-      name: this.newBox.name,
-      is_protected: this.newBox.isProtected,
-      pin: this.newBox.isProtected ? this.newBox.pin : '',
+      name: cleanName,
+      is_protected: formValues.isProtected,
+      pin: formValues.isProtected ? formValues.pin : '',
     };
 
     this.boxService.createBox(boxData).subscribe({
@@ -133,13 +139,12 @@ export class HomePageComponent implements OnInit {
 
         this.categories.unshift(newBoxView);
         this.closeModal();
-        this.searchQuery = '';
+        this.searchControl.setValue(''); 
       },
       error: (err) => console.error('Error al crear la caja en Django', err),
     });
   }
 
-  // --- EDITAR CAJA ---
   handleEditCategory(id: number) {
     const category = this.categories.find((c) => c.id === id);
     if (category) {
@@ -171,6 +176,7 @@ export class HomePageComponent implements OnInit {
   cancelEdit(category: any) {
     category.isEditing = false;
   }
+
 
   handleDeleteCategory(id: number) {
     this.categoriaParaBorrar = this.categories.find((c) => c.id === id);

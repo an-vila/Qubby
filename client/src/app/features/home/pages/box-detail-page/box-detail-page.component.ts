@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormControl } from '@angular/forms'; 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
 
 import { Item, Box } from '../../interfaces/home.interfaces';
@@ -12,7 +12,7 @@ import { ObjectCardComponent } from '../../components/object-card/object-card.co
 @Component({
   selector: 'app-box-detail-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ObjectCardComponent, RouterLink], 
+  imports: [CommonModule, ReactiveFormsModule, ObjectCardComponent, RouterLink],
   templateUrl: './box-detail-page.component.html',
   styleUrls: ['./box-detail-page.component.css'],
 })
@@ -24,7 +24,8 @@ export class BoxDetailPageComponent implements OnInit {
   items: Item[] = [];
   isLoading: boolean = true;
 
-  searchQuery: string = '';
+  searchControl = new FormControl(''); 
+  
   viewMode: 'grid' | 'list' = 'grid';
 
   selectedObject: any = null;
@@ -48,6 +49,13 @@ export class BoxDetailPageComponent implements OnInit {
         this.loadItems();
       }
     });
+  }
+
+  get filteredItems() {
+    const query = (this.searchControl.value || '').toLowerCase();
+    return this.items.filter((item) =>
+      item.name.toLowerCase().includes(query)
+    );
   }
 
   loadBox() {
