@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
 
 import { Item, Box } from '../../interfaces/home.interfaces';
 import { ItemService } from '../../services/item.service';
@@ -12,7 +12,7 @@ import { ObjectCardComponent } from '../../components/object-card/object-card.co
 @Component({
   selector: 'app-box-detail-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ObjectCardComponent],
+  imports: [CommonModule, FormsModule, ObjectCardComponent, RouterLink], 
   templateUrl: './box-detail-page.component.html',
   styleUrls: ['./box-detail-page.component.css'],
 })
@@ -105,37 +105,12 @@ export class BoxDetailPageComponent implements OnInit {
   }
 
   handleNewItem() {
-    if (this.items.some((item) => item.isEditing && item.id === 0)) return;
-
-    const nuevoItem: Item = {
-      id: 0,
-      name: '',
-      description: '',
-      box: this.boxId,
-      // Valores por defecto para los nuevos campos
-      code: `OBJ-${Math.floor(Math.random() * 10000)}`, // Genera un código aleatorio temporal
-      image: '',
-      tags: [],
-      registrationDate: new Date().toLocaleDateString('es-ES'),
-      quantity: 1,
-      status: 'Guardado',
-
-      isEditing: true,
-    };
-
-    this.items.unshift(nuevoItem);
-
-    setTimeout(() => {
-      const input = document.querySelector('.item-edit-input') as HTMLInputElement;
-      if (input) input.focus();
-    }, 50);
+    this.router.navigate(['/box', this.boxId, 'add']);
   }
 
   saveItem(item: Item, data?: any) {
     if (!item.isEditing) return;
 
-    // Si pasamos 'data' desde la vista de lista/grid, lo usamos.
-    // Si no, cogemos lo que ya tiene el 'item' vinculado por ngModel.
     const finalName = data?.name ? data.name.trim() : item.name.trim();
 
     if (!finalName) {
@@ -143,12 +118,10 @@ export class BoxDetailPageComponent implements OnInit {
       return;
     }
 
-    // Actualizamos el objeto local antes de enviarlo
     item.name = finalName;
     item.description = data?.description ? data.description.trim() : item.description;
     item.isEditing = false;
 
-    // Creamos el "Paquete" (payload) completo para el Backend
     const itemPayload = {
       name: item.name,
       description: item.description,
@@ -162,7 +135,6 @@ export class BoxDetailPageComponent implements OnInit {
     };
 
     if (item.id === 0) {
-      // Crear nuevo en la BBDD
       this.itemService.createItem(itemPayload).subscribe({
         next: (itemReal: Item) => {
           this.items = this.items.map((i) => (i.id === 0 ? itemReal : i));
@@ -174,7 +146,6 @@ export class BoxDetailPageComponent implements OnInit {
         },
       });
     } else {
-      // Actualizar existente
       this.itemService.updateItem(item.id, itemPayload).subscribe({
         next: () => {
           if (this.selectedObject && this.selectedObject.id === item.id) {
@@ -232,9 +203,6 @@ export class BoxDetailPageComponent implements OnInit {
     }
   }
 
-  
-  // FUNCIONES PUENTE PARA EL HTML 
- 
   abrirDetalles(obj: any) {
     this.selectedObject = obj;
   }
