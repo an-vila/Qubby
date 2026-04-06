@@ -15,7 +15,6 @@ from rest_framework.response import Response
 from .models import Box, Item
 from .serializers import BoxSerializer, ItemSerializer
 
-# Le he añadido 'localhost' como plan B por si en algún momento falla la variable de entorno
 ip = os.getenv("IP", "localhost")
 
 
@@ -35,9 +34,7 @@ class BoxViewSet(viewsets.ModelViewSet):
     def qrcode(self, request, pk=None):
         box = self.get_object()
 
-        # OJO: Si tu frontend de Angular corre en el puerto 4200, recuerda añadir :4200
-        # Ejemplo: f"http://{ip}:4200/box/{box.id}/scan"
-        qr_data = f"http://{ip}/box/{box.id}/scan"
+        qr_data = f"http://{ip}:4200/box/{box.id}/scan"
 
         qr = qrcode.QRCode(version=1, box_size=10, border=4)
         qr.add_data(qr_data)

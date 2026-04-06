@@ -20,6 +20,7 @@ class BoxSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     registrationDate = serializers.DateField(source="registration_date", read_only=True)
+    image = serializers.ImageField(required=False, allow_null=True)
     
     class Meta:
         model = Item

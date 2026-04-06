@@ -107,73 +107,6 @@ export class BoxDetailPageComponent implements OnInit {
     this.router.navigate(['/box', this.boxId, 'add']);
   }
 
-  saveItem(item: Item, data?: any) {
-    if (!item.isEditing) return;
-
-    const finalName = data?.name ? data.name.trim() : item.name.trim();
-
-    if (!finalName) {
-      this.cancelEdit(item);
-      return;
-    }
-
-    item.name = finalName;
-    item.description = data?.description ? data.description.trim() : item.description;
-    item.isEditing = false;
-
-    const itemPayload = {
-      name: item.name,
-      description: item.description,
-      box: this.boxId,
-      code: item.code || '',
-      image: item.image || '',
-      tags: item.tags || [],
-      registrationDate: item.registrationDate,
-      quantity: item.quantity || 1,
-      status: item.status || 'Guardado',
-    };
-
-    if (item.id === 0) {
-      this.itemService.createItem(itemPayload).subscribe({
-        next: (itemReal: Item) => {
-          this.items = this.items.map((i) => (i.id === 0 ? itemReal : i));
-        },
-        error: (err: unknown) => {
-          console.error('Error creando item:', err);
-          alert('Error al guardar el objeto.');
-          this.items = this.items.filter((i) => i.id !== 0);
-        },
-      });
-    } else {
-      this.itemService.updateItem(item.id, itemPayload).subscribe({
-        next: () => {
-          if (this.selectedObject && this.selectedObject.id === item.id) {
-            this.selectedObject = { ...item };
-          }
-        },
-        error: (err: unknown) => {
-          console.error('Error al editar item:', err);
-          alert('No se pudo guardar el cambio.');
-        },
-      });
-    }
-  }
-
-  cancelEdit(item: Item) {
-    if (item.id === 0) {
-      this.items = this.items.filter((i) => i.id !== 0);
-    } else {
-      item.isEditing = false;
-    }
-  }
-
-  handleEditItem(id: number) {
-    const item = this.items.find((i) => i.id === id);
-    if (item) {
-      item.isEditing = true;
-    }
-  }
-
   handleDeleteItem(id: number) {
     if (!id) return;
 
@@ -195,24 +128,24 @@ export class BoxDetailPageComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  eliminarCaja() {
+  deleteBox() {
     const confirmacion = confirm('¿Seguro que quieres borrar toda la caja y su contenido?');
     if (confirmacion) {
       this.router.navigate(['/home']);
     }
   }
 
-  abrirDetalles(obj: any) {
+  openDetails(obj: any) {
     this.selectedObject = obj;
   }
 
-  cerrarDetalles() {
+  closeDetails() {
     this.selectedObject = null;
   }
 
   editarObjeto(obj: any) {
-    this.handleEditItem(obj.id);
-    this.cerrarDetalles();
+    this.closeDetails();
+    this.router.navigate(['/box', this.boxId, 'edit', obj.id]);
   }
 
   eliminarObjeto(obj: any) {

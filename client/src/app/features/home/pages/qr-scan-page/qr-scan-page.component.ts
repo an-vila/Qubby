@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BoxService } from '../../services/box.service';
+import { ItemService } from '../../services/item.service';
 
 @Component({
   selector: 'app-qr-scan-page',
@@ -19,8 +20,42 @@ export class QrScanPageComponent implements OnInit {
   pinNeeded: boolean = true;
   pinEnter: string = '';
   pinError: boolean = false;
-  
-  constructor(private route: ActivatedRoute, private boxService: BoxService) {}
+
+  objetos: any[] = [];
+  isLoading: boolean = true;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private boxService: BoxService,
+    private itemService: ItemService,
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.boxId = id;
+      this.verifySecure();
+    } else {
+      this.router.navigate(['/home']);
+    }
+  }
+
+  verifySecure() {
+    this.boxService.getBox(this.boxId).subscribe({
+      next: (box: any) => {
+        if (!box.is_protected) {
+          this.pinNeeded = false;
+          this.loadItems();
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.router.navigate(['/home']);
+      },
+    });
+  }
 
   verifyPin() {
     this.boxService.verifyPin(this.boxId, this.pinEnter).subscribe({
@@ -28,6 +63,9 @@ export class QrScanPageComponent implements OnInit {
         if (res.success) {
           this.pinNeeded = false;
           this.pinError = false;
+          this.loadItems();
+        } else {
+          this.pinError = true;
         }
       },
       error: (err) => {
@@ -37,36 +75,25 @@ export class QrScanPageComponent implements OnInit {
     });
   }
 
-  objetos: any[] = [
-    {
-      id: 1,
-      name: 'Cable HDMI',
-      code: 'ELC-001',
-      quantity: 2,
-      status: 'Guardado',
-      image: 'https://images.unsplash.com/photo-1583259034006-5ea8361109e7?w=400',
-      tags: ['Cable', 'HDMI', '2m'],
-    },
-    {
-      id: 2,
-      name: 'Cargador USB-C',
-      code: 'ELC-002',
-      quantity: 1,
-      status: 'Prestado',
-      image: 'https://images.unsplash.com/photo-1726748398114-2f2260b6ddc5?w=400',
-      tags: ['Cargador', '20W'],
-    },
-  ];
-
-  ngOnInit(): void {
-    this.boxId = this.route.snapshot.paramMap.get('id') || 'Desconocida';
+  loadItems() {
+    this.isLoading = true;
+    this.itemService.getItemsByBox(Number(this.boxId)).subscribe({
+      next: (data: any) => {
+        this.objetos = data.results || data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando objetos:', err);
+        this.isLoading = false;
+      },
+    });
   }
 
-  abrirDetalles(obj: any): void {
+  openDetails(obj: any): void {
     this.selectedObject = obj;
   }
 
-  cerrarDetalles(): void {
+  closeDetails(): void {
     this.selectedObject = null;
   }
 }

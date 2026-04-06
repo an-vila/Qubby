@@ -17,14 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from config import settings
+from django.conf.urls.static import static
 from users.views import UserViewSet
 
-# Crear el router automático para el ViewSet
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),  # Todos los endpoints de /api/users/ aqui
-    path('api/', include('boxes.urls')), # Todos los endpoints de /api/boxes/ aqui
+    path('api/', include(router.urls)),
+    path('api/', include('boxes.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

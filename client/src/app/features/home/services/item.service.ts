@@ -13,14 +13,18 @@ export class ItemService {
   constructor(private http: HttpClient) {}
 
   getItemsByBox(boxId: number): Observable<Item[]> {
-    return this.http.get<Item[]>(`${this.apiUrl}?box=${boxId}`);
+    return this.http.get<Item[]>(`${this.apiUrl}?box_id=${boxId}`);
   }
 
-  createItem(data: { name: string; description?: string; box: number }): Observable<Item> {
+  createItem(data: FormData | any): Observable<Item> {
     return this.http.post<Item>(this.apiUrl, data);
   }
 
-  updateItem(id: number, data: Partial<Item>): Observable<Item> {
+  getItem(id: number): Observable<Item> {
+    return this.http.get<Item>(`${this.apiUrl}${id}/`);
+  }
+
+  updateItem(id: number, data: FormData | any): Observable<Item> {
     return this.http.patch<Item>(`${this.apiUrl}${id}/`, data);
   }
 

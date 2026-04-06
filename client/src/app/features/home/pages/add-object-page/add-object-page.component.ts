@@ -1,42 +1,83 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router'; // Importamos Router y ActivatedRoute
-import { ItemService } from '../../services/item.service'; // Importamos tu servicio real
+// 1️⃣ Importamos las herramientas reactivas de Angular
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ItemService } from '../../services/item.service';
 
 @Component({
   selector: 'app-add-object-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './add-object-page.component.html',
   styleUrls: ['./add-object-page.component.css'],
 })
 export class AddObjectPageComponent implements OnInit {
-  // === CAMPOS DEL FORMULARIO ===
-  boxId: number = 0; // Necesario para saber a qué caja pertenece
-  objectName: string = '';
-  category: string = '';
-  description: string = '';
-  tags: string[] = [];
-  currentTag: string = '';
-  quantity: number = 1;
-  status: 'saved' | 'loaned' | 'damaged' = 'saved';
-  imagePreview: string | null = null;
+  boxId: number = 0;
 
-  // === ESTADOS DE LA UI ===
+  private fb = inject(FormBuilder);
+  objectForm: FormGroup;
+
+  tagInput = new FormControl('');
+  tags: string[] = [];
+
+  selectedImage: File | null = null;
+  imagePreview: string | null = null;
   isSubmitting: boolean = false;
   showSuccess: boolean = false;
 
+  isEditMode: boolean = false;
+  itemId: number | null = null;
+
   constructor(
     private location: Location,
-    private route: ActivatedRoute, // Para leer el :id de la URL
-    private router: Router, // Para navegar
-    private itemService: ItemService, // El servicio que conecta con Django
-  ) {}
+    private route: ActivatedRoute,
+    private router: Router,
+    private itemService: ItemService,
+  ) {
+    this.objectForm = this.fb.group({
+      name: ['', Validators.required],
+      category: ['', Validators.required],
+      description: [''],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      status: ['saved', Validators.required],
+    });
+  }
 
   ngOnInit() {
-    // Al cargar, pillamos el ID de la caja de la ruta: /box/5/add -> boxId = 5
     this.boxId = +this.route.snapshot.params['id'];
+
+    const itemIdParam = this.route.snapshot.params['itemId'];
+
+    if (itemIdParam) {
+      this.isEditMode = true;
+      this.itemId = +itemIdParam;
+      this.cargarDatosObjeto(this.itemId);
+    }
+  }
+
+  cargarDatosObjeto(id: number) {
+    this.itemService.getItem(id).subscribe({
+      next: (item: any) => {
+        this.objectForm.patchValue({
+          name: item.name,
+          category: item.category || '',
+          description: item.description,
+          quantity: item.quantity,
+          status: item.status || 'saved',
+        });
+
+        this.tags = item.tags || [];
+        this.imagePreview = item.image;
+      },
+      error: (err) => console.error('Error al cargar el objeto:', err),
+    });
   }
 
   volver() {
@@ -46,6 +87,8 @@ export class AddObjectPageComponent implements OnInit {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.selectedImage = file;
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -55,10 +98,10 @@ export class AddObjectPageComponent implements OnInit {
   }
 
   handleAddTag() {
-    const tag = this.currentTag.trim();
+    const tag = this.tagInput.value?.trim();
     if (tag && !this.tags.includes(tag)) {
       this.tags.push(tag);
-      this.currentTag = '';
+      this.tagInput.setValue('');
     }
   }
 
@@ -66,39 +109,54 @@ export class AddObjectPageComponent implements OnInit {
     this.tags = this.tags.filter((t) => t !== tagToRemove);
   }
 
-  // === AQUÍ ESTÁ LA MAGIA: ENVÍO REAL AL BACKEND ===
   handleSubmit() {
-    if (!this.objectName || !this.category) return;
+    if (this.objectForm.invalid) {
+      this.objectForm.markAllAsTouched();
+      return;
+    }
 
     this.isSubmitting = true;
+    const formValues = this.objectForm.value;
 
-    // Creamos el objeto tal como lo espera la API de Ander
-    const newItem = {
-      name: this.objectName,
-      description: this.description,
-      box: this.boxId, // ¡Fundamental!
-      quantity: this.quantity,
-      status: this.status,
-      tags: this.tags,
-      image: this.imagePreview, // Ander tendrá que procesar esto como Base64 o File
-      code: `OBJ-${Math.floor(Math.random() * 10000)}`, // Generamos un código por defecto
-    };
+    const formData = new FormData();
 
-    // Llamada al servicio real
-    this.itemService.createItem(newItem).subscribe({
+    formData.append('name', formValues.name);
+    formData.append('category', formValues.category);
+    formData.append('description', formValues.description || '');
+    formData.append('box', this.boxId.toString());
+    formData.append('quantity', formValues.quantity.toString());
+    formData.append('status', formValues.status);
+
+    if (!this.isEditMode) {
+      formData.append('code', `OBJ-${Math.floor(Math.random() * 10000)}`);
+    }
+
+    if (this.tags.length > 0) {
+      this.tags.forEach((tag) => formData.append('tags', tag));
+    }
+
+    if (this.selectedImage) {
+      formData.append('image', this.selectedImage);
+    }
+
+    const operacion$ =
+      this.isEditMode && this.itemId
+        ? this.itemService.updateItem(this.itemId, formData)
+        : this.itemService.createItem(formData);
+
+    operacion$.subscribe({
       next: (res) => {
         this.isSubmitting = false;
         this.showSuccess = true;
 
-        // Esperamos 1.5s para que el usuario vea el check verde y volvemos
         setTimeout(() => {
           this.router.navigate(['/box', this.boxId]);
         }, 1500);
       },
-      error: (err) => {
-        console.error('Error al guardar en Django:', err);
+      error: (err: any) => {
+        console.error('Error al procesar en Django:', err);
         this.isSubmitting = false;
-        alert('Hubo un error al guardar el objeto. Revisa la consola.');
+        alert('Hubo un error al guardar los cambios.');
       },
     });
   }
