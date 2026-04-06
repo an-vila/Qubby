@@ -8,7 +8,6 @@ import { ItemService } from '../../services/item.service';
 import { BoxService } from '../../services/box.service';
 import { ObjectCardComponent } from '../../components/object-card/object-card.component';
 
-
 @Component({
   selector: 'app-box-detail-page',
   standalone: true,
@@ -232,9 +231,8 @@ export class BoxDetailPageComponent implements OnInit {
     }
   }
 
-  
-  // FUNCIONES PUENTE PARA EL HTML 
- 
+  // FUNCIONES PUENTE PARA EL HTML
+
   abrirDetalles(obj: any) {
     this.selectedObject = obj;
   }
@@ -245,7 +243,7 @@ export class BoxDetailPageComponent implements OnInit {
 
   editarObjeto(obj: any) {
     this.handleEditItem(obj.id);
-    this.cerrarDetalles(); 
+    this.cerrarDetalles();
   }
 
   eliminarObjeto(obj: any) {
