@@ -1,0 +1,46 @@
+name: Deploy Fullstack (Angular + Django)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- PARTE 1: ANGULAR ---
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - run: npm ci --prefix frontend  # Asumiendo que tu Angular está en /frontend
+      - run: npm run build --prefix frontend -- --configuration production
+
+      - name: Deploy via rsync
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr --delete
+          path: . 
+          remote_path: ${{ secrets.VPS_PATH }}
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.VPS_SSH_KEY }}
+          remote_port: 2222
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 2222
+          script: |
+            cd ${{ secrets.VPS_PATH }}
+            docker-compose up -d --build
+            
+            docker-compose exec -T backend python manage.py migrate --noinput
+            docker-compose exec -T backend python manage.py collectstatic --noinput
