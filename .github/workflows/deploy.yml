@@ -11,13 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # --- PARTE 1: ANGULAR ---
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - run: npm ci --prefix frontend  # Asumiendo que tu Angular está en /frontend
+      - run: npm ci --prefix client
       - run: npm run build --prefix frontend -- --configuration production
 
       - name: Deploy via rsync
