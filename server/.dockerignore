@@ -1,0 +1,19 @@
+# Entornos virtuales (el equivalente a node_modules)
+venv/
+.venv/
+env/
+
+# Archivos de Python compilados
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Datos y archivos locales
+db.sqlite3
+.env
+.git
+.gitignore
+
+# Archivos pesados de usuario
+media/
+staticfiles/
