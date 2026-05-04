@@ -12,6 +12,8 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 
+from django.conf import settings
+
 from .models import User
 from .serializers import UserSerializer, UserUpdateSerializer, ChangePasswordSerializer
 from .email_utils import send_verification_email, send_password_reset_email
@@ -236,7 +238,8 @@ class UserViewSet(viewsets.ModelViewSet):
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-            reset_url = f"http://192.168.86.102:4200/auth/reset/{uid}/{token}"
+            base_url = settings.FRONTEND_URL.rstrip('/')
+            reset_url = f"{base_url}/auth/reset/{uid}/{token}"
 
             send_password_reset_email(
                 user_email=user.email, user_name=user.name, reset_link=reset_url
