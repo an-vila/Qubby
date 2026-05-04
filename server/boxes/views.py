@@ -10,7 +10,7 @@ from rest_framework.decorators import (
     action,
 )
 from rest_framework.response import Response
-from server.config import settings
+from django.conf import settings
 
 from .models import Box, Item
 from .serializers import BoxSerializer, ItemSerializer
@@ -39,6 +39,8 @@ class BoxViewSet(viewsets.ModelViewSet):
         Crea un código QR único para una caja específica.
         """
         box = self.get_object()
+
+        print(f"\n--- DEBUG QR URL: {settings.FRONTEND_URL} ---\n")
 
         qr_data = f"{settings.FRONTEND_URL}/box/{box.id}/scan"
 
