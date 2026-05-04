@@ -19,7 +19,10 @@ services:
 
   web:
     image: caddy:2-alpine
-    restart: always
+    restart: always´
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     ports:
       - "80:80"
       - "443:443"
