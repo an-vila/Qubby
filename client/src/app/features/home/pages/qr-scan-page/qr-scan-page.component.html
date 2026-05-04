@@ -138,25 +138,23 @@
           <h6 class="fw-bold text-dark small mb-2">Estado</h6>
           <div class="mb-4">
             @switch (selectedObject.status) {
-              @case ('Guardado') {
+              @case ('saved') {
                 <span class="badge bg-success-subtle text-success border border-success px-3 py-1 rounded-pill">
                   <i class="bi bi-check2-circle me-1"></i> Guardado
                 </span>
               }
-              @case ('Prestado') {
+              @case ('loaned') {
                 <span class="badge bg-warning-subtle text-warning-emphasis border border-warning px-3 py-1 rounded-pill">
                   <i class="bi bi-person-walking me-1"></i> Prestado
                 </span>
               }
-              @case ('Dañado') {
+              @case ('damaged') {
                 <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-1 rounded-pill">
                   <i class="bi bi-exclamation-triangle me-1"></i> Dañado
                 </span>
               }
               @default {
-                <span class="badge bg-light text-secondary border px-3 py-1 rounded-pill">
-                  {{ selectedObject.status || 'Sin estado' }}
-                </span>
+                <span class="text-muted small">Sin estado</span>
               }
             }
           </div>
