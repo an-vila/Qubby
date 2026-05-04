@@ -198,3 +198,5 @@ LOGGING = {
         },
     },
 }
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:4200")
