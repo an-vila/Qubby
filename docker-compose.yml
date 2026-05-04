@@ -16,6 +16,8 @@ services:
       - db
     env_file:
       - .env
+    volumes:
+      - ./server/media:/app/media
 
   web:
     build: ./client
@@ -30,6 +32,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+      - ./server/media:/var/www/media
     depends_on:
       - backend
 

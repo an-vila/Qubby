@@ -7,6 +7,11 @@ qubby.servervla.com {
         reverse_proxy backend:8000
     }
 
+    handle /media/* {
+        root * /var/www
+        file_server
+    }
+    
     handle {
         root * /usr/share/caddy
         try_files {path} /index.html
