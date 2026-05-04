@@ -10,7 +10,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend
+    build: ./server
     restart: always
     depends_on:
       - db
