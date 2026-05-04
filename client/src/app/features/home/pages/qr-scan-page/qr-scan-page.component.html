@@ -1,47 +1,57 @@
 <div class="min-vh-100 pb-5 bg-scan-main">
-  
   @if (pinNeeded) {
-    <div class="position-fixed top-0 start-0 w-100 h-100 z-3 d-flex flex-column align-items-center justify-content-center bg-scan-main">
-      
+    <div
+      class="position-fixed top-0 start-0 w-100 h-100 z-3 d-flex flex-column align-items-center justify-content-center bg-scan-main"
+    >
       <div class="text-center mb-4 fade-in">
         <div class="bg-white rounded-circle d-inline-flex p-4 mb-3 shadow-sm border">
-          <i class="bi bi-shield-lock-fill text-scan-accent" style="font-size: 4rem;"></i>
+          <i class="bi bi-shield-lock-fill text-scan-accent" style="font-size: 4rem"></i>
         </div>
         <h2 class="text-dark fw-bold">Caja Protegida</h2>
         <p class="text-secondary">Introduce el PIN de 4 dígitos para ver el contenido</p>
       </div>
 
-      <div class="bg-white p-4 rounded-4 shadow mx-3 text-center scale-in" style="max-width: 380px; width: 100%;">
-        
+      <div
+        class="bg-white p-4 rounded-4 shadow mx-3 text-center scale-in"
+        style="max-width: 380px; width: 100%"
+      >
         <form [formGroup]="pinForm" (ngSubmit)="verifyPin()">
-          <input 
-            type="password" 
+          <input
+            type="password"
             formControlName="pin"
-            class="form-control text-center fw-bold mb-3 shadow-sm rounded-3 py-3 pin-input" 
-            placeholder="••••" 
-            maxlength="4" 
+            class="form-control text-center fw-bold mb-3 shadow-sm rounded-3 py-3 pin-input"
+            placeholder="••••"
+            maxlength="4"
             inputmode="numeric"
             autofocus
-          >
-          
+          />
+
           @if (pinError) {
-            <div class="alert alert-danger d-flex align-items-center justify-content-center py-2 border-0">
+            <div
+              class="alert alert-danger d-flex align-items-center justify-content-center py-2 border-0"
+            >
               <i class="bi bi-exclamation-triangle-fill me-2"></i> PIN Incorrecto
             </div>
           }
 
-          <button type="submit" [disabled]="pinForm.invalid" class="btn btn-orange-qubby w-100 py-3 rounded-pill fw-bold shadow-sm fs-5">
+          <button
+            type="submit"
+            [disabled]="pinForm.invalid"
+            class="btn btn-orange-qubby w-100 py-3 rounded-pill fw-bold shadow-sm fs-5"
+          >
             Desbloquear
           </button>
         </form>
-
       </div>
     </div>
   }
-  
+
   <header class="sticky-top shadow-sm z-3 header-scan">
     <div class="mx-auto p-3 d-flex align-items-center justify-content-between scan-container">
-      <button class="btn p-2 rounded-3 d-flex align-items-center justify-content-center btn-back-scan" routerLink="/home">
+      <button
+        class="btn p-2 rounded-3 d-flex align-items-center justify-content-center btn-back-scan"
+        routerLink="/home"
+      >
         <i class="bi bi-chevron-left fs-5 text-scan-accent"></i>
       </button>
 
@@ -49,19 +59,89 @@
         <h1 class="fs-5 fw-bold mb-0">Caja {{ boxId }}</h1>
         <p class="small mb-0 opacity-75">{{ objetos.length }} objetos</p>
       </div>
-      <div style="width: 40px;"></div>
+      <div style="width: 40px"></div>
     </div>
 
     <div class="mx-auto px-3 pb-3 scan-container">
       <div class="position-relative">
         <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-        <input type="text" [formControl]="searchControl" placeholder="Buscar objeto..." 
-               class="form-control border-0 rounded-3 ps-5 py-2 shadow-none bg-light">
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Buscar objeto..."
+          class="form-control border-0 rounded-3 ps-5 py-2 shadow-none bg-light"
+        />
       </div>
     </div>
   </header>
 
-  <main class="p-3 mt-2">
-    </main>
+  <main class="p-3 mt-2 scan-container mx-auto">
+    @if (isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-scan-accent" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    } @else {
+      <div class="row g-3">
+        @for (item of objetos; track item.id) {
+          <div class="col-12">
+            <app-object-card
+              [image]="item.image || '/images/default-item.png'"
+              [name]="item.name"
+              [description]="item.description || 'Sin descripción'"
+              [code]="item.code || 'S/N'"
+              [tags]="item.tags || []"
+              viewMode="list"
+              (viewDetails)="openDetails(item)"
+            >
+            </app-object-card>
+          </div>
+        } @empty {
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-box-seam text-muted" style="font-size: 3rem"></i>
+            <p class="mt-3 text-secondary">Esta caja está vacía</p>
+          </div>
+        }
+      </div>
+    }
+  </main>
 
+  @if (selectedObject) {
+    <div
+      class="modal-backdrop-dark d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 z-3"
+      (click)="closeDetails()"
+    >
+      <div
+        class="bg-white rounded-4 shadow-lg w-100 mx-3 p-4 scale-in"
+        style="max-width: 450px; max-height: 90vh; overflow-y: auto"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold mb-0 text-dark">Detalles</h5>
+          <button class="btn-close shadow-none" (click)="closeDetails()"></button>
+        </div>
+
+        <img
+          [src]="selectedObject.image || '/images/default-item.png'"
+          class="w-100 rounded-4 mb-3 object-fit-cover shadow-sm"
+          style="height: 200px"
+        />
+
+        <h3 class="fw-bold text-dark mb-1">{{ selectedObject.name }}</h3>
+        <p class="text-secondary small mb-3">Ref: {{ selectedObject.code || 'S/N' }}</p>
+
+        <h6 class="fw-bold text-dark small mb-1">Descripción</h6>
+        <p class="text-muted small">{{ selectedObject.description || 'Sin descripción.' }}</p>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          @for (tag of selectedObject.tags; track tag) {
+            <span class="badge rounded-pill bg-light text-secondary border fw-normal">{{
+              tag
+            }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  }
 </div>

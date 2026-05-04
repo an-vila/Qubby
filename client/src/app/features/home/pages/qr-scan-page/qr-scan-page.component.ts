@@ -10,11 +10,12 @@ import {
 } from '@angular/forms';
 import { BoxService } from '../../services/box.service';
 import { ItemService } from '../../services/item.service';
+import { ObjectCardComponent } from '../../components/object-card/object-card.component';
 
 @Component({
   selector: 'app-qr-scan-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, ObjectCardComponent],
   templateUrl: './qr-scan-page.component.html',
   styleUrls: ['./qr-scan-page.component.css'],
 })
