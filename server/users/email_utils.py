@@ -16,7 +16,7 @@ def send_verification_email(user_email: str, verification_token: str, user_name:
         user_name: Nombre del usuario (para personalización)
     """
 
-    verification_url = f"http://localhost:4200/auth/activate?token={verification_token}"
+    verification_url = f"{settings.FRONTEND_URL}/auth/activate?token={verification_token}"
 
     context = {
         'user_name': user_name,
