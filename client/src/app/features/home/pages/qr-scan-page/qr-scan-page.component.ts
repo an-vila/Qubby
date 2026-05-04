@@ -54,15 +54,17 @@ export class QrScanPageComponent implements OnInit {
   }
 
   verifySecure() {
-    this.boxService.getBox(this.boxId).subscribe({
-      next: (box: any) => {
-        if (!box.is_protected) {
+    this.isLoading = true;
+    this.boxService.getPublicItems(this.boxId).subscribe({
+      next: (data: any) => {
+        if (!data.is_protected) {
           this.pinNeeded = false;
-          this.loadItems();
+          this.objetos = data.items;
         }
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error en acceso público:', err);
         this.isLoading = false;
         this.router.navigate(['/home']);
       },
@@ -94,13 +96,13 @@ export class QrScanPageComponent implements OnInit {
 
   loadItems() {
     this.isLoading = true;
-    this.itemService.getItemsByBox(Number(this.boxId)).subscribe({
+    this.boxService.getPublicItems(this.boxId).subscribe({
       next: (data: any) => {
-        this.objetos = data.results || data;
+        this.objetos = data.items;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error cargando objetos:', err);
+        console.error('Error cargando objetos tras PIN:', err);
         this.isLoading = false;
       },
     });

@@ -25,9 +25,35 @@ class BoxViewSet(viewsets.ModelViewSet):
     serializer_class = BoxSerializer
     permission_classes = [IsAuthenticated]
 
-    # Proteccion para que cada usuario vea solo sus cajas
     def get_queryset(self):
+        if self.action in ["public_items", "verify_pin"]:
+            return Box.objects.all()
+
         return Box.objects.filter(user=self.request.user)
+
+    def get_permissions(self):
+        if self.action in ["public_items", "verify_pin"]:
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    @action(detail=True, methods=["get"], url_path="public-items")
+    def public_items(self, request, pk=None):
+        """
+        GET /api/boxes/{id}/public-items/
+        Retorna el nombre de la caja y sus objetos sin necesidad de login.
+        """
+        box = self.get_object()
+        # Asumiendo que en tu modelo Item tienes related_name="items" o usas el set por defecto
+        items = Item.objects.filter(box=box)
+        serializer = ItemSerializer(items, many=True)
+
+        return Response(
+            {
+                "name": box.name,
+                "is_protected": getattr(box, "is_protected", False),
+                "items": serializer.data,
+            }
+        )
 
     def perform_create(self, serializer):
         print(f"DEBUG: Intentando crear caja para el usuario: {self.request.user}")
