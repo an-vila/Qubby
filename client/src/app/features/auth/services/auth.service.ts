@@ -46,8 +46,12 @@ export class AuthService {
   }
 
   private getStorage(): Storage | null {
-    if (localStorage.getItem('access_token')) return localStorage;
-    if (sessionStorage.getItem('access_token')) return sessionStorage;
+    const local = localStorage.getItem('access_token');
+    if (local && local !== 'null' && local !== 'undefined') return localStorage;
+
+    const session = sessionStorage.getItem('access_token');
+    if (session && session !== 'null' && session !== 'undefined') return sessionStorage;
+
     return null;
   }
 
@@ -70,6 +74,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.clear();
+    sessionStorage.clear();
 
     this.router.navigate(['/auth/login']).then(() => {
       window.location.reload();
