@@ -32,6 +32,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = ["qubby.servervla.com", "localhost", "backend", "127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = ["https://qubby.servervla.com"]
 
 # Application definition
 
@@ -138,7 +139,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "http://127.0.0.1:4200",
+    "https://servervla.com",
 ]
 
 AUTH_USER_MODEL = "users.User"
