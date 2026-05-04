@@ -39,6 +39,7 @@ jobs:
           port: 2222
           script: |
             cd ${{ secrets.VPS_PATH }}
+            ls -la
             docker compose up -d --build
             
             docker compose exec -T backend python manage.py migrate --noinput
