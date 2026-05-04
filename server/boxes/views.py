@@ -10,6 +10,7 @@ from rest_framework.decorators import (
     action,
 )
 from rest_framework.response import Response
+from server.config import settings
 
 from .models import Box, Item
 from .serializers import BoxSerializer, ItemSerializer
@@ -39,7 +40,7 @@ class BoxViewSet(viewsets.ModelViewSet):
         """
         box = self.get_object()
 
-        qr_data = f"http://{ip}:4200/box/{box.id}/scan"
+        qr_data = f"{settings.FRONTEND_URL}/box/{box.id}/scan"
 
         qr = qrcode.QRCode(version=1, box_size=10, border=4)
         qr.add_data(qr_data)
